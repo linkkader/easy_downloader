@@ -1,5 +1,6 @@
 // Created by linkkader on 7/10/2022
 
+import 'dart:async';
 import 'dart:isolate';
 import 'package:easy_downloader/model/status.dart';
 import 'part_file.dart';
@@ -9,26 +10,13 @@ class Download{
   final int totalLength;
   final String path;
   final int maxSplit;
-  int _current = 0;
+  DownloadStatus _status = DownloadStatus.downloading;
   final Map<int, PartFile> _parts = {};
+
+  Timer? currentLengthTimer;
+  List<SendPort> currentLengthSendPorts = [];
+
   Download({required this.totalLength,required this.path, required this.maxSplit, required this.sendPortMainThread});
-
-  int get current => _current;
-
-  void incrementCurrent({bool fromMainThread = false, int? value}){
-    if (value != null) {
-      _current = value;
-      return;
-    }
-    _current++;
-    if (!fromMainThread) sendPortMainThread.send([SendPortStatus.incrementCurrent]);
-    if (fromMainThread){
-      print('increment current from main thread $_current');
-      _parts.forEach((key, value) {
-        value.sendPort?.send([SendPortStatus.incrementCurrent, _current]);
-      });
-    }
-  }
 
   void setPart(PartFile part){
     assert(_parts[part.id] == null);
@@ -50,5 +38,24 @@ class Download{
     _parts[id]!.updateStatus(value, fromMainThread: true);
   }
 
+  //prevent data race for file creation
+  void currentLength(SendPort sendPort) {
+    currentLengthSendPorts.add(sendPort);
+    currentLengthTimer ??= Timer.periodic(const Duration(milliseconds: 50), (timer) {
+      if (currentLengthSendPorts.isNotEmpty) {
+        var sendPort = currentLengthSendPorts.removeAt(0);
+        sendPort.send([SendPortStatus.currentLength, _parts.length]);
+      }
+    });
+   }
+
+
   List<PartFile> get parts => _parts.values.toList();
+
+  void updateStatus(DownloadStatus status) {
+    _status = status;
+  }
+
+  DownloadStatus get status => _status;
+
 }

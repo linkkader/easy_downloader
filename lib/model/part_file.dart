@@ -2,6 +2,7 @@
 
 
 import 'dart:isolate';
+import 'package:easy_downloader/model/block.dart';
 import 'package:easy_downloader/model/download.dart';
 import 'status.dart';
 
@@ -11,7 +12,7 @@ class PartFile{
   late Isolate isolate;
   late final int _start;
   late int _end;
-  late final int _id;
+  int _id = 0;
   int _downloaded = 0;
   final Download download;
   PartFileStatus _status = PartFileStatus.downloading;
@@ -22,6 +23,8 @@ class PartFile{
     _id = id;
   }
 
+  void updateId(int newId) => _id = newId;
+
   void setSendPort(SendPort sendPort) {
     assert(this.sendPort == null);
     this.sendPort = sendPort;
@@ -30,7 +33,7 @@ class PartFile{
   void setPartInDownload(){
     assert (sendPort != null);
     download.sendPortMainThread.send([SendPortStatus.setPart, this]);
-    download.incrementCurrent();
+    ///download.incrementCurrent();
   }
   void updateEnd(int newEnd, {fromMainThread = false, fromIsolate = false}){
     sendPort?.send("updateEnd  $fromMainThread");
@@ -47,14 +50,11 @@ class PartFile{
 
   void updateDownloaded(int value, {bool fromMainThread = false}) {
     _downloaded = value;
-    //print('value ${value.toHumanReadableSize()}');
     if (!fromMainThread)download.sendPortMainThread.send([SendPortStatus.updatePartDownloaded, _id, value]);
-    //download.sendPort.send([download, updateDownloaded, _id, value]);
   }
   void updateStatus(PartFileStatus value, {bool fromMainThread = false}){
     _status = value;
     if (!fromMainThread) download.sendPortMainThread.send([SendPortStatus.updatePartStatus, _id, value]);
-    //download.sendPort.send([download, updateStatus, _id, value]);
   }
 
   int get start => _start;
@@ -63,4 +63,5 @@ class PartFile{
   int get downloaded => _downloaded;
   PartFileStatus get status => _status;
 
+  DownloadBlock toDownloadBlock() => DownloadBlock(_id, _start, _end, _downloaded, _status);
 }

@@ -4,4 +4,4 @@ enum DownloadStatus { downloading, paused, completed, failed }
 
 enum PartFileStatus { downloading, completed, failed }
 
-enum SendPortStatus { setDownload, updatePartDownloaded, updatePartStatus, updatePartEnd, setPart, incrementCurrent}
+enum SendPortStatus { setDownload, updatePartDownloaded, updatePartStatus, updatePartEnd, setPart, currentLength}

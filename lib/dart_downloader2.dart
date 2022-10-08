@@ -6,20 +6,22 @@ import 'dart:isolate';
 import 'model/download.dart';
 import 'model/part_file.dart';
 import 'model/status.dart';
+import 'monitor/download_monitor.dart';
 import 'monitor/monitor.dart';
 
 typedef  UpdatePartEnd = Function(int newEnd);
 
 class DartDownloader{
   late String url;
+  DownloadMonitor? downloadMonitor;
   final HttpClient client = HttpClient();
   Download? _download;
-  DownloadMonitor? monitor;
+  DownloadMonitorInside? monitor;
+  //Completer<int>? _currentLength;
+
 
   ReceivePort downloadIsolate() {
     ReceivePort receivePort = ReceivePort();
-
-
     Isolate.spawn((message) {
       HttpClient? client;
       String? url;
@@ -40,7 +42,7 @@ class DartDownloader{
               .then((value) => value.close())
               .then((value) async {
                 print("start download223  ${value.contentLength}");
-                var download = Download(path: 'download/', totalLength: value.contentLength, maxSplit: 20, sendPortMainThread: sendPort);
+                var download = Download(path: 'download/', totalLength: value.contentLength, maxSplit: 8, sendPortMainThread: sendPort);
                 sendPort.send([SendPortStatus.setDownload, download]);
                 _savePart(value, PartFile(start: 0, end: download.totalLength, id: download.parts.length, download: download, isolate: Isolate.current), download);
               });
@@ -63,8 +65,8 @@ class DartDownloader{
         if (message[0] == SendPortStatus.setDownload){
           assert(_download == null, "download is already set");
           _download = message[1];
-          monitor = DownloadMonitor(_download!);
-          monitor?.monitor(const Duration(seconds: 5));
+          monitor = DownloadMonitorInside(_download!, downloadMonitor: downloadMonitor);
+          monitor?.monitor();
         }
         assert(_download != null, "download is null");
         switch(message[0])
@@ -78,20 +80,16 @@ class DartDownloader{
             break;
           }
           case SendPortStatus.updatePartStatus: _download!.updatePartStatus(message[1], message[2]);break;
-          case SendPortStatus.incrementCurrent: {
-            _download!.incrementCurrent(fromMainThread: true);
-            break;
+          case SendPortStatus.currentLength:{
+            _download!.currentLength(message[1]);break;
           }
-
         }
       }
     });
 
   }
 
-
-  Future<void> download(String url) async {
-
+  Future<void> download(String url, {DownloadMonitor? monitor}) async {
     //clear all file in dir download
     var dir = Directory('download/');
     if (dir.existsSync()) {
@@ -99,21 +97,14 @@ class DartDownloader{
     }
     dir.createSync();
     this.url = url;
-
     var receivePort = downloadIsolate();
+    downloadMonitor = monitor;
     __savePart(receivePort);
   }
 
-  Future<void> _savePart(HttpClientResponse value, PartFile partFile, Download download)
-  async {
+  Future<void> _savePart(HttpClientResponse value, PartFile partFile, Download download) async {
     late StreamSubscription subscription;
     var receivePort = ReceivePort();
-
-    //check if max split is reached
-    if (await currentLength(download) == download.maxSplit) {
-      Isolate.current.kill(priority: Isolate.immediate);
-      return;
-    }
 
     //wait update from main thread
     subscription = receivePort.listen((message) async {
@@ -125,21 +116,28 @@ class DartDownloader{
           _downloadPart(_Util(newStart, partFile.end, download, client, partFile));
         }
       }
-      if (message is List && message[0] == SendPortStatus.incrementCurrent){
-        print("current78 ${download.current}  &&  ${message[1]}");
-        download.incrementCurrent(value : message[1]);
-        //print("current78 ${download.current}  &&  ${message[1]}");
-      }
+
     });
     partFile.setSendPort(receivePort.sendPort);
+    download.sendPortMainThread.send([SendPortStatus.currentLength, receivePort.sendPort]);
+
+    //check if max split is reached
+    if (await currentLength(download) == download.maxSplit) {
+      Isolate.current.kill(priority: Isolate.immediate);
+      return;
+    }
+
+
+    var file = File("${partFile.download.path}/${partFile.id}");
+    while(file.existsSync()){
+      partFile.updateId(await currentLength(download));
+      file = File("${partFile.download.path}/${partFile.id}");
+    }
+    file.create();
     partFile.setPartInDownload();
     partFile.updateStatus(PartFileStatus.downloading);
     int downloaded = 0;
     int originalLength = partFile.end - partFile.start;
-    final file = File("download/${partFile.id}");
-    if (!file.existsSync()) {
-      file.createSync();
-    }
     value.listen((event) async {
       downloaded += event.length;
       file.writeAsBytesSync(event, mode: FileMode.append);
@@ -167,7 +165,6 @@ class DartDownloader{
       ReceivePort receivePort = ReceivePort();
       message.send(receivePort.sendPort);
       receivePort.listen((message) async {
-
         if (message is _Util){
           var util = message;
           var request = await util.client.getUrl(Uri.parse(url));
@@ -192,10 +189,17 @@ class DartDownloader{
     });
   }
 
+  //prevent file creation race condition
   Future<int> currentLength(Download download) async {
-    return download.current;
-    var dir = Directory(download.path);
-    return dir.list().length;
+    var receivePort = ReceivePort();
+    var completer = Completer<int>();
+    download.sendPortMainThread.send([SendPortStatus.currentLength, receivePort.sendPort]);
+    receivePort.listen((message) {
+      if (message is List && message[0] == SendPortStatus.currentLength){
+        completer.complete(message[1]);
+      }
+    });
+    return completer.future;
   }
 
   //truncate file
