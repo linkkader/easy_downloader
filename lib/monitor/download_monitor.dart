@@ -1,9 +1,9 @@
 
-import '../model/block.dart';
+import '../storage/block.dart';
 import '../model/status.dart';
 
 typedef BlockMonitor = Function(List<DownloadBlock> blocks);
-typedef ProgressMonitor = Function(int progress, int total, int speed, DownloadStatus status);
+typedef ProgressMonitor = Function(int downloaded, int total, int speed, DownloadStatus status);
 
 class DownloadMonitor {
   final BlockMonitor? blockMonitor;

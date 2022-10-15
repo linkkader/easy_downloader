@@ -1,12 +1,13 @@
 // Created by linkkader on 7/10/2022
 
-
+import 'dart:io';
 import 'dart:isolate';
-import 'package:easy_downloader/model/block.dart';
+import 'package:easy_downloader/easy_downloader.dart';
+import 'package:easy_downloader/storage/block.dart';
 import 'package:easy_downloader/model/download.dart';
 import 'status.dart';
 
-class PartFile{
+class  PartFile{
 
   SendPort? sendPort;
   late Isolate isolate;
@@ -22,8 +23,6 @@ class PartFile{
     _start = start;
     _id = id;
   }
-
-  void updateId(int newId) => _id = newId;
 
   void setSendPort(SendPort sendPort) {
     assert(this.sendPort == null);
@@ -64,4 +63,6 @@ class PartFile{
   PartFileStatus get status => _status;
 
   DownloadBlock toDownloadBlock() => DownloadBlock(_id, _start, _end, _downloaded, _status);
+
+  UtilDownload toUtilDownload(PartFile partFile, HttpClient client) => UtilDownload(_start, _end, download, partFile, id: _id, client);
 }

@@ -2,8 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
-import 'package:easy_downloader/dart_downloader2.dart';
+import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/extensions/enum.dart';
 import 'package:easy_downloader/extensions/int_extension.dart';
 import 'package:easy_downloader/monitor/download_monitor.dart';
@@ -20,24 +19,6 @@ void main() {
     var completer = Completer();
 
     HttpClient http = HttpClient();
-    var dio = Dio();
-    var res = await dio.get("https://manga-tube.me/series/fire_emblem_awakening_4_koma_kings", options: Options(headers: {
-      //'User-Agent': 'Mozilla/5.0 (Linux; Android 12; SM-A528B Build/SP1A.210852.016; wv) AppleWebKit/537'
-    }));
-    print(res.data);
-    return;
-    var r = await http.getUrl(Uri.parse("https://mangas-origines.fr/"));
-    var response = await r.close();
-    response.listen((event) {
-      print(utf8.decode(event));
-    }, onDone: () {
-      completer.complete();
-    });
-    await completer.future;
-    return;
-
-
-    var file = File('test/test.mp4');
     //500KB
     var url = "https://www.learningcontainer.com/download/sample-mp4-video-file-download-for-testing/?wpdmdl=2727&refresh=62dca61b7ad061658627611";
     //100MB
@@ -45,7 +26,7 @@ void main() {
     //100MB
     //url = "https://raw.githubusercontent.com/yourkin/fileupload-fastapi/a85a697cab2f887780b3278059a0dd52847d80f3/tests/data/test-10mb.bin";
     Stopwatch stopwatch = Stopwatch()..start();
-    DartDownloader().download(url,
+    EasyDownloader().download(url, "",
         monitor: DownloadMonitor(
           duration: const Duration(seconds: 2),
           blockMonitor: (blocks) {

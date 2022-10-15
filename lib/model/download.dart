@@ -36,6 +36,7 @@ class Download{
   void updatePartStatus(int id, PartFileStatus value){
     assert(_parts[id] != null);
     _parts[id]!.updateStatus(value, fromMainThread: true);
+    print("$id $value");
   }
 
   //prevent data race for file creation

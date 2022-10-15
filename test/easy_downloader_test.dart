@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:easy_downloader/dart_downloader2.dart';
+import 'package:easy_downloader/easy_downloader.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 var completer = Completer();
@@ -15,7 +15,8 @@ void main() {
     //100MB
     url = "https://speed.hetzner.de/100MB.bin";
     url = "https://raw.githubusercontent.com/yourkin/fileupload-fastapi/a85a697cab2f887780b3278059a0dd52847d80f3/tests/data/test-10mb.bin";
-    DartDownloader().download(url);
+    EasyDownloader();
+    //EasyDownloader().download(url);
     await completer.future;
   });
 }
