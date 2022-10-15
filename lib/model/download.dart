@@ -33,6 +33,15 @@ class Download{
     _parts[id]!.updateEnd(value, fromMainThread: true);
   }
 
+  // never call in child isolate
+  void updateMainSendPort(SendPort sendPort){
+    sendPortMainThread = sendPort;
+    for(var part in _parts.values){
+      part.setSendPort(sendPort, updateMainSendPort: true);
+    }
+    sendPort.send([SendPortStatus.updateMainSendPort, sendPort]);
+  }
+
   void updatePartStatus(int id, PartFileStatus value){
     assert(_parts[id] != null);
     _parts[id]!.updateStatus(value, fromMainThread: true);

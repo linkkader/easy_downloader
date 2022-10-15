@@ -24,8 +24,8 @@ class  PartFile{
     _id = id;
   }
 
-  void setSendPort(SendPort sendPort) {
-    assert(this.sendPort == null);
+  void setSendPort(SendPort sendPort, {bool updateMainSendPort = false}){
+    if (updateMainSendPort != true)assert(this.sendPort == null);
     this.sendPort = sendPort;
   }
 
@@ -56,6 +56,8 @@ class  PartFile{
     if (!fromMainThread) download.sendPortMainThread.send([SendPortStatus.updatePartStatus, _id, value]);
   }
 
+  void updateId(int newId) => _id = newId;
+
   int get start => _start;
   int get end => _end;
   int get id => _id;
@@ -64,5 +66,6 @@ class  PartFile{
 
   DownloadBlock toDownloadBlock() => DownloadBlock(_id, _start, _end, _downloaded, _status);
 
-  UtilDownload toUtilDownload(PartFile partFile, HttpClient client) => UtilDownload(_start, _end, download, partFile, id: _id, client);
+
+  UtilDownload toUtilDownload() => UtilDownload(_start, _end, download, this, id: _id);
 }

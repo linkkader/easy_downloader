@@ -68,9 +68,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {});
               },
               blockMonitor: (blocks) {
-
+                  for (var block in blocks) {
+                    print("block ${block.id} downloaded: ${block.downloaded.toHumanReadableSize()} start: ${block.start.toHumanReadableSize()} end: ${block.end.toHumanReadableSize()}");
+                  }
               },
-                duration: const Duration(seconds: 2)),
+                duration: const Duration(seconds: 10)),
                 downloadController: controller,
             );
           }, child: const Text("Download")),
