@@ -19,7 +19,7 @@ class Download{
   Download({required this.totalLength,required this.path, required this.maxSplit, required this.sendPortMainThread});
 
   void setPart(PartFile part){
-    assert(_parts[part.id] == null);
+    if (part.status != PartFileStatus.resumed)assert(_parts[part.id] == null);
     _parts[part.id] = part;
   }
 
@@ -33,13 +33,22 @@ class Download{
     _parts[id]!.updateEnd(value, fromMainThread: true);
   }
 
+  void updatePartIsolate(int id, Isolate value){
+    assert(_parts[id] != null);
+    _parts[id]!.updateIsolate(value, fromMainThread: true);
+  }
+
+  void updatePartSendPort(int id, SendPort value){
+    assert(_parts[id] != null);
+    _parts[id]!.updateSendPort(value, fromMainThread: true);
+  }
+
   // never call in child isolate
   void updateMainSendPort(SendPort sendPort){
     sendPortMainThread = sendPort;
     for(var part in _parts.values){
-      part.setSendPort(sendPort, updateMainSendPort: true);
+       part.download = this;
     }
-    sendPort.send([SendPortStatus.updateMainSendPort, sendPort]);
   }
 
   void updatePartStatus(int id, PartFileStatus value){
@@ -67,5 +76,6 @@ class Download{
   }
 
   DownloadStatus get status => _status;
+
 
 }

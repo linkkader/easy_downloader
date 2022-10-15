@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               blockMonitor: (blocks) {
                   for (var block in blocks) {
-                    print("block ${block.id} downloaded: ${block.downloaded.toHumanReadableSize()} start: ${block.start.toHumanReadableSize()} end: ${block.end.toHumanReadableSize()}");
+                    print("block ${block.id} ${block.status}: ${block.downloaded.toHumanReadableSize()} start: ${block.start.toHumanReadableSize()} end: ${block.end.toHumanReadableSize()}");
                   }
               },
                 duration: const Duration(seconds: 10)),

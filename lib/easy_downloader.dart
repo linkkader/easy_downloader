@@ -3,6 +3,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
+import 'package:easy_downloader/extensions/int_extension.dart';
+
 import 'model/download.dart';
 import 'model/part_file.dart';
 import 'model/status.dart';
@@ -64,6 +66,9 @@ class EasyDownloader {
       if (_download != null){
         receivePort.close();
         receivePort = _resumeIsolate();
+        for(var value in _download!.parts){
+          value.updateStatus(PartFileStatus.resumed, fromMainThread: true);
+        }
         _isolateListen(receivePort, info, downloadController, _download, monitor, (p0) => _download = p0,);
         // if (value.status == PartFileStatus.paused){
         //   value.sendPort?.send([SendPortStatus.updatePartStatus, PartFileStatus.downloading]);;
@@ -86,6 +91,7 @@ ReceivePort _resumeIsolate() {
     var sendPort = message;
     var receivePort = ReceivePort();
     sendPort.send(receivePort.sendPort);
+    sendPort.send([SendPortStatus.updateMainSendPort, sendPort, receivePort.sendPort]);
     late StreamSubscription subscription;
     subscription = receivePort.listen((message) async {
       if (message is _DownloadInfo) {
@@ -98,33 +104,16 @@ ReceivePort _resumeIsolate() {
         download ??= message;
       }
       if (downloadInfo != null && client != null && download != null) {
-        print("resumeIsolate 22 ${message.runtimeType}");
+        //make an assert pause is possible only when minimum one part is downloading
         var util = download!.parts.first.toUtilDownload();
         var request = await client!.getUrl(Uri.parse(downloadInfo!.url));
         request.headers.add("Range", 'bytes=${util.start}-${util.end}');
-        var partFile = PartFile(start: util.start, end: util.end, id: 0, download: download!, isolate: Isolate.current);
-        print("resumeIsolate44 ");
+        var partFile = download!.parts.first;
         request.close().then((value) {
-          download!.updateMainSendPort(sendPort);
-
           _savePart(value, partFile, download!, downloadInfo!);
-          //print("resumeIsolate ${value.contentLength}");
-          //test(value);
-          //testFuck(value);
         });
-        // for (var part in _download!.parts.sublist(1)){
-        //   _downloadPart(part.toUtilDownload(partFile, util!.client));
-        // }
-        subscription.cancel();
 
-        // client.getUrl(Uri.parse(downloadInfo!.url))
-        //     .then((value) => value.close())
-        //     .then((value) async {
-        //       var download = Download(path: downloadInfo!.path, totalLength: value.contentLength, maxSplit: 1, sendPortMainThread: sendPort);
-        //       sendPort.send([SendPortStatus.setDownload, download]);
-        //       _savePart(value, PartFile(start: 0, end: download.totalLength, id: download.parts.length, download: download, isolate: Isolate.current), download);
-        //     });
-        // subscription.cancel();
+        subscription.cancel();
       }
     });
   }, receivePort.sendPort);
@@ -138,7 +127,6 @@ void _isolateListen(ReceivePort receivePort, _DownloadInfo info,
   late StreamSubscription subscription;
   subscription = receivePort.listen((message) {
     if (message is SendPort) {
-      message.send(download);
       message.send(info);
       message.send(EasyDownloader._client);
     }
@@ -155,13 +143,33 @@ void _isolateListen(ReceivePort receivePort, _DownloadInfo info,
         case SendPortStatus.updatePartEnd: {
           download!.updatePartEnd(message[1], message[2]);break;
         }
+        case SendPortStatus.updateIsolate: {
+          download!.updatePartIsolate(message[1], message[2]);
+          break;
+        }
         case SendPortStatus.updatePartDownloaded: {
           download!.updatePartDownloaded(message[1], message[2]);
           break;
         }
+        case SendPortStatus.updatePartSendPort: {
+          download!.updatePartSendPort(message[1], message[2]);
+          break;
+        }
         case SendPortStatus.updatePartStatus: download!.updatePartStatus(message[1], message[2]);break;
         case SendPortStatus.currentLength:{
-          download!.currentLength(message[1]);break;
+          download!.currentLength(message[1]);
+          break;
+        }
+        //on resume need
+        case SendPortStatus.updateMainSendPort: {
+          download!.updateMainSendPort(message[1]);
+          assert(message[2] is SendPort);
+          var sendPort = message[2] as SendPort;
+          sendPort.send(download);
+          for (var part in download!.parts.sublist(1)){
+            _downloadPart(part.toUtilDownload(), info, partFile: part);
+          }
+          break;
         }
       }
     }
@@ -198,34 +206,43 @@ ReceivePort _downloadIsolate() {
   return receivePort;
 }
 
-void _downloadPart(UtilDownload util, _DownloadInfo info) async {
-  print("downloadPart ${util.id}");
+void _downloadPart(UtilDownload util, _DownloadInfo info, {PartFile? partFile}) async {
   ReceivePort port = ReceivePort();
   Isolate.spawn((message) async {
     ReceivePort receivePort = ReceivePort();
     _DownloadInfo? info;
+    PartFile? partFile;
+
     UtilDownload? util;
     message.send(receivePort.sendPort);
 
     receivePort.listen((message) async {
-      print("downloadPart 11 ${message.runtimeType}");
       if (message is UtilDownload){
         util ??= message;
       }
       if (message is _DownloadInfo){
         info ??= message;
       }
+      if (message is PartFile){
+        partFile ??= message;
+      }
+
       if (util != null && info != null){
         var request = await message.client.getUrl(Uri.parse(info!.url));
         request.headers.add("Range", 'bytes=${util!.start}-${util!.end}');
         var response = await request.close();
-        if ((response.contentLength -  (util!.end - util!.start)).abs() < 3 && await _currentLength(util!.download) < util!.download.maxSplit)
+        if ((response.contentLength -  (util!.end - util!.start)).abs() < 3
+            && (partFile?.status == PartFileStatus.resumed
+                || await _currentLength(util!.download) < util!.download.maxSplit)
+        )
         {
-          util!.previousPart.updateEnd(util!.start);
+          //in resume previous is current
+          if (partFile == null) util!.previousPart.updateEnd(util!.start);
+          partFile ??= PartFile(start: util!.start, end: util!.end,
+              id: util!.id ?? await _currentLength(util!.download),
+              download: util!.download, isolate: Isolate.current);
           _savePart(response,
-              PartFile(start: util!.start, end: util!.end,
-                  id: util!.id ?? await _currentLength(util!.download),
-                  download: util!.download, isolate: Isolate.current),
+              partFile!,
               util!.download, info!);
         }
         else{
@@ -237,16 +254,17 @@ void _downloadPart(UtilDownload util, _DownloadInfo info) async {
 
   port.listen((message) {
     if (message is SendPort){
+      if (partFile != null) message.send(partFile);
       message.send(util);
       message.send(info.copyWith(client: HttpClient()));
     }
   });
 }
 
+
 Future<void> _savePart(HttpClientResponse value, PartFile partFile, Download download, _DownloadInfo info) async {
   late StreamSubscription subscription;
   var receivePort = ReceivePort();
-  print("kader78 ${partFile.id}");
   //wait update from main thread
   subscription = receivePort.listen((message) async {
     if (message is List){
@@ -267,39 +285,39 @@ Future<void> _savePart(HttpClientResponse value, PartFile partFile, Download dow
       }
     }
   });
+
   partFile.setSendPort(receivePort.sendPort);
-  download.sendPortMainThread.send([SendPortStatus.currentLength, receivePort.sendPort]);
 
-  print("kader78 2 ${partFile.id}");
-  print("kader78 total ${await _currentLength(download)}");
+  //download.sendPortMainThread.send([SendPortStatus.currentLength, receivePort.sendPort]);
 
-
-  //check if max split is reached
-  if (await _currentLength(download) == download.maxSplit) {
-    print("kader78 kill ${partFile.id}");
-
-    Isolate.current.kill(priority: Isolate.immediate);
-    return;
-  }
 
   var file = File("${partFile.download.path}/${partFile.id}");
-  while (await file.exists()) {
-    partFile.updateId(await _currentLength(download));
-    file = File("${partFile.download.path}/${partFile.id}");
+
+  //check if max split is reached
+  if (partFile.status != PartFileStatus.resumed){
+    if (await _currentLength(download) == download.maxSplit) {
+      Isolate.current.kill(priority: Isolate.immediate);
+      return;
+    }
+
+    while (await file.exists()) {
+      partFile.updateId(await _currentLength(download));
+      file = File("${partFile.download.path}/${partFile.id}");
+    }
+    file.createSync();
   }
-  file.create();
+
   //need update
   partFile.setPartInDownload();
   partFile.updateStatus(PartFileStatus.downloading);
   int downloaded = 0;
+  downloaded = file.lengthSync();
   if (file.existsSync()) {
     downloaded = file.lengthSync();
     partFile.updateDownloaded(downloaded);
   }
 
-
   int originalLength = partFile.end - partFile.start;
-
 
   value.listen((event) async {
     downloaded += event.length;
@@ -310,7 +328,7 @@ Future<void> _savePart(HttpClientResponse value, PartFile partFile, Download dow
       partFile.updateStatus(PartFileStatus.completed);
       if(downloaded < originalLength) await value.detachSocket();
       subscription.cancel();
-      print("downloadPartCancel ${partFile.id} ${partFile.downloaded} ${partFile.start} ${partFile.end}");
+      print("downloadPartCancel ${partFile.id} ${partFile.downloaded.toHumanReadableSize()} ${partFile.start.toHumanReadableSize()} ${partFile.end.toHumanReadableSize()}");
       Isolate.current.kill(priority: Isolate.immediate);
     }
   });

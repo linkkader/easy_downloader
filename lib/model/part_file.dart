@@ -1,6 +1,5 @@
 // Created by linkkader on 7/10/2022
 
-import 'dart:io';
 import 'dart:isolate';
 import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/storage/block.dart';
@@ -10,12 +9,12 @@ import 'status.dart';
 class  PartFile{
 
   SendPort? sendPort;
-  late Isolate isolate;
+  Isolate isolate;
   late final int _start;
   late int _end;
   int _id = 0;
   int _downloaded = 0;
-  final Download download;
+  Download download;
   PartFileStatus _status = PartFileStatus.downloading;
 
   PartFile({required int start,required int end,required int id, required this.download, required this.isolate}){
@@ -24,16 +23,29 @@ class  PartFile{
     _id = id;
   }
 
-  void setSendPort(SendPort sendPort, {bool updateMainSendPort = false}){
-    if (updateMainSendPort != true)assert(this.sendPort == null);
+  void setSendPort(SendPort sendPort){
+    if(status != PartFileStatus.resumed)assert(this.sendPort == null);
     this.sendPort = sendPort;
   }
+
 
   void setPartInDownload(){
     assert (sendPort != null);
     download.sendPortMainThread.send([SendPortStatus.setPart, this]);
     ///download.incrementCurrent();
   }
+
+  void updateIsolate(Isolate isolate, {fromMainThread = false, fromIsolate = false}){
+    assert (sendPort != null);
+    this.isolate = isolate;
+    if (!fromMainThread)download.sendPortMainThread.send([SendPortStatus.updateIsolate, _id, isolate]);
+  }
+
+  void updateSendPort(SendPort sendPort, {fromMainThread = false, fromIsolate = false}){
+    this.sendPort = sendPort;
+    if (!fromMainThread) download.sendPortMainThread.send([SendPortStatus.updatePartSendPort, _id, sendPort]);
+  }
+
   void updateEnd(int newEnd, {fromMainThread = false, fromIsolate = false}){
     sendPort?.send("updateEnd  $fromMainThread");
     _end = newEnd;
@@ -67,5 +79,5 @@ class  PartFile{
   DownloadBlock toDownloadBlock() => DownloadBlock(_id, _start, _end, _downloaded, _status);
 
 
-  UtilDownload toUtilDownload() => UtilDownload(_start, _end, download, this, id: _id);
+  UtilDownload toUtilDownload({PartFile? previous}) => UtilDownload(_start + downloaded, _end, download, previous ?? this, id: _id);
 }
