@@ -58,12 +58,20 @@ class Download{
   }
 
   //prevent data race for file creation
+  //need dispose
   void currentLength(SendPort sendPort) {
     currentLengthSendPorts.add(sendPort);
     currentLengthTimer ??= Timer.periodic(const Duration(milliseconds: 50), (timer) {
       if (currentLengthSendPorts.isNotEmpty) {
         var sendPort = currentLengthSendPorts.removeAt(0);
-        sendPort.send([SendPortStatus.currentLength, _parts.length]);
+        var length =  _parts.length;
+        for (var part in _parts.values) {
+          if (part.status == PartFileStatus.completed) {
+            length--;
+          }
+        }
+        print("currentLength $length");
+        sendPort.send([SendPortStatus.currentLength, length]);
       }
     });
    }

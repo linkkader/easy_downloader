@@ -68,6 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {});
               },
               blockMonitor: (blocks) {
+                  blocks.sort((a, b) => a.start.compareTo(b.start));
                   for (var block in blocks) {
                     print("block ${block.id} ${block.status}: ${block.downloaded.toHumanReadableSize()} start: ${block.start.toHumanReadableSize()} end: ${block.end.toHumanReadableSize()}");
                   }
