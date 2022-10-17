@@ -39,16 +39,9 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
     }
     if (message is List && message[0] == SendPortStatus.updatePartEnd){
       partFile.updateEnd(message[2], fromIsolate: true);
-      print("kader1");
-      if (await currentLength(download) != -1)
-      {
-        int newStart = partFile.start + (partFile.end - partFile.start) ~/ 2;
-        downloadPart(UtilDownload(newStart, partFile.end, download, partFile), info);
-      }
+      downloadAnotherPart(download, partFile, info);
     }
   });
-
-  print("download782 ");
 
 
   partFile.setSendPort(receivePort.sendPort);
@@ -58,14 +51,9 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
 
   var file = File("${partFile.download.path}/${partFile.id}");
 
-  print("download783 ");
-
   //check if max split is reached
   if (partFile.status != PartFileStatus.resumed){
-    print("download783 length ${await currentLength(download)}");
-
     while (await file.exists()) {
-      print("kader3");
       var id = await currentLength(download);
       if (id == -1) {
         Isolate.current.kill(priority: Isolate.immediate);
@@ -77,15 +65,11 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
     file.createSync();
   }
 
-  print("download784 ");
-
   //need update
   partFile.setPartInDownload();
   partFile.updateStatus(PartFileStatus.downloading);
   int downloaded = 0;
   downloaded = file.lengthSync();
-
-  print("download785 ");
 
   if (file.existsSync()) {
     downloaded = file.lengthSync();
@@ -113,10 +97,20 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
   //update previous part end
   previousPart?.updateEnd(partFile.start);
 
-  print("kader4");
-  if (await currentLength(download) != -1)
-  {
-    int newStart = partFile.start + (partFile.end - partFile.start) ~/ 2;
+  downloadAnotherPart(download, partFile, info);
+  // if (await currentLength(download) != -1)
+  // {
+  //   int newStart = partFile.start + (partFile.end - partFile.start) ~/ 2;
+  //   var util = UtilDownload(newStart, partFile.end, download, partFile);
+  //   downloadPart(util, info);
+  // }
+}
+
+void downloadAnotherPart(Download download, PartFile partFile, DownloadInfo info) async {
+
+
+  if (await currentLength(download) != -1) {
+    int newStart = partFile.start + (partFile.end - partFile.start - partFile.downloaded) ~/ 2;
     var util = UtilDownload(newStart, partFile.end, download, partFile);
     downloadPart(util, info);
   }

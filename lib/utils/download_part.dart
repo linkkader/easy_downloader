@@ -47,7 +47,6 @@ void downloadPartIsolate(UtilDownload util, DownloadInfo info, {PartFile? partFi
         var request = await client.getUrl(Uri.parse(info!.url));
         request.headers.add("Range", 'bytes=${util!.start}-${util!.end}');
         var response = await request.close();
-        print("kader");
         if ((response.contentLength -  (util!.end - util!.start)).abs() < 3
             && (partFile?.status == PartFileStatus.resumed
                 || await currentLength(util!.download) != -1)
