@@ -7,6 +7,7 @@ import '../model/status.dart';
 
 //prevent file creation race condition
 Future<int> currentLength(Download download) async {
+  print("currentLength");
   var receivePort = ReceivePort();
   var completer = Completer<int>();
   download.sendPortMainThread.send([SendPortStatus.currentLength, receivePort.sendPort]);

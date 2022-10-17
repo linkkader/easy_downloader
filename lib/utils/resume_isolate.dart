@@ -34,6 +34,7 @@ ReceivePort resumeIsolate() {
         var util = download!.parts.first.toUtilDownload();
         var partFile = download!.parts.first;
         if (!partFile.mustRetry()){
+          print("canceling subscription");
           subscription.cancel();
           return;
         }
@@ -45,6 +46,8 @@ ReceivePort resumeIsolate() {
         subscription.cancel();
       }
     });
-  }, receivePort.sendPort);
+  }, receivePort.sendPort).then((value) {
+    receivePort.sendPort.send([SendPortStatus.childIsolate, value]);
+  });
   return receivePort;
 }

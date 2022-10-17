@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 import 'package:easy_downloader/utils/download_isolate.dart';
 import 'package:easy_downloader/utils/isolate_listen.dart';
 import 'package:easy_downloader/utils/resume_isolate.dart';
@@ -27,7 +28,6 @@ class DownloadController {
 
 class EasyDownloader {
   late String url;
-  static final HttpClient client = HttpClient();
   Download? _download;
 
   Future<void> download(String url, String path, {DownloadMonitor? monitor, DownloadController? downloadController}) async {
@@ -38,29 +38,26 @@ class EasyDownloader {
     dir.createSync();
     this.url = url;
     var receivePort = downloadIsolate();
-    // var receivePort = _resumeIsolate();
-    var info = DownloadInfo(url, path, client);
-
+    var info = DownloadInfo(url, path);
     isolateListen(receivePort, info, downloadController, _download, monitor, (p0) => _download = p0,);
-
     downloadController?._pause = (){
-      if (_download != null){
-        for(var value in _download!.parts){
-          if (value.status == PartFileStatus.downloading){
-            value.sendPort?.send([SendPortStatus.pausePart]);
-          }
-        }
-      }
+      _download?.pause();
     };
     downloadController?._resume = () async{
       if (_download != null){
         receivePort.close();
-        receivePort = resumeIsolate();
+        _download!.updateStatus(DownloadStatus.downloading);
         for(var value in _download!.parts){
           if (value.mustRetry())value.updateStatus(PartFileStatus.resumed, fromMainThread: true);
         }
+        //receivePort = resumeIsolate();
+        receivePort = ReceivePort();
+
         isolateListen(receivePort, info, downloadController, _download, monitor, (p0) => _download = p0,);
-       }
+
+        //receivePort.sendPort.send(receivePort.sendPort);
+        receivePort.sendPort.send([SendPortStatus.updateMainSendPort, receivePort.sendPort, receivePort.sendPort]);
+      }
     };
   }
 

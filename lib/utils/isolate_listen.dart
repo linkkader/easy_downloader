@@ -8,16 +8,18 @@ import '../model/download_info.dart';
 import '../model/status.dart';
 import '../monitor/download_monitor.dart';
 import '../monitor/monitor.dart';
+import 'download_part.dart';
 
 void isolateListen(ReceivePort receivePort, DownloadInfo info,
     DownloadController? downloadController, Download? download,
     DownloadMonitor? downloadMonitor, Function(Download)? onDownloadUpdate) {
   late DownloadMonitorInside monitor;
   late StreamSubscription subscription;
+  List<Isolate> children = [];
+
   subscription = receivePort.listen((message) {
     if (message is SendPort) {
       message.send(info);
-      message.send(EasyDownloader.client);
     }
     if (message is List) {
       if (message[0] == SendPortStatus.setDownload){
@@ -55,8 +57,29 @@ void isolateListen(ReceivePort receivePort, DownloadInfo info,
           assert(message[2] is SendPort);
           var sendPort = message[2] as SendPort;
           sendPort.send(download);
-          for (var part in download!.parts.sublist(1)){
+          for (var part in download!.parts){
             part.retry(info);
+          }
+          break;
+        }
+        case SendPortStatus.downloadPartIsolate: {
+          //download!.downloadPartIsolate(message[1], info);
+          print(message);
+          downloadPartIsolate(message[1], message[2], partFile: message[3]);
+          break;
+        }
+        case SendPortStatus.childIsolate: {
+          print("child Isolate $message");
+          if (download == null){
+            children.add(message[1]);
+          }else{
+            if (children.isNotEmpty){
+              for (var child in children){
+                download?.addChildren(child);
+              }
+              children.clear();
+            }
+            download?.addChildren(message[1]);
           }
           break;
         }

@@ -10,6 +10,7 @@ class Download{
   final int totalLength;
   final String path;
   final int maxSplit;
+  final List<Isolate> allIsolate = [];
   DownloadStatus _status = DownloadStatus.downloading;
   final Map<int, PartFile> _parts = {};
 
@@ -19,7 +20,13 @@ class Download{
   Download({required this.totalLength,required this.path, required this.maxSplit, required this.sendPortMainThread});
 
   void setPart(PartFile part){
-    if (part.status != PartFileStatus.resumed)assert(_parts[part.id] == null);
+    if (part.status != PartFileStatus.resumed){
+      assert(_parts[part.id] == null);
+    }
+    if (status != DownloadStatus.downloading){
+      part.isolate.kill(priority: Isolate.immediate);
+      return;
+    }
     _parts[part.id] = part;
   }
 
@@ -65,12 +72,18 @@ class Download{
       if (currentLengthSendPorts.isNotEmpty) {
         var sendPort = currentLengthSendPorts.removeAt(0);
         var length =  _parts.length;
+        var downloading = 0;
         for (var part in _parts.values) {
-          if (part.status == PartFileStatus.completed) {
-            length--;
+          if (part.status != PartFileStatus.completed) {
+            downloading++;
           }
         }
-        print("currentLength $length");
+        if (downloading >= maxSplit) {
+          length = -1;
+        }
+        if (status != DownloadStatus.downloading) {
+          length = -1;
+        }
         sendPort.send([SendPortStatus.currentLength, length]);
       }
     });
@@ -85,5 +98,17 @@ class Download{
 
   DownloadStatus get status => _status;
 
+  void pause(){
+    for(var value in parts){
+      if (value.status == PartFileStatus.downloading){
+        value.sendPort?.send([SendPortStatus.pausePart]);
+      }
+      updateStatus(DownloadStatus.paused);
+    }
+  }
+
+  void addChildren(Isolate isolate) {
+    allIsolate.add(isolate);
+  }
 
 }

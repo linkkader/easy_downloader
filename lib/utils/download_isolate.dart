@@ -34,6 +34,8 @@ ReceivePort downloadIsolate() {
         subscription.cancel();
       }
     });
-  }, receivePort.sendPort);
+  }, receivePort.sendPort).then((value) => {
+    receivePort.sendPort.send([SendPortStatus.childIsolate, value])
+  });
   return receivePort;
 }

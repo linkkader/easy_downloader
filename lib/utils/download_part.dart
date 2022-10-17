@@ -3,7 +3,6 @@
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:easy_downloader/extensions/int_extension.dart';
 import 'package:easy_downloader/utils/save_part.dart';
 
 import '../model/download_info.dart';
@@ -13,12 +12,22 @@ import '../model/util_download.dart';
 import 'current_length.dart';
 
 void downloadPart(UtilDownload util, DownloadInfo info, {PartFile? partFile}) async {
+  print(util.previousPart.id);
+  if (util.previousPart.id == 1){
+    util.download.sendPortMainThread.send([SendPortStatus.downloadPartIsolate, util, info, partFile]);
+  }
+  else {
+    util.download.sendPortMainThread.send([SendPortStatus.downloadPartIsolate, util, info, partFile]);
+  }
+}
+
+void downloadPartIsolate(UtilDownload util, DownloadInfo info, {PartFile? partFile}) async{
   ReceivePort port = ReceivePort();
   Isolate.spawn((message) async {
     ReceivePort receivePort = ReceivePort();
     DownloadInfo? info;
     PartFile? partFile;
-
+    var client = HttpClient();
     UtilDownload? util;
     message.send(receivePort.sendPort);
 
@@ -33,34 +42,37 @@ void downloadPart(UtilDownload util, DownloadInfo info, {PartFile? partFile}) as
         partFile ??= message;
       }
 
+      PartFile? previousPart;
       if (util != null && info != null){
-        var request = await message.client.getUrl(Uri.parse(info!.url));
+        var request = await client.getUrl(Uri.parse(info!.url));
         request.headers.add("Range", 'bytes=${util!.start}-${util!.end}');
         var response = await request.close();
+        print("kader");
         if ((response.contentLength -  (util!.end - util!.start)).abs() < 3
             && (partFile?.status == PartFileStatus.resumed
-                || await currentLength(util!.download) < util!.download.maxSplit)
+                || await currentLength(util!.download) != -1)
         )
         {
           //in resume previous is current
           if (partFile == null) {
-            print("part file is updateEnd");
-            util!.previousPart.updateEnd(util!.start);
+            previousPart = util!.previousPart;
+            //util!.previousPart.updateEnd(util!.start);
           }
           partFile ??= PartFile(start: util!.start, end: util!.end,
               id: util!.id ?? await currentLength(util!.download),
               download: util!.download, isolate: Isolate.current);
           savePart(response,
               partFile!,
-              util!.download, info!);
+              util!.download, info!, previousPart: previousPart);
         }
         else{
           Isolate.current.kill(priority: Isolate.immediate);
         }
       }
     });
-  }, port.sendPort);
-
+  }, port.sendPort).then((value) {
+    util.download.sendPortMainThread.send([SendPortStatus.childIsolate, value]);
+  });
   port.listen((message) {
     if (message is SendPort){
       if (partFile != null) message.send(partFile);

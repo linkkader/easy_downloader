@@ -60,7 +60,9 @@ class _MyHomePageState extends State<MyHomePage> {
           MaterialButton(onPressed: () async {
             var path = "${(await getApplicationDocumentsDirectory()).path}/test";
             print(path);
-            var url = "https://speed.hetzner.de/100MB.bin";
+            //var url = "https://speed.hetzner.de/100MB.bin";
+            //10mb
+            var url = "http://speedtest.ftp.otenet.gr/files/test10Mb.db";
             EasyDownloader().download(url, path, monitor: DownloadMonitor(
                 onProgress: (downloaded, total, speed, status) {
                   print("downloaded $status : ${downloaded.toHumanReadableSize()} total: ${total.toHumanReadableSize()} speed: ${speed.toHumanReadableSize()}/s");

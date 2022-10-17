@@ -1,6 +1,7 @@
 // Created by linkkader on 15/10/2022
 
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 import 'package:easy_downloader/extensions/int_extension.dart';
@@ -13,9 +14,15 @@ import '../model/util_download.dart';
 import 'current_length.dart';
 import 'download_part.dart';
 
-Future<void> savePart(HttpClientResponse value, PartFile partFile, Download download, DownloadInfo info) async {
-  print("download78 part ${partFile.start.toHumanReadableSize()} - ${partFile.end.toHumanReadableSize()}  ${partFile.status}");
-  print("download781 ");
+
+//need set this before add previous part
+Future<void> savePart(HttpClientResponse value, PartFile partFile, Download download, DownloadInfo info, {PartFile? previousPart}) async {
+
+  //need set this before add previous part
+  if (partFile.id == -1){
+    Isolate.current.kill(priority: Isolate.immediate);
+    return;
+  }
 
   late StreamSubscription subscription;
   var receivePort = ReceivePort();
@@ -32,7 +39,8 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
     }
     if (message is List && message[0] == SendPortStatus.updatePartEnd){
       partFile.updateEnd(message[2], fromIsolate: true);
-      if (await currentLength(download) < download.maxSplit)
+      print("kader1");
+      if (await currentLength(download) != -1)
       {
         int newStart = partFile.start + (partFile.end - partFile.start) ~/ 2;
         downloadPart(UtilDownload(newStart, partFile.end, download, partFile), info);
@@ -55,15 +63,15 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
   //check if max split is reached
   if (partFile.status != PartFileStatus.resumed){
     print("download783 length ${await currentLength(download)}");
-    if (await currentLength(download) == download.maxSplit) {
-      print("download783 kill isolate length ${await currentLength(download)}");
-
-      Isolate.current.kill(priority: Isolate.immediate);
-      return;
-    }
 
     while (await file.exists()) {
-      partFile.updateId(await currentLength(download));
+      print("kader3");
+      var id = await currentLength(download);
+      if (id == -1) {
+        Isolate.current.kill(priority: Isolate.immediate);
+        return;
+      }
+      partFile.updateId(id);
       file = File("${partFile.download.path}/${partFile.id}");
     }
     file.createSync();
@@ -96,17 +104,20 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
       Isolate.current.kill(priority: Isolate.immediate);
     }
   }).onError((_){
+    log("EasyDownloader: error in part ${partFile.id} $_");
     partFile.updateStatus(PartFileStatus.failed);
     Isolate.current.kill(priority: Isolate.immediate);
   });
+  //util!.previousPart.updateEnd(util!.start);
 
-  print("download786 ");
+  //update previous part end
+  previousPart?.updateEnd(partFile.start);
 
-  if (await currentLength(download) < download.maxSplit)
+  print("kader4");
+  if (await currentLength(download) != -1)
   {
     int newStart = partFile.start + (partFile.end - partFile.start) ~/ 2;
     var util = UtilDownload(newStart, partFile.end, download, partFile);
     downloadPart(util, info);
   }
-
 }
