@@ -41,6 +41,10 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
       partFile.updateEnd(message[2], fromIsolate: true);
       downloadAnotherPart(download, partFile, info);
     }
+    if (message is List && message[0] == SendPortStatus.allowDownloadAnotherPart){
+      //partFile.updateEnd(message[2], fromIsolate: true);
+      downloadAnotherPart(download, partFile, info);
+    }
   });
 
 
@@ -92,25 +96,22 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
     partFile.updateStatus(PartFileStatus.failed);
     Isolate.current.kill(priority: Isolate.immediate);
   });
-  //util!.previousPart.updateEnd(util!.start);
 
   //update previous part end
   previousPart?.updateEnd(partFile.start);
 
   downloadAnotherPart(download, partFile, info);
-  // if (await currentLength(download) != -1)
-  // {
-  //   int newStart = partFile.start + (partFile.end - partFile.start) ~/ 2;
-  //   var util = UtilDownload(newStart, partFile.end, download, partFile);
-  //   downloadPart(util, info);
-  // }
+  //try to download another part
+  // Timer.periodic(const Duration(seconds: 1), (timer) {
+  //   downloadAnotherPart(download, partFile, info);
+  // });
+
 }
 
 void downloadAnotherPart(Download download, PartFile partFile, DownloadInfo info) async {
 
-
-  if (await currentLength(download) != -1) {
-    int newStart = partFile.start + (partFile.end - partFile.start - partFile.downloaded) ~/ 2;
+  int newStart = partFile.start + (partFile.end - partFile.start - partFile.downloaded) ~/ 2;
+  if (partFile.end - newStart >= Download.minimumPartLength && await currentLength(download) != -1){
     var util = UtilDownload(newStart, partFile.end, download, partFile);
     downloadPart(util, info);
   }

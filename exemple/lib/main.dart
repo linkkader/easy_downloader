@@ -41,8 +41,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   var controller = DownloadController();
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,9 +58,18 @@ class _MyHomePageState extends State<MyHomePage> {
           MaterialButton(onPressed: () async {
             var path = "${(await getApplicationDocumentsDirectory()).path}/test";
             print(path);
+            //100mb
             //var url = "https://speed.hetzner.de/100MB.bin";
             //10mb
-            var url = "http://speedtest.ftp.otenet.gr/files/test10Mb.db";
+            //var url = "http://hgd-speedtest-1.tele2.net/10MB.zip";
+            //var url = "http://speedtest.ftp.otenet.gr/files/test10Mb.db";
+            //100mb
+            var url = "http://hgd-speedtest-1.tele2.net/100MB.zip";
+
+            //1mb
+            //var url = "http://speedtest.ftp.otenet.gr/files/test1Mb.db";
+            //2mb
+            //var url = "http://hgd-speedtest-1.tele2.net/2MB.zip";
             EasyDownloader().download(url, path, monitor: DownloadMonitor(
                 onProgress: (downloaded, total, speed, status) {
                   print("downloaded $status : ${downloaded.toHumanReadableSize()} total: ${total.toHumanReadableSize()} speed: ${speed.toHumanReadableSize()}/s");

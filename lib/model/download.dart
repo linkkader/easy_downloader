@@ -6,6 +6,10 @@ import 'package:easy_downloader/model/status.dart';
 import 'part_file.dart';
 
 class Download{
+
+  //minimum length for part is 2MB
+  static const int minimumPartLength = 2 * 1048576;
+
   late SendPort sendPortMainThread;
   final int totalLength;
   final String path;
@@ -60,6 +64,12 @@ class Download{
 
   void updatePartStatus(int id, PartFileStatus value){
     assert(_parts[id] != null);
+    //need optimize sort per max end - start - downloaded
+    if (value == PartFileStatus.completed){
+      for (var part in parts){
+        part.sendPort?.send([SendPortStatus.allowDownloadAnotherPart]);
+      }
+    }
     _parts[id]!.updateStatus(value, fromMainThread: true);
     print("$id $value");
   }

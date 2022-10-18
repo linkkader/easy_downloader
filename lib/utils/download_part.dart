@@ -12,7 +12,6 @@ import '../model/util_download.dart';
 import 'current_length.dart';
 
 void downloadPart(UtilDownload util, DownloadInfo info, {PartFile? partFile}) async {
-  print(util.previousPart.id);
   if (util.previousPart.id == 1){
     util.download.sendPortMainThread.send([SendPortStatus.downloadPartIsolate, util, info, partFile]);
   }
