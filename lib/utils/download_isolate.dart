@@ -24,9 +24,11 @@ ReceivePort downloadIsolate() {
       }
       if (downloadInfo != null) {
         client.getUrl(Uri.parse(downloadInfo!.url))
-            .then((value) => value.close())
+            .then((value) {
+              return value.close();
+            })
             .then((value) async {
-          var download = Download(path: downloadInfo!.path, totalLength: value.contentLength, maxSplit: 8, sendPortMainThread: sendPort);
+             var download = Download(path: downloadInfo!.path, totalLength: value.contentLength, maxSplit: 16, sendPortMainThread: sendPort);
           sendPort.send([SendPortStatus.setDownload, download]);
           var partFile = PartFile(start: 0, end: download.totalLength, id: download.parts.length, download: download, isolate: Isolate.current);
           savePart(value, partFile, download, downloadInfo!);

@@ -75,7 +75,7 @@ void downloadPartIsolate(UtilDownload util, DownloadInfo info, {PartFile? partFi
     if (message is SendPort){
       if (partFile != null) message.send(partFile);
       message.send(util);
-      message.send(info.copyWith(client: HttpClient()));
+      message.send(info.copyWith());
     }
   });
 }

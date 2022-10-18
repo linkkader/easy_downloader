@@ -57,19 +57,19 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           MaterialButton(onPressed: () async {
             var path = "${(await getApplicationDocumentsDirectory()).path}/test";
-            print(path);
-            //100mb
             //var url = "https://speed.hetzner.de/100MB.bin";
+            var url = "https://github.com/linkkader/zanime/releases/download/36/zanime.ipa";
             //10mb
             //var url = "http://hgd-speedtest-1.tele2.net/10MB.zip";
             //var url = "http://speedtest.ftp.otenet.gr/files/test10Mb.db";
             //100mb
-            var url = "http://hgd-speedtest-1.tele2.net/100MB.zip";
+            //var url = "http://hgd-speedtest-1.tele2.net/100MB.zip";
 
             //1mb
             //var url = "http://speedtest.ftp.otenet.gr/files/test1Mb.db";
             //2mb
             //var url = "http://hgd-speedtest-1.tele2.net/2MB.zip";
+            //var url = "http://speedtest.ftp.otenet.gr/files/test10Mb.db";
             EasyDownloader().download(url, path, monitor: DownloadMonitor(
                 onProgress: (downloaded, total, speed, status) {
                   print("downloaded $status : ${downloaded.toHumanReadableSize()} total: ${total.toHumanReadableSize()} speed: ${speed.toHumanReadableSize()}/s");
@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     print("block ${block.id} ${block.status}: ${block.downloaded.toHumanReadableSize()} start: ${block.start.toHumanReadableSize()} end: ${block.end.toHumanReadableSize()}");
                   }
               },
-                duration: const Duration(seconds: 10)),
+                duration: const Duration(seconds: 5)),
                 downloadController: controller,
             );
           }, child: const Text("Download")),
@@ -108,6 +108,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     EasyDownloadNotification.init();
+
+    EasyDownloader().download("", "");
 
     super.initState();
   }

@@ -66,12 +66,20 @@ class Download{
     assert(_parts[id] != null);
     //need optimize sort per max end - start - downloaded
     if (value == PartFileStatus.completed){
-      for (var part in parts){
-        part.sendPort?.send([SendPortStatus.allowDownloadAnotherPart]);
+      //get max diff id
+      var id = -1;
+      var diff = 0;
+      for(var part in _parts.values){
+        if (part.end - part.start - part.downloaded > diff){
+          id = part.id;
+        }
       }
+      //not good
+      // if (id != -1){
+      //   parts[id].sendPort?.send([SendPortStatus.allowDownloadAnotherPart]);
+      // }
     }
     _parts[id]!.updateStatus(value, fromMainThread: true);
-    print("$id $value");
   }
 
   //prevent data race for file creation

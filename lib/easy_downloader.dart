@@ -38,7 +38,7 @@ class EasyDownloader {
     dir.createSync();
     this.url = url;
     var receivePort = downloadIsolate();
-    var info = DownloadInfo(url, path);
+    var info = DownloadInfo(url, path, {});
     isolateListen(receivePort, info, downloadController, _download, monitor, (p0) => _download = p0,);
     downloadController?._pause = (){
       _download?.pause();

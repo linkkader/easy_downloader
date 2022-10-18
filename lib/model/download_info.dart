@@ -5,11 +5,13 @@ import 'dart:io';
 class DownloadInfo {
   final String url;
   final String path;
-  const DownloadInfo(this.url, this.path);
+  final Map<String, String> headers;
+  const DownloadInfo(this.url, this.path, this.headers);
 
   //copy
-  DownloadInfo copyWith({String? url, String? path, HttpClient? client}) => DownloadInfo(
+  DownloadInfo copyWith({String? url, String? path, Map<String, String>? headers}) => DownloadInfo(
     url ?? this.url,
     path ?? this.path,
+    headers ?? this.headers,
   );
 }
