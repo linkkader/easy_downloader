@@ -6,7 +6,7 @@ import 'dart:isolate';
 import 'package:easy_downloader/utils/save_part.dart';
 import '../model/download.dart';
 import '../model/download_info.dart';
-import '../model/status.dart';
+import '../storage/status.dart';
 
 ReceivePort resumeIsolate() {
   ReceivePort receivePort = ReceivePort();

@@ -6,7 +6,7 @@ import 'package:easy_downloader/model/util_download.dart';
 import 'package:easy_downloader/storage/block.dart';
 import 'package:easy_downloader/model/download.dart';
 import '../utils/download_part.dart';
-import 'status.dart';
+import '../storage/status.dart';
 
 class  PartFile{
 

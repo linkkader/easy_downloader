@@ -7,7 +7,7 @@ import 'package:easy_downloader/utils/save_part.dart';
 
 import '../model/download_info.dart';
 import '../model/part_file.dart';
-import '../model/status.dart';
+import '../storage/status.dart';
 import '../model/util_download.dart';
 import 'current_length.dart';
 
@@ -43,8 +43,13 @@ void downloadPartIsolate(UtilDownload util, DownloadInfo info, {PartFile? partFi
 
       PartFile? previousPart;
       if (util != null && info != null){
+        var file = File(info!.path);
+        var length = 0;
+        if (await file.exists()){
+          length = await file.length();
+        }
         var request = await client.getUrl(Uri.parse(info!.url));
-        request.headers.add("Range", 'bytes=${util!.start}-${util!.end}');
+        request.headers.add("Range", 'bytes=${util!.start + length}-${util!.end}');
         var response = await request.close();
         if ((response.contentLength -  (util!.end - util!.start)).abs() < 3
             && (partFile?.status == PartFileStatus.resumed

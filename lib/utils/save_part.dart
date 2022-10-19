@@ -9,7 +9,7 @@ import 'package:easy_downloader/extensions/int_extension.dart';
 import '../model/download.dart';
 import '../model/download_info.dart';
 import '../model/part_file.dart';
-import '../model/status.dart';
+import '../storage/status.dart';
 import '../model/util_download.dart';
 import 'current_length.dart';
 import 'download_part.dart';

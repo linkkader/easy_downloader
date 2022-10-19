@@ -3,12 +3,14 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
+import 'package:easy_downloader/storage/easy_downloader.dart';
+import 'package:easy_downloader/storage/storage_manager.dart';
 import 'package:easy_downloader/utils/download_isolate.dart';
 import 'package:easy_downloader/utils/isolate_listen.dart';
-import 'package:easy_downloader/utils/resume_isolate.dart';
 import 'model/download.dart';
 import 'model/download_info.dart';
-import 'model/status.dart';
+import 'notifications/notification.dart';
+import 'storage/status.dart';
 import 'monitor/download_monitor.dart';
 
 class DownloadController {
@@ -29,6 +31,11 @@ class DownloadController {
 class EasyDownloader {
   late String url;
   Download? _download;
+
+  static Future<void> init() async {
+    await EasyDownloadNotification.init();
+    await StorageManager().init();
+  }
 
   Future<void> download(String url, String path, {DownloadMonitor? monitor, DownloadController? downloadController}) async {
     var dir = Directory(path);
@@ -61,4 +68,5 @@ class EasyDownloader {
     };
   }
 
+  static List<DownloadTask> get tasks => StorageManager.tasks;
 }

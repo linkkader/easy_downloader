@@ -2,7 +2,7 @@
 
 import 'dart:async';
 import '../model/download.dart';
-import '../model/status.dart';
+import '../storage/status.dart';
 import 'download_monitor.dart';
 
 class DownloadMonitorInside {

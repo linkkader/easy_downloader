@@ -5,7 +5,7 @@ import 'dart:isolate';
 import '../easy_downloader.dart';
 import '../model/download.dart';
 import '../model/download_info.dart';
-import '../model/status.dart';
+import '../storage/status.dart';
 import '../monitor/download_monitor.dart';
 import '../monitor/monitor.dart';
 import 'download_part.dart';
@@ -18,7 +18,7 @@ void isolateListen(ReceivePort receivePort, DownloadInfo info,
   late StreamSubscription subscription;
   List<Isolate> children = [];
 
-  subscription = receivePort.listen((message) {
+  subscription = receivePort.listen((message) async {
     if (message is SendPort) {
       message.send(info);
     }
@@ -26,6 +26,10 @@ void isolateListen(ReceivePort receivePort, DownloadInfo info,
       if (message[0] == SendPortStatus.setDownload){
         download = message[1];
         onDownloadUpdate?.call(download!);
+        await download!.save();
+        var sendPort = message[2] as SendPort;
+        print("sendPort now ${download!.downloadId}");
+        sendPort.send(message[3]);
         monitor = DownloadMonitorInside(download!, downloadMonitor: downloadMonitor);
         monitor.monitor();
       }

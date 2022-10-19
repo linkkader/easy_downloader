@@ -1,10 +1,10 @@
 
-import 'package:easy_downloader/model/status.dart';
+import 'package:easy_downloader/storage/status.dart';
 import 'package:hive/hive.dart';
 
 part 'block.g.dart';
 
-@HiveType(typeId: 45328)
+@HiveType(typeId: 102)
 class DownloadBlock{
   @HiveField(0)
   final int start;

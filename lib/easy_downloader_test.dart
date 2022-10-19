@@ -9,8 +9,8 @@ import 'package:easy_downloader/monitor/download_monitor.dart';
 import 'package:easy_downloader/monitor/monitor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'model/status.dart';
-import 'model/status.dart';
+import 'storage/status.dart';
+import 'storage/status.dart';
 
 
 

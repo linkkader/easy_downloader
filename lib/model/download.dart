@@ -2,14 +2,16 @@
 
 import 'dart:async';
 import 'dart:isolate';
-import 'package:easy_downloader/model/status.dart';
+import 'package:easy_downloader/storage/status.dart';
+import 'package:easy_downloader/storage/easy_downloader.dart';
+import 'package:easy_downloader/storage/storage_manager.dart';
 import 'part_file.dart';
 
 class Download{
 
   //minimum length for part is 2MB
   static const int minimumPartLength = 2 * 1048576;
-
+  int _downloadId = -1;
   late SendPort sendPortMainThread;
   final int totalLength;
   final String path;
@@ -32,26 +34,31 @@ class Download{
       return;
     }
     _parts[part.id] = part;
+    update();
   }
 
   void updatePartDownloaded(int id, int value){
     assert(_parts[id] != null);
     _parts[id]!.updateDownloaded(value, fromMainThread: true);
+    update();
   }
 
   void updatePartEnd(int id, int value){
     assert(_parts[id] != null);
     _parts[id]!.updateEnd(value, fromMainThread: true);
+    update();
   }
 
   void updatePartIsolate(int id, Isolate value){
     assert(_parts[id] != null);
     _parts[id]!.updateIsolate(value, fromMainThread: true);
+    update();
   }
 
   void updatePartSendPort(int id, SendPort value){
     assert(_parts[id] != null);
     _parts[id]!.updateSendPort(value, fromMainThread: true);
+    update();
   }
 
   // never call in child isolate
@@ -60,6 +67,7 @@ class Download{
     for(var part in _parts.values){
        part.download = this;
     }
+    update();
   }
 
   void updatePartStatus(int id, PartFileStatus value){
@@ -80,6 +88,7 @@ class Download{
       // }
     }
     _parts[id]!.updateStatus(value, fromMainThread: true);
+    update();
   }
 
   //prevent data race for file creation
@@ -112,6 +121,7 @@ class Download{
 
   void updateStatus(DownloadStatus status) {
     _status = status;
+    update();
   }
 
   DownloadStatus get status => _status;
@@ -129,4 +139,29 @@ class Download{
     allIsolate.add(isolate);
   }
 
+  Future<void> save() async {
+    _downloadId  = await StorageManager().add(_toDownloadTask());
+  }
+
+  DownloadTask _toDownloadTask() {
+    var downloaded = 0;
+    for(var part in parts){
+      downloaded += part.downloaded;
+    }
+    return DownloadTask(
+        _downloadId, totalLength,
+        path,
+        maxSplit,
+        status,
+        parts.map((e) => e.toDownloadBlock()).toList(),
+        downloaded
+    );
+  }
+
+  void update() {
+    assert(-1 != _downloadId);
+    StorageManager().update(_downloadId, _toDownloadTask());
+  }
+
+  int get downloadId => _downloadId;
 }

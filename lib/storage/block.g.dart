@@ -8,7 +8,7 @@ part of 'block.dart';
 
 class DownloadBlockAdapter extends TypeAdapter<DownloadBlock> {
   @override
-  final int typeId = 45328;
+  final int typeId = 102;
 
   @override
   DownloadBlock read(BinaryReader reader) {

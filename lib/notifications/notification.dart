@@ -1,5 +1,6 @@
 // Created by linkkader on 11/10/2022
 
+import 'package:easy_downloader/storage/storage_manager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class EasyDownloadNotification {

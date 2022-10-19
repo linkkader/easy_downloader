@@ -3,7 +3,7 @@
 import 'dart:async';
 import 'dart:isolate';
 import '../model/download.dart';
-import '../model/status.dart';
+import '../storage/status.dart';
 
 //prevent file creation race condition
 Future<int> currentLength(Download download) async {
