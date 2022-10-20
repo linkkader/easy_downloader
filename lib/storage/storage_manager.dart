@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:easy_downloader/storage/status.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path;
 import 'block.dart';
@@ -50,4 +51,8 @@ class StorageManager{
   }
 
   static List<DownloadTask> get tasks => _box.values.toList();
+
+  static DownloadTask? getTask(int key) => _box.get(key);
+
+  static Box<DownloadTask> get box => _box;
 }

@@ -9,6 +9,10 @@ import 'part_file.dart';
 
 class Download{
 
+  final Map<String, String> headers;
+  final String tempPath;
+  final String filename;
+
   //minimum length for part is 2MB
   static const int minimumPartLength = 2 * 1048576;
   int _downloadId = -1;
@@ -23,7 +27,14 @@ class Download{
   Timer? currentLengthTimer;
   List<SendPort> currentLengthSendPorts = [];
 
-  Download({required this.totalLength,required this.path, required this.maxSplit, required this.sendPortMainThread});
+  Download({
+    required this.totalLength,
+    required this.path,
+    required this.maxSplit, required this.sendPortMainThread,
+    required this.headers,
+    required this.tempPath,
+    required this.filename
+  });
 
   void setPart(PartFile part){
     if (part.status != PartFileStatus.resumed){
@@ -88,6 +99,10 @@ class Download{
       // }
     }
     _parts[id]!.updateStatus(value, fromMainThread: true);
+    var ss = parts;
+    if (ss.isNotEmpty && ss.every((element) => element.status == PartFileStatus.completed)) {
+      updateStatus(DownloadStatus.completed);
+    }
     update();
   }
 
@@ -139,8 +154,9 @@ class Download{
     allIsolate.add(isolate);
   }
 
-  Future<void> save() async {
+  Future<int> save() async {
     _downloadId  = await StorageManager().add(_toDownloadTask());
+    return _downloadId;
   }
 
   DownloadTask _toDownloadTask() {
@@ -149,12 +165,15 @@ class Download{
       downloaded += part.downloaded;
     }
     return DownloadTask(
-        _downloadId, totalLength,
-        path,
-        maxSplit,
-        status,
-        parts.map((e) => e.toDownloadBlock()).toList(),
-        downloaded
+      _downloadId, totalLength,
+      path,
+      maxSplit,
+      status,
+      parts.map((e) => e.toDownloadBlock()).toList(),
+      downloaded,
+      tempPath,
+      filename,
+      headers,
     );
   }
 

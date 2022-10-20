@@ -26,20 +26,20 @@ void main() {
     //100MB
     //url = "https://raw.githubusercontent.com/yourkin/fileupload-fastapi/a85a697cab2f887780b3278059a0dd52847d80f3/tests/data/test-10mb.bin";
     Stopwatch stopwatch = Stopwatch()..start();
-    EasyDownloader().download(url, "",
-        monitor: DownloadMonitor(
-          duration: const Duration(seconds: 2),
-          blockMonitor: (blocks) {
-
-          },
-          onProgress: (downloaded, total, speed, status) {
-            print("downloaded $status ${DownloadStatus.completed}: ${downloaded.toHumanReadableSize()} total: ${total.toHumanReadableSize()} speed: ${speed.toHumanReadableSize()}/s");
-            if (status <= DownloadStatus.completed) {
-              print("download completed in ${stopwatch.elapsedMilliseconds} ms");
-              completer.complete();
-            }},
-        ));
-    await completer.future;
+    // EasyDownloader().download(url, "",
+    //     monitor: DownloadMonitor(
+    //       duration: const Duration(seconds: 2),
+    //       blockMonitor: (blocks) {
+    //
+    //       },
+    //       onProgress: (downloaded, total, speed, status) {
+    //         print("downloaded $status ${DownloadStatus.completed}: ${downloaded.toHumanReadableSize()} total: ${total.toHumanReadableSize()} speed: ${speed.toHumanReadableSize()}/s");
+    //         if (status <= DownloadStatus.completed) {
+    //           print("download completed in ${stopwatch.elapsedMilliseconds} ms");
+    //           completer.complete();
+    //         }},
+    //     ));
+    // await completer.future;
     print("download completed in ${stopwatch.elapsedMilliseconds} ms");
   });
 }

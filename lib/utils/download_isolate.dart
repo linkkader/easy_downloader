@@ -28,15 +28,27 @@ ReceivePort downloadIsolate() {
         downloadInfo ??= message;
         client.getUrl(Uri.parse(downloadInfo!.url))
             .then((value) {
+              downloadInfo!.headers.forEach((k, v) {
+                value.headers.add(k, v);
+              });
               return value.close();
             })
             .then((value) async {
-              var download = Download(path: downloadInfo!.path, totalLength: value.contentLength, maxSplit: 16, sendPortMainThread: sendPort);
+              var download = Download(
+                path: downloadInfo!.path,
+                totalLength: value.contentLength,
+                maxSplit: 8,
+                sendPortMainThread: sendPort,
+                filename: downloadInfo!.filename,
+                headers: downloadInfo!.headers,
+                tempPath: downloadInfo!.tempPath,
+              );
               sendPort.send([SendPortStatus.setDownload, download, receivePort.sendPort, completer]);
               await completer.future;
               print("lest go");
               var partFile = PartFile(start: 0, end: download.totalLength, id: download.parts.length, download: download, isolate: Isolate.current);
               savePart(value, partFile, download, downloadInfo!);
+              subscription.cancel();
         });
         // subscription.cancel();
       }

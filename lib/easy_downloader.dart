@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'package:easy_downloader/storage/easy_downloader.dart';
 import 'package:easy_downloader/storage/storage_manager.dart';
+import 'package:easy_downloader/utils/append_file.dart' as append;
 import 'package:easy_downloader/utils/download_isolate.dart';
 import 'package:easy_downloader/utils/isolate_listen.dart';
 import 'model/download.dart';
@@ -29,7 +30,6 @@ class DownloadController {
 }
 
 class EasyDownloader {
-  late String url;
   Download? _download;
 
   static Future<void> init() async {
@@ -37,20 +37,22 @@ class EasyDownloader {
     await StorageManager().init();
   }
 
-  Future<void> download(String url, String path, {DownloadMonitor? monitor, DownloadController? downloadController}) async {
-    var dir = Directory(path);
+  Future<int> download(String url, String path, String filename, {DownloadMonitor? monitor, DownloadController? downloadController, Map<String, String>? headers}) async {
+    var controller = DownloadController();
+    var completer = Completer<int>();
+    var dir = Directory("$path/.easy_downloader$filename");
     if (dir.existsSync()) {
       dir.deleteSync(recursive: true);
     }
-    dir.createSync();
-    this.url = url;
+    print(dir.path);
+    dir.createSync(recursive: true);
     var receivePort = downloadIsolate();
-    var info = DownloadInfo(url, path, {});
-    isolateListen(receivePort, info, downloadController, _download, monitor, (p0) => _download = p0,);
-    downloadController?._pause = (){
+    var info = DownloadInfo(url, path, headers ?? {}, filename, dir.path);
+    isolateListen(receivePort, info, _download, monitor, completer, (p0) => _download = p0,);
+    controller._pause = (){
       _download?.pause();
     };
-    downloadController?._resume = () async{
+    controller._resume = () async{
       if (_download != null){
         receivePort.close();
         _download!.updateStatus(DownloadStatus.downloading);
@@ -60,13 +62,20 @@ class EasyDownloader {
         //receivePort = resumeIsolate();
         receivePort = ReceivePort();
 
-        isolateListen(receivePort, info, downloadController, _download, monitor, (p0) => _download = p0,);
+        isolateListen(receivePort, info, _download, monitor, completer, (p0) => _download = p0,);
 
         //receivePort.sendPort.send(receivePort.sendPort);
         receivePort.sendPort.send([SendPortStatus.updateMainSendPort, receivePort.sendPort, receivePort.sendPort]);
       }
     };
+
+    var id = await completer.future;
+    return completer.future;
   }
 
   static List<DownloadTask> get tasks => StorageManager.tasks;
+
+  static appendFile(DownloadTask task) => append.appendFile(task);
+
+
 }

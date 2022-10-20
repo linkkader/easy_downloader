@@ -4,8 +4,6 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
-import 'package:easy_downloader/extensions/int_extension.dart';
-
 import '../model/download.dart';
 import '../model/download_info.dart';
 import '../model/part_file.dart';
@@ -53,7 +51,7 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
   //download.sendPortMainThread.send([SendPortStatus.currentLength, receivePort.sendPort]);
 
 
-  var file = File("${partFile.download.path}/${partFile.id}");
+  var file = File("${partFile.download.tempPath}/${partFile.id}");
 
   //check if max split is reached
   if (partFile.status != PartFileStatus.resumed){
@@ -64,7 +62,7 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
         return;
       }
       partFile.updateId(id);
-      file = File("${partFile.download.path}/${partFile.id}");
+      file = File("${partFile.download.tempPath}/${partFile.id}");
     }
     file.createSync();
   }

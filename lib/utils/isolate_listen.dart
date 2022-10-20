@@ -12,12 +12,13 @@ import 'download_part.dart';
 
 
 void isolateListen(ReceivePort receivePort, DownloadInfo info,
-    DownloadController? downloadController, Download? download,
-    DownloadMonitor? downloadMonitor, Function(Download)? onDownloadUpdate) {
+    Download? download,
+    DownloadMonitor? downloadMonitor,
+    Completer<int> completer,
+    Function(Download)? onDownloadUpdate) {
   late DownloadMonitorInside monitor;
   late StreamSubscription subscription;
   List<Isolate> children = [];
-
   subscription = receivePort.listen((message) async {
     if (message is SendPort) {
       message.send(info);
@@ -26,7 +27,8 @@ void isolateListen(ReceivePort receivePort, DownloadInfo info,
       if (message[0] == SendPortStatus.setDownload){
         download = message[1];
         onDownloadUpdate?.call(download!);
-        await download!.save();
+        var id = await download!.save();
+        completer.complete(id) ;
         var sendPort = message[2] as SendPort;
         print("sendPort now ${download!.downloadId}");
         sendPort.send(message[3]);

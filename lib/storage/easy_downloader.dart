@@ -21,9 +21,23 @@ class DownloadTask{
   final int downloaded;
   @HiveField(6)
   final List<DownloadBlock> blocks;
-  const DownloadTask(this.downloadId, this.totalLength, this.path, this.maxSplit, this.status, this.blocks, this.downloaded);
+  @HiveField(8)
+  final String filename;
+  @HiveField(9)
+  final String tempPath;
+  @HiveField(10)
+  final Map<String, String> headers;
+  const DownloadTask(
+      this.downloadId, this.totalLength,
+      this.path, this.maxSplit, this.status,
+      this.blocks, this.downloaded,
+      this.tempPath, this.filename, this.headers);
 
-  DownloadTask copyWith({int? downloadId, int? totalLength, String? path, int? maxSplit, DownloadStatus? status, List<DownloadBlock>? blocks, int? downloaded}){
+  DownloadTask copyWith({
+    int? downloadId, int? totalLength, String? path,
+    int? maxSplit, DownloadStatus? status, List<DownloadBlock>? blocks, int? downloaded,
+    String? tempPath, String? filename, Map<String, String>? headers
+  }){
     return DownloadTask(
       downloadId ?? this.downloadId,
       totalLength ?? this.totalLength,
@@ -32,6 +46,9 @@ class DownloadTask{
       status ?? this.status,
       blocks ?? this.blocks,
       downloaded ?? this.downloaded,
+      tempPath ?? this.tempPath,
+      filename ?? this.filename,
+      headers ?? this.headers
     );
   }
   

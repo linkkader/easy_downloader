@@ -22,9 +22,7 @@ class DownloadMonitorInside {
     Duration duration = const Duration(seconds: 1);
     if (downloadMonitor!.duration != null) duration = downloadMonitor!.duration!;
     timer = Timer.periodic(duration, (timer) {
-      if (download.parts.isNotEmpty && download.parts.every((element) => element.status == PartFileStatus.completed)) {
-        download.updateStatus(DownloadStatus.completed);
-      }
+
       if (download.parts.isNotEmpty) {
         downloadMonitor?.blockMonitor?.call(List.generate(download.parts.length, (index) => download.parts[index].toDownloadBlock()));
       }
