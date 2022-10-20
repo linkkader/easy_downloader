@@ -35,7 +35,7 @@ enum SendPortStatus {
   @HiveField(0)
   setDownload,
   @HiveField(1)
-  updateMainSendPort,
+  updateMainSendPort1,
   @HiveField(2)
   updatePartDownloaded,
   @HiveField(3)
@@ -57,5 +57,6 @@ enum SendPortStatus {
   @HiveField(11)
   childIsolate,
   @HiveField(12)
-  allowDownloadAnotherPart
+  allowDownloadAnotherPart,
+  stop
 }

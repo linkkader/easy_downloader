@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:isolate';
+import 'package:easy_downloader/extensions/int_extension.dart';
 import 'package:easy_downloader/storage/status.dart';
 import 'package:easy_downloader/storage/easy_downloader.dart';
 import 'package:easy_downloader/storage/storage_manager.dart';
@@ -148,6 +149,11 @@ class Download{
       }
       updateStatus(DownloadStatus.paused);
     }
+    ()async{
+      //need wait isolate kill and update status
+      await 1.sleep();
+      sendPortMainThread.send([SendPortStatus.stop]);
+    }();
   }
 
   void addChildren(Isolate isolate) {

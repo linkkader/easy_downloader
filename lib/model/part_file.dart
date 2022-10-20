@@ -86,7 +86,9 @@ class  PartFile{
   bool mustRetry() => status == PartFileStatus.failed || status == PartFileStatus.resumed || status == PartFileStatus.paused;
 
   void retry(DownloadInfo info){
+    print("retrying part $_id with status $_status");
     if (mustRetry()){
+      print("retrying2 part $_id");
       downloadPart(toUtilDownload(), info, partFile: this);
     }
   }

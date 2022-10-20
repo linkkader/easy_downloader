@@ -11,14 +11,21 @@ import '../monitor/monitor.dart';
 import 'download_part.dart';
 
 
-void isolateListen(ReceivePort receivePort, DownloadInfo info,
-    Download? download,
+void isolateListen(
+    ReceivePort receivePort,
+    DownloadInfo info,
     DownloadMonitor? downloadMonitor,
-    Completer<int> completer,
+    Download? download,
     Function(Download)? onDownloadUpdate) {
-  late DownloadMonitorInside monitor;
+  DownloadMonitorInside? monitor;
   late StreamSubscription subscription;
   List<Isolate> children = [];
+
+  if (download != null){
+    monitor = DownloadMonitorInside(download, downloadMonitor: downloadMonitor);
+    monitor.monitor();
+
+  }
   subscription = receivePort.listen((message) async {
     if (message is SendPort) {
       message.send(info);
@@ -26,14 +33,13 @@ void isolateListen(ReceivePort receivePort, DownloadInfo info,
     if (message is List) {
       if (message[0] == SendPortStatus.setDownload){
         download = message[1];
+        await download!.save();
         onDownloadUpdate?.call(download!);
-        var id = await download!.save();
-        completer.complete(id) ;
         var sendPort = message[2] as SendPort;
         print("sendPort now ${download!.downloadId}");
         sendPort.send(message[3]);
         monitor = DownloadMonitorInside(download!, downloadMonitor: downloadMonitor);
-        monitor.monitor();
+        monitor?.monitor();
       }
       switch(message[0])
       {
@@ -58,17 +64,23 @@ void isolateListen(ReceivePort receivePort, DownloadInfo info,
           download!.currentLength(message[1]);
           break;
         }
-      //on resume need
-        case SendPortStatus.updateMainSendPort: {
-          download!.updateMainSendPort(message[1]);
-          assert(message[2] is SendPort);
-          var sendPort = message[2] as SendPort;
-          sendPort.send(download);
-          for (var part in download!.parts){
-            part.retry(info);
-          }
-          break;
-        }
+      // //on resume need
+      //   case SendPortStatus.updateMainSendPort: {
+      //     if (message[2] != null && message[2] is Download){
+      //       download = message[2];
+      //       monitor = DownloadMonitorInside(download!, downloadMonitor: downloadMonitor);
+      //       monitor?.monitor();
+      //     }
+      //     download!.updateMainSendPort(message[1]);
+      //     assert(message[1] is SendPort);
+      //     var sendPort = message[1] as SendPort;
+      //     sendPort.send(download);
+      //     for (var part in download!.parts){
+      //       part.retry(info);
+      //     }
+      //
+      //     break;
+      //   }
         case SendPortStatus.downloadPartIsolate: {
           //download!.downloadPartIsolate(message[1], info);
           print(message);
@@ -76,18 +88,21 @@ void isolateListen(ReceivePort receivePort, DownloadInfo info,
           break;
         }
         case SendPortStatus.childIsolate: {
-          print("child Isolate $message");
           if (download == null){
             children.add(message[1]);
           }else{
-            if (children.isNotEmpty){
-              for (var child in children){
-                download?.addChildren(child);
-              }
-              children.clear();
+            for(var isolate in children){
+              download!.addChildren(isolate);
             }
-            download?.addChildren(message[1]);
+            children.clear();
+            download!.addChildren(message[1]);
           }
+          break;
+        }
+        case SendPortStatus.stop: {
+          print("stop78");
+          monitor?.dispose();
+          subscription.cancel();
           break;
         }
       }

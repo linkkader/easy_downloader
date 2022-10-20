@@ -30,7 +30,8 @@ class DownloadController {
 }
 
 class EasyDownloader {
-  Download? _download;
+
+  static final Map<int, DownloadController> _controllers = {};
 
   static Future<void> init() async {
     await EasyDownloadNotification.init();
@@ -38,6 +39,7 @@ class EasyDownloader {
   }
 
   Future<int> download(String url, String path, String filename, {DownloadMonitor? monitor, DownloadController? downloadController, Map<String, String>? headers}) async {
+    Download? download;
     var controller = DownloadController();
     var completer = Completer<int>();
     var dir = Directory("$path/.easy_downloader$filename");
@@ -48,32 +50,49 @@ class EasyDownloader {
     dir.createSync(recursive: true);
     var receivePort = downloadIsolate();
     var info = DownloadInfo(url, path, headers ?? {}, filename, dir.path);
-    isolateListen(receivePort, info, _download, monitor, completer, (p0) => _download = p0,);
+    isolateListen(receivePort, info, monitor, download, (p0) {
+      download = p0;
+      _controllers[download!.downloadId] = controller;
+      if (downloadController != null) {
+        downloadController._pause = controller._pause;
+        downloadController._resume = controller._resume;
+      }
+      completer.complete(download!.downloadId);
+    });
     controller._pause = (){
-      _download?.pause();
+      assert(download != null);
+      print("pause");
+      download!.pause();
     };
     controller._resume = () async{
-      if (_download != null){
-        receivePort.close();
-        _download!.updateStatus(DownloadStatus.downloading);
-        for(var value in _download!.parts){
-          if (value.mustRetry())value.updateStatus(PartFileStatus.resumed, fromMainThread: true);
-        }
-        //receivePort = resumeIsolate();
-        receivePort = ReceivePort();
-
-        isolateListen(receivePort, info, _download, monitor, completer, (p0) => _download = p0,);
-
-        //receivePort.sendPort.send(receivePort.sendPort);
-        receivePort.sendPort.send([SendPortStatus.updateMainSendPort, receivePort.sendPort, receivePort.sendPort]);
+      assert(download != null);
+      receivePort.close();
+      download!.updateStatus(DownloadStatus.downloading);
+      print("resume ${download!.parts.length}");
+      for(var value in download!.parts){
+        if (value.mustRetry())value.updateStatus(PartFileStatus.resumed, fromMainThread: true);
       }
+      //receivePort = resumeIsolate();
+      receivePort = ReceivePort();
+      //receivePort.sendPort.send(receivePort.sendPort);
+
+      download!.updateMainSendPort(receivePort.sendPort);
+      isolateListen(receivePort, info, monitor, download, (p0) => download = p0,);
+      for (var part in download!.parts){
+        part.retry(info);
+      }
+      //receivePort.sendPort.send([SendPortStatus.updateMainSendPort, receivePort.sendPort, download]);
+
     };
 
-    var id = await completer.future;
     return completer.future;
   }
 
   static List<DownloadTask> get tasks => StorageManager.tasks;
+
+  static DownloadController? getController(int id) {
+    return _controllers[id];
+  }
 
   static appendFile(DownloadTask task) => append.appendFile(task);
 

@@ -119,7 +119,7 @@ class SendPortStatusAdapter extends TypeAdapter<SendPortStatus> {
       case 0:
         return SendPortStatus.setDownload;
       case 1:
-        return SendPortStatus.updateMainSendPort;
+        return SendPortStatus.updateMainSendPort1;
       case 2:
         return SendPortStatus.updatePartDownloaded;
       case 3:
@@ -153,7 +153,7 @@ class SendPortStatusAdapter extends TypeAdapter<SendPortStatus> {
       case SendPortStatus.setDownload:
         writer.writeByte(0);
         break;
-      case SendPortStatus.updateMainSendPort:
+      case SendPortStatus.updateMainSendPort1:
         writer.writeByte(1);
         break;
       case SendPortStatus.updatePartDownloaded:

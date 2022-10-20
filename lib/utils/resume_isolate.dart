@@ -7,7 +7,7 @@ import 'package:easy_downloader/utils/save_part.dart';
 import '../model/download.dart';
 import '../model/download_info.dart';
 import '../storage/status.dart';
-
+///stop
 ReceivePort resumeIsolate() {
   ReceivePort receivePort = ReceivePort();
   Isolate.spawn((message) {
@@ -17,7 +17,7 @@ ReceivePort resumeIsolate() {
     var sendPort = message;
     var receivePort = ReceivePort();
     sendPort.send(receivePort.sendPort);
-    sendPort.send([SendPortStatus.updateMainSendPort, sendPort, receivePort.sendPort]);
+    //sendPort.send([SendPortStatus.updateMainSendPort, sendPort, receivePort.sendPort]);
     late StreamSubscription subscription;
     subscription = receivePort.listen((message) async {
       if (message is DownloadInfo) {
