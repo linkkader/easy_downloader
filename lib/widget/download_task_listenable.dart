@@ -14,11 +14,10 @@ class EasyDownloadTaskListenable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     StorageManager.box.listenable();
-    return Container();
-    // return ValueListenableBuilder(valueListenable: StorageManager.box.listenable(keys: [downloadId]), builder: (context, Box<DownloadTask> box, child) {
-    //   var task = box.get(downloadId);
-    //   assert(task != null);
-    //   return builder(context, task!, EasyDownloader.getController(downloadId));
-    // });
+    return ValueListenableBuilder(valueListenable: StorageManager.box.listenable(keys: [downloadId]), builder: (context, Box<DownloadTask> box, child) {
+      var task = box.get(downloadId);
+      assert(task != null);
+      return builder(context, task!, EasyDownloader.getController(downloadId));
+    });
   }
 }
