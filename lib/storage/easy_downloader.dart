@@ -1,9 +1,14 @@
 // Created by linkkader on 12/10/2022
 
+import 'dart:isolate';
+import 'package:easy_downloader/easy_downloader.dart';
+import 'package:easy_downloader/model/download.dart';
 import 'package:easy_downloader/storage/block.dart';
 import 'package:hive/hive.dart';
 import 'status.dart';
+
 part 'easy_downloader.g.dart';
+
 
 @HiveType(typeId: 101)
 class DownloadTask{
@@ -27,18 +32,23 @@ class DownloadTask{
   final String tempPath;
   @HiveField(10)
   final Map<String, String> headers;
+  @HiveField(11)
+  final String url;
   const DownloadTask(
+      this.url,
       this.downloadId, this.totalLength,
       this.path, this.maxSplit, this.status,
       this.blocks, this.downloaded,
       this.tempPath, this.filename, this.headers);
 
   DownloadTask copyWith({
+    String? url,
     int? downloadId, int? totalLength, String? path,
     int? maxSplit, DownloadStatus? status, List<DownloadBlock>? blocks, int? downloaded,
     String? tempPath, String? filename, Map<String, String>? headers
   }){
     return DownloadTask(
+      url ?? this.url,
       downloadId ?? this.downloadId,
       totalLength ?? this.totalLength,
       path ?? this.path,
@@ -52,4 +62,32 @@ class DownloadTask{
     );
   }
   
+  Download toDownload(SendPort sendPort){
+    return Download(
+      tempPath: tempPath,
+      headers: headers,
+      filename: filename,
+      maxSplit: maxSplit,
+      path: path,
+      sendPortMainThread: sendPort,
+      totalLength: totalLength,
+      downloadId: downloadId,
+    );
+  }
+
+  Task toTask(){
+    return Task(
+      url,
+      downloadId,
+      totalLength,
+      path,
+      maxSplit,
+      status,
+      blocks,
+      downloaded,
+      tempPath,
+      filename,
+      headers
+    );
+  }
 }

@@ -35,8 +35,11 @@ class Download{
     required this.maxSplit, required this.sendPortMainThread,
     required this.headers,
     required this.tempPath,
-    required this.filename
-  });
+    required this.filename,
+    required int downloadId,
+  }){
+    _downloadId = downloadId;
+  }
 
   void setPart(PartFile part){
     if (part.status != PartFileStatus.resumed){
@@ -149,9 +152,8 @@ class Download{
     allIsolate.add(isolate);
   }
 
-  Future<int> save() async {
-    _downloadId  = await StorageManager().add(_toDownloadTask());
-    return _downloadId;
+  Future<void> save() async {
+    await StorageManager().add(_toDownloadTask());
   }
 
   DownloadTask _toDownloadTask() {
@@ -160,6 +162,7 @@ class Download{
       downloaded += part.downloaded;
     }
     return DownloadTask(
+      "",
       _downloadId, totalLength,
       path,
       maxSplit,

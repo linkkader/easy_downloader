@@ -30,12 +30,10 @@ class StorageManager{
   }
 
   //add
-  Future<int> add(DownloadTask easyDownloader) async {
+  Future add(DownloadTask easyDownloader) async {
     assert(_isInit, "StorageManager not initialized");
-    var key = await _box.add(easyDownloader);
-    await _box.put(key, easyDownloader.copyWith(downloadId: key));
-    assert(key != -1);
-    return key;
+    await _box.put(easyDownloader.downloadId, easyDownloader);
+    assert(easyDownloader.downloadId != -1);
   }
 
   //delete

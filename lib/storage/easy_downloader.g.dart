@@ -17,6 +17,7 @@ class DownloadTaskAdapter extends TypeAdapter<DownloadTask> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return DownloadTask(
+      fields[11] as String,
       fields[0] as int,
       fields[1] as int,
       fields[3] as String,
@@ -33,7 +34,7 @@ class DownloadTaskAdapter extends TypeAdapter<DownloadTask> {
   @override
   void write(BinaryWriter writer, DownloadTask obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.downloadId)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class DownloadTaskAdapter extends TypeAdapter<DownloadTask> {
       ..writeByte(9)
       ..write(obj.tempPath)
       ..writeByte(10)
-      ..write(obj.headers);
+      ..write(obj.headers)
+      ..writeByte(11)
+      ..write(obj.url);
   }
 
   @override

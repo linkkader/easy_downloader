@@ -4,6 +4,8 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
+import 'package:easy_downloader/easy_downloader.dart';
+
 import '../model/download.dart';
 import '../model/download_info.dart';
 import '../model/part_file.dart';
@@ -14,7 +16,7 @@ import 'download_part.dart';
 
 
 //need set this before add previous part
-Future<void> savePart(HttpClientResponse value, PartFile partFile, Download download, DownloadInfo info, {PartFile? previousPart}) async {
+Future<void> savePart(HttpClientResponse value, PartFile partFile, Download download, Task info, {PartFile? previousPart}) async {
 
   //need set this before add previous part
   if (partFile.id == -1){
@@ -64,7 +66,7 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
       partFile.updateId(id);
       file = File("${partFile.download.tempPath}/${partFile.id}");
     }
-    file.createSync();
+    file.createSync(recursive: true);
   }
 
   //need update
@@ -106,7 +108,7 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile, Download down
 
 }
 
-void downloadAnotherPart(Download download, PartFile partFile, DownloadInfo info) async {
+void downloadAnotherPart(Download download, PartFile partFile, Task info) async {
 
   int newStart = partFile.start + (partFile.end - partFile.start - partFile.downloaded) ~/ 2;
   if (partFile.end - newStart >= Download.minimumPartLength && await currentLength(download) != -1){

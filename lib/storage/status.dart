@@ -15,7 +15,9 @@ enum DownloadStatus {
   @HiveField(3)
   failed,
   @HiveField(4)
-  appending
+  appending,
+  @HiveField(5)
+  queuing
 }
 
 @HiveType(typeId: 103)

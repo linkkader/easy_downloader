@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
+import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/utils/save_part.dart';
 import '../model/download.dart';
 import '../model/download_info.dart';
@@ -12,7 +13,7 @@ import '../storage/status.dart';
 ReceivePort downloadIsolate() {
   ReceivePort receivePort = ReceivePort();
   Isolate.spawn((message) {
-    DownloadInfo? downloadInfo;
+    Task? downloadInfo;
     HttpClient client = HttpClient();
     var sendPort = message;
     var receivePort = ReceivePort();
@@ -24,7 +25,7 @@ ReceivePort downloadIsolate() {
       if (message is Completer){
         completer.complete();
       }
-      if (message is DownloadInfo && downloadInfo == null) {
+      if (message is Task && downloadInfo == null) {
         downloadInfo ??= message;
         client.getUrl(Uri.parse(downloadInfo!.url))
             .then((value) {
@@ -37,11 +38,12 @@ ReceivePort downloadIsolate() {
               var download = Download(
                 path: downloadInfo!.path,
                 totalLength: value.contentLength,
-                maxSplit: 8,
+                maxSplit: downloadInfo!.maxSplit,
                 sendPortMainThread: sendPort,
                 filename: downloadInfo!.filename,
                 headers: downloadInfo!.headers,
                 tempPath: downloadInfo!.tempPath,
+                downloadId: downloadInfo!.downloadId,
               );
               sendPort.send([SendPortStatus.setDownload, download, receivePort.sendPort, completer]);
               await completer.future;
