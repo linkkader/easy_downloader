@@ -33,6 +33,7 @@ class EasyDownloader {
 
   static final Map<int, DownloadController> _controllers = {};
 
+
   static Future<void> init() async {
     await EasyDownloadNotification.init();
     await StorageManager().init();

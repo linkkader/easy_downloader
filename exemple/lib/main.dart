@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:crypto/crypto.dart';
 import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/extensions/int_extension.dart';
 import 'package:easy_downloader/monitor/download_monitor.dart';
@@ -151,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: MaterialButton(
               onPressed: () async {
                 var url = "http://speedtest.ftp.otenet.gr/files/test10Mb.db";
-                var name = "test10MB";
+                var name = "test10MB3";
                 var path = (await getApplicationDocumentsDirectory()).path;
                 var id = await EasyDownloader().download(url, path, name);
                 ids.add(id);
@@ -176,10 +177,21 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       Row(
                         children: [
-                          TextButton(onPressed: (){}, child: const Text("Pause")),
-                          TextButton(onPressed: (){}, child: const Text("Resume")),
-                          TextButton(onPressed: (){}, child: const Text("Append")),
-                          TextButton(onPressed: (){}, child: const Text("Checksum")),
+                          TextButton(onPressed: (){
+                            controller?.pause();
+                          }, child: const Text("Pause")),
+                          TextButton(onPressed: (){
+                            controller?.resume();
+                          }, child: const Text("Resume")),
+                          TextButton(onPressed: (){
+                            print(task.status);
+                            print("downloaded: ${task.downloaded.toHumanReadableSize()} total: ${task.totalLength.toHumanReadableSize()}");
+                          }, child: const Text("info")),
+                          TextButton(onPressed: () async{
+                            var file = File("${task.path}/${task.filename}");
+                            var checksum = sha1.convert(await file.readAsBytes());
+                            print(checksum);
+                          }, child: const Text("Checksum")),
                         ],
                       ),
                     ],
