@@ -1,6 +1,7 @@
 // Created by linkkader on 15/10/2022
 
 import 'dart:async';
+import 'dart:developer';
 import 'dart:isolate';
 import '../easy_downloader.dart';
 import '../model/download.dart';
@@ -32,11 +33,11 @@ void isolateListen(
     }
     if (message is List) {
       if (message[0] == SendPortStatus.setDownload){
+        log('download started', name: 'easy_downloader');
         download = message[1];
         await download!.save();
         onDownloadUpdate?.call(download!);
         var sendPort = message[2] as SendPort;
-        print("sendPort now ${download!.downloadId}");
         sendPort.send(message[3]);
         monitor = DownloadMonitorInside(download!, downloadMonitor: downloadMonitor);
         monitor?.monitor();
@@ -64,26 +65,8 @@ void isolateListen(
           download!.currentLength(message[1]);
           break;
         }
-      // //on resume need
-      //   case SendPortStatus.updateMainSendPort: {
-      //     if (message[2] != null && message[2] is Download){
-      //       download = message[2];
-      //       monitor = DownloadMonitorInside(download!, downloadMonitor: downloadMonitor);
-      //       monitor?.monitor();
-      //     }
-      //     download!.updateMainSendPort(message[1]);
-      //     assert(message[1] is SendPort);
-      //     var sendPort = message[1] as SendPort;
-      //     sendPort.send(download);
-      //     for (var part in download!.parts){
-      //       part.retry(info);
-      //     }
-      //
-      //     break;
-      //   }
         case SendPortStatus.downloadPartIsolate: {
           //download!.downloadPartIsolate(message[1], info);
-          print(message);
           downloadPartIsolate(message[1], message[2], partFile: message[3]);
           break;
         }
@@ -100,9 +83,15 @@ void isolateListen(
           break;
         }
         case SendPortStatus.stop: {
-          print("stop78");
+          log("stop isolate listen", name: "easy_downloader");
           monitor?.dispose();
           subscription.cancel();
+          break;
+        }
+        case SendPortStatus.append: {
+          await download?.append();
+          log("append done file output ${download?.path}/${download?.filename}", name: "easy_downloader");
+          download?.sendPortMainThread.send(SendPortStatus.stop);
           break;
         }
       }

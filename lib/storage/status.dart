@@ -13,7 +13,9 @@ enum DownloadStatus {
   @HiveField(2)
   completed,
   @HiveField(3)
-  failed
+  failed,
+  @HiveField(4)
+  appending
 }
 
 @HiveType(typeId: 103)
@@ -58,5 +60,5 @@ enum SendPortStatus {
   childIsolate,
   @HiveField(12)
   allowDownloadAnotherPart,
-  stop
+  stop, append
 }

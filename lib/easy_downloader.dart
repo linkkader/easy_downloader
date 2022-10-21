@@ -96,5 +96,4 @@ class EasyDownloader {
 
   static appendFile(DownloadTask task) => append.appendFile(task);
 
-
 }

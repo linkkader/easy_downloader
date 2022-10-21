@@ -1,8 +1,8 @@
 # This is a generated file; do not edit or check into version control.
-flutter_local_notifications=/Users/linkkader/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications-12.0.1+1/
-path_provider=/Users/linkkader/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.11/
-path_provider_android=/Users/linkkader/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.0.20/
-path_provider_ios=/Users/linkkader/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_ios-2.0.11/
-path_provider_linux=/Users/linkkader/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.1.7/
-path_provider_macos=/Users/linkkader/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.6/
-path_provider_windows=/Users/linkkader/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.1.3/
+flutter_local_notifications=/goinfre/acouliba/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications-12.0.2/
+path_provider=/goinfre/acouliba/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.11/
+path_provider_android=/goinfre/acouliba/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.0.20/
+path_provider_ios=/goinfre/acouliba/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_ios-2.0.11/
+path_provider_linux=/goinfre/acouliba/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.1.7/
+path_provider_macos=/goinfre/acouliba/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.6/
+path_provider_windows=/goinfre/acouliba/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.1.3/
