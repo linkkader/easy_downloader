@@ -1,8 +1,7 @@
 // Created by linkkader on 7/10/2022
 
 import 'dart:async';
-import '../model/download.dart';
-import '../storage/status.dart';
+import '../easy_downloader.dart';
 import 'download_monitor.dart';
 
 class DownloadMonitorInside {
@@ -22,7 +21,6 @@ class DownloadMonitorInside {
     Duration duration = const Duration(seconds: 1);
     if (downloadMonitor!.duration != null) duration = downloadMonitor!.duration!;
     timer = Timer.periodic(duration, (timer) {
-      print("monitoring");
       if (download.parts.isNotEmpty) {
         downloadMonitor?.blockMonitor?.call(List.generate(download.parts.length, (index) => download.parts[index].toDownloadBlock()));
       }

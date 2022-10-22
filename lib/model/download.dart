@@ -1,20 +1,13 @@
 // Created by linkkader on 7/10/2022
 
-import 'dart:async';
-import 'dart:isolate';
-import 'package:easy_downloader/extensions/int_extension.dart';
-import 'package:easy_downloader/storage/status.dart';
-import 'package:easy_downloader/storage/easy_downloader.dart';
-import 'package:easy_downloader/storage/storage_manager.dart';
-import '../utils/append_file.dart';
-import 'part_file.dart';
+part of '../easy_downloader.dart';
 
 class Download{
 
   final Map<String, String> headers;
   final String tempPath;
   final String filename;
-
+  String url;
   //minimum length for part is 2MB
   static const int minimumPartLength = 2 * 1048576;
   int _downloadId = -1;
@@ -30,9 +23,11 @@ class Download{
   List<SendPort> currentLengthSendPorts = [];
 
   Download({
+    required this.url,
     required this.totalLength,
     required this.path,
-    required this.maxSplit, required this.sendPortMainThread,
+    required this.maxSplit,
+    required this.sendPortMainThread,
     required this.headers,
     required this.tempPath,
     required this.filename,
@@ -46,7 +41,7 @@ class Download{
       assert(_parts[part.id] == null);
     }
     if (status != DownloadStatus.downloading){
-      part.isolate.kill(priority: Isolate.immediate);
+      part.isolate?.kill(priority: Isolate.immediate);
       return;
     }
     _parts[part.id] = part;
@@ -107,12 +102,7 @@ class Download{
       if (currentLengthSendPorts.isNotEmpty) {
         var sendPort = currentLengthSendPorts.removeAt(0);
         var length =  _parts.length;
-        var downloading = 0;
-        for (var part in _parts.values) {
-          if (part.status != PartFileStatus.completed) {
-            downloading++;
-          }
-        }
+        var downloading = _parts.length;
         if (downloading >= maxSplit) {
           length = -1;
         }
@@ -129,6 +119,12 @@ class Download{
 
   void updateStatus(DownloadStatus status) {
     _status = status;
+    var controller = EasyDownloader.getController(_downloadId, ignoreNull: true);
+    if (controller != null) {
+      for (var element in controller._statusListeners) {
+        element(status);
+      }
+    }
     update();
   }
 
@@ -143,7 +139,7 @@ class Download{
     }
     ()async{
       //need wait isolate kill and update status
-      await 1.sleep();
+      await Future.delayed(const Duration(milliseconds: 50));
       sendPortMainThread.send([SendPortStatus.stop]);
     }();
   }
@@ -161,9 +157,12 @@ class Download{
     for(var part in parts){
       downloaded += part.downloaded;
     }
+    var task = StorageManager.getTask(_downloadId);
+
     return DownloadTask(
-      "",
-      _downloadId, totalLength,
+      url,
+      _downloadId,
+      totalLength,
       path,
       maxSplit,
       status,
@@ -172,12 +171,18 @@ class Download{
       tempPath,
       filename,
       headers,
+      isInQueue: task?.isInQueue ?? false,
+      showNotification: task?.showNotification ?? false,
     );
   }
 
   void update() {
     assert(-1 != _downloadId);
     StorageManager().update(_downloadId, _toDownloadTask());
+    var task = StorageManager.getTask(_downloadId);
+    if (task != null && task.showNotification == true) {
+      EasyDownloadNotification.showNotification(task);
+    }
   }
 
   int get downloadId => _downloadId;
@@ -186,5 +191,28 @@ class Download{
     assert(status == DownloadStatus.appending);
     await appendFile(_toDownloadTask());
     updateStatus(DownloadStatus.completed);
+  }
+
+  DownloadTask toTask(){
+    var downloaded = 0;
+    var parts = _parts.values.map((e) => e.toDownloadBlock()).toList();
+    for(var part in parts){
+      downloaded += part.downloaded;
+    }
+    var task = EasyDownloader.getTask(_downloadId);
+    task ??= DownloadTask(
+        url,
+        downloadId,
+        totalLength,
+        path,
+        maxSplit,
+        status,
+        parts,
+        downloaded,
+        tempPath,
+        filename,
+        headers
+    );
+    return task;
   }
 }

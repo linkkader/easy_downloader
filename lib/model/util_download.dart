@@ -1,7 +1,7 @@
 
 import 'package:easy_downloader/model/part_file.dart';
 
-import 'download.dart';
+import '../easy_downloader.dart';
 
 class UtilDownload{
   final int start;

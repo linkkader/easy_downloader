@@ -1,18 +1,17 @@
 // Created by linkkader on 15/10/2022
 
+import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
-
-import 'package:easy_downloader/easy_downloader.dart';
+import 'package:easy_downloader/storage/easy_downloader.dart';
 import 'package:easy_downloader/utils/save_part.dart';
-
-import '../model/download_info.dart';
 import '../model/part_file.dart';
 import '../storage/status.dart';
 import '../model/util_download.dart';
 import 'current_length.dart';
 
-void downloadPart(UtilDownload util, Task info, {PartFile? partFile}) async {
+void downloadPart(UtilDownload util, DownloadTask info, {PartFile? partFile}) async {
+  log(util.previousPart.id.toString());
   if (util.previousPart.id == 1){
     util.download.sendPortMainThread.send([SendPortStatus.downloadPartIsolate, util, info, partFile]);
   }
@@ -21,21 +20,20 @@ void downloadPart(UtilDownload util, Task info, {PartFile? partFile}) async {
   }
 }
 
-void downloadPartIsolate(UtilDownload util, Task info, {PartFile? partFile}) async{
+void downloadPartIsolate(UtilDownload util, DownloadTask info, {PartFile? partFile}) async{
   ReceivePort port = ReceivePort();
   Isolate.spawn((message) async {
     ReceivePort receivePort = ReceivePort();
-    Task? info;
+    DownloadTask? info;
     PartFile? partFile;
     var client = HttpClient();
     UtilDownload? util;
     message.send(receivePort.sendPort);
-
     receivePort.listen((message) async {
       if (message is UtilDownload){
         util ??= message;
       }
-      if (message is Task){
+      if (message is DownloadTask){
         info ??= message;
       }
       if (message is PartFile){
@@ -77,6 +75,7 @@ void downloadPartIsolate(UtilDownload util, Task info, {PartFile? partFile}) asy
   }, port.sendPort).then((value) {
     util.download.sendPortMainThread.send([SendPortStatus.childIsolate, value]);
   });
+
   port.listen((message) {
     if (message is SendPort){
       if (partFile != null) message.send(partFile);

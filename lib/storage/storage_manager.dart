@@ -2,7 +2,6 @@
 
 import 'dart:io';
 import 'package:easy_downloader/storage/status.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart' as path;
 import 'block.dart';

@@ -2,7 +2,6 @@
 
 import 'dart:isolate';
 import 'package:easy_downloader/easy_downloader.dart';
-import 'package:easy_downloader/model/download.dart';
 import 'package:easy_downloader/storage/block.dart';
 import 'package:hive/hive.dart';
 import 'status.dart';
@@ -34,18 +33,25 @@ class DownloadTask{
   final Map<String, String> headers;
   @HiveField(11)
   final String url;
+  @HiveField(12)
+  final bool isInQueue;
+  @HiveField(13)
+  final bool showNotification;
   const DownloadTask(
       this.url,
       this.downloadId, this.totalLength,
       this.path, this.maxSplit, this.status,
       this.blocks, this.downloaded,
-      this.tempPath, this.filename, this.headers);
+      this.tempPath, this.filename, this.headers,
+      {this.isInQueue = false, this.showNotification = false});
 
   DownloadTask copyWith({
     String? url,
     int? downloadId, int? totalLength, String? path,
     int? maxSplit, DownloadStatus? status, List<DownloadBlock>? blocks, int? downloaded,
-    String? tempPath, String? filename, Map<String, String>? headers
+    String? tempPath, String? filename, Map<String, String>? headers,
+    bool? isInQueue,
+    bool? showNotification
   }){
     return DownloadTask(
       url ?? this.url,
@@ -58,12 +64,15 @@ class DownloadTask{
       downloaded ?? this.downloaded,
       tempPath ?? this.tempPath,
       filename ?? this.filename,
-      headers ?? this.headers
+      headers ?? this.headers,
+      isInQueue: isInQueue ?? this.isInQueue,
+      showNotification: showNotification ?? this.showNotification
     );
   }
   
   Download toDownload(SendPort sendPort){
-    return Download(
+    var download = Download(
+      url: url,
       tempPath: tempPath,
       headers: headers,
       filename: filename,
@@ -73,21 +82,14 @@ class DownloadTask{
       totalLength: totalLength,
       downloadId: downloadId,
     );
-  }
-
-  Task toTask(){
-    return Task(
-      url,
-      downloadId,
-      totalLength,
-      path,
-      maxSplit,
-      status,
-      blocks,
-      downloaded,
-      tempPath,
-      filename,
-      headers
-    );
+    var status_ = status;
+    for (var block in blocks){
+      download.setPart(block.toPartFile(download));
+    }
+    if (status_ == DownloadStatus.downloading){
+      status_ = DownloadStatus.paused;
+    }
+    download.updateStatus(status_);
+    return download;
   }
 }

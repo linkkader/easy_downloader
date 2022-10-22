@@ -1,13 +1,17 @@
 // Created by linkkader on 11/10/2022
 
-import 'package:easy_downloader/storage/storage_manager.dart';
+import 'dart:developer';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import '../easy_downloader.dart';
+import '../storage/easy_downloader.dart';
+import '../storage/status.dart';
 
 class EasyDownloadNotification {
 
+  static bool isInit = false;
   static final _notificationPlugin = FlutterLocalNotificationsPlugin();
-  static int _id = 0;
-
   static final EasyDownloadNotification _instance = EasyDownloadNotification._();
   EasyDownloadNotification._();
   factory EasyDownloadNotification() => _instance;
@@ -16,40 +20,50 @@ class EasyDownloadNotification {
   static init(){
     const android = AndroidInitializationSettings('waifu');
     const ios = DarwinInitializationSettings();
-    _notificationPlugin.initialize(const InitializationSettings(android: android, iOS: ios));
-
-    // IOSNotificationDetails iOSPlatformChannelSpecifics = const IOSNotificationDetails(presentSound: true, badgeNumber: 1,presentAlert: true,presentBadge: true);
-    // var notif = AndroidNotificationDetails("Notification New Anime",
-    //     "Notification New Anime",priority: Priority.max,playSound: true,enableVibration: true,indeterminate: true,
-    //     importance: Importance.max,
-    //     //icon: animeInfo?.img,
-    //     fullScreenIntent: true,largeIcon:   data != null ? ByteArrayAndroidBitmap(Uint8List.fromList(data)) : null);
-    // var channelSpecific = NotificationDetails(android: notif,iOS: iOSPlatformChannelSpecifics);
-    // final notificationPlugin = FlutterLocalNotificationsPlugin();
-    // await notificationPlugin.show(i, "New Anime: "+anime.name, anime.name, channelSpecific,payload: AnimeToJson(anime));
+    _notificationPlugin.initialize(
+      const InitializationSettings(android: android, iOS: ios),
+      onDidReceiveNotificationResponse: (payload) {
+        if (payload.id != null){
+          EasyDownloader.openFile(payload.id!);
+        }
+      },
+      onDidReceiveBackgroundNotificationResponse: (payload) async {
+        if (payload.id != null){
+          EasyDownloader.openFile(payload.id!);
+        }
+        },
+    );
+    isInit = true;
   }
 
-  static NotificationDetails _notificationDetail(){
-    return const NotificationDetails(
+  static NotificationDetails _notificationDetail(DownloadTask task) {
+    return NotificationDetails(
         android: AndroidNotificationDetails(
           'easy_downloader',
           'download notification',
-          progress: 50,
-          visibility: NotificationVisibility.private,
-          importance: Importance.max,
-          priority: Priority.high,
-          onlyAlertOnce: true,
+          enableVibration: false,
+          progress: task.downloaded,
+          visibility: NotificationVisibility.public,
+          importance: Importance.low,
+          priority: Priority.low,
           showProgress: true,
-          maxProgress: 100,
+          maxProgress: task.totalLength,
+          onlyAlertOnce: true,
+          playSound: false,
         ),
-        iOS: DarwinNotificationDetails(
+        iOS: const DarwinNotificationDetails(
 
-        )
+        ),
     );
   }
 
-  static void showNotification(String title, String body) {
-    print(_id);
-    _notificationPlugin.show(_id++, title, body, _notificationDetail());
+  static void showNotification(DownloadTask task) async {
+    if (!isInit) return;
+    _notificationPlugin.show(
+        task.downloadId,
+        task.filename,
+        task.status.name,
+        _notificationDetail(task),
+    );
   }
 }

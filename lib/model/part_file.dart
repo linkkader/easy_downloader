@@ -1,18 +1,18 @@
 // Created by linkkader on 7/10/2022
 
+import 'dart:developer';
 import 'dart:isolate';
-import 'package:easy_downloader/easy_downloader.dart';
-import 'package:easy_downloader/model/download_info.dart';
 import 'package:easy_downloader/model/util_download.dart';
 import 'package:easy_downloader/storage/block.dart';
-import 'package:easy_downloader/model/download.dart';
+import 'package:easy_downloader/storage/easy_downloader.dart';
+import '../easy_downloader.dart';
 import '../utils/download_part.dart';
 import '../storage/status.dart';
 
 class  PartFile{
 
   SendPort? sendPort;
-  Isolate isolate;
+  Isolate? isolate;
   late final int _start;
   late int _end;
   int _id = 0;
@@ -20,7 +20,7 @@ class  PartFile{
   Download download;
   PartFileStatus _status = PartFileStatus.downloading;
 
-  PartFile({required int start,required int end,required int id, required this.download, required this.isolate}){
+  PartFile({required int start,required int end,required int id, required this.download, this.isolate}){
     _end = end;
     _start = start;
     _id = id;
@@ -86,11 +86,11 @@ class  PartFile{
 
   bool mustRetry() => status == PartFileStatus.failed || status == PartFileStatus.resumed || status == PartFileStatus.paused;
 
-  void retry(Task info){
-    print("retrying part $_id with status $_status");
+  void retry(DownloadTask task){
+    log("retrying part $_id with status $_status");
     if (mustRetry()){
-      print("retrying2 part $_id");
-      downloadPart(toUtilDownload(), info, partFile: this);
+      log("retrying2 part $_id");
+      downloadPart(toUtilDownload(), task, partFile: this);
     }
   }
 }

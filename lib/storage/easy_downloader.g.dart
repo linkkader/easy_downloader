@@ -28,13 +28,15 @@ class DownloadTaskAdapter extends TypeAdapter<DownloadTask> {
       fields[9] as String,
       fields[8] as String,
       (fields[10] as Map).cast<String, String>(),
+      isInQueue: fields[12] as bool,
+      showNotification: fields[13] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, DownloadTask obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.downloadId)
       ..writeByte(1)
@@ -56,7 +58,11 @@ class DownloadTaskAdapter extends TypeAdapter<DownloadTask> {
       ..writeByte(10)
       ..write(obj.headers)
       ..writeByte(11)
-      ..write(obj.url);
+      ..write(obj.url)
+      ..writeByte(12)
+      ..write(obj.isInQueue)
+      ..writeByte(13)
+      ..write(obj.showNotification);
   }
 
   @override

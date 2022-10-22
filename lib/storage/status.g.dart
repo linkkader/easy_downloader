@@ -25,6 +25,8 @@ class DownloadStatusAdapter extends TypeAdapter<DownloadStatus> {
         return DownloadStatus.appending;
       case 5:
         return DownloadStatus.queuing;
+      case 6:
+        return DownloadStatus.starting;
       default:
         return DownloadStatus.downloading;
     }
@@ -50,6 +52,9 @@ class DownloadStatusAdapter extends TypeAdapter<DownloadStatus> {
         break;
       case DownloadStatus.queuing:
         writer.writeByte(5);
+        break;
+      case DownloadStatus.starting:
+        writer.writeByte(6);
         break;
     }
   }

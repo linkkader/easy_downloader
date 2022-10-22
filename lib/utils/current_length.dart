@@ -2,7 +2,7 @@
 
 import 'dart:async';
 import 'dart:isolate';
-import '../model/download.dart';
+import '../easy_downloader.dart';
 import '../storage/status.dart';
 
 //prevent file creation race condition
