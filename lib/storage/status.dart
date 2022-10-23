@@ -64,5 +64,8 @@ enum SendPortStatus {
   childIsolate,
   @HiveField(12)
   allowDownloadAnotherPart,
-  stop, append
+  @HiveField(13)
+  stop,
+  @HiveField(14)
+  append
 }

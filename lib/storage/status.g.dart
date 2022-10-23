@@ -157,6 +157,10 @@ class SendPortStatusAdapter extends TypeAdapter<SendPortStatus> {
         return SendPortStatus.childIsolate;
       case 12:
         return SendPortStatus.allowDownloadAnotherPart;
+      case 13:
+        return SendPortStatus.stop;
+      case 14:
+        return SendPortStatus.append;
       default:
         return SendPortStatus.setDownload;
     }
@@ -203,6 +207,12 @@ class SendPortStatusAdapter extends TypeAdapter<SendPortStatus> {
         break;
       case SendPortStatus.allowDownloadAnotherPart:
         writer.writeByte(12);
+        break;
+      case SendPortStatus.stop:
+        writer.writeByte(13);
+        break;
+      case SendPortStatus.append:
+        writer.writeByte(14);
         break;
     }
   }

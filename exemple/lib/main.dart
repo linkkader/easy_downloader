@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/extensions/int_extension.dart';
-import 'package:easy_downloader/notifications/notification.dart';
+import 'package:easy_downloader/monitor/download_monitor.dart';
 import 'package:easy_downloader/widget/download_task_listenable.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -43,10 +43,10 @@ class _MyHomePageState extends State<MyHomePage> {
   List<int> ids = [];
 
   double progress = 0.0;
+  Map<int, int> speed = {};
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Column(
         children: [
@@ -56,12 +56,32 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async {
                 var i = 0;
                 while(i < 2){
-                  var url = "http://speedtest.ftp.otenet.gr/files/test10Mb.db";
+                  var url = "https://github.com/linkkader/zanime/releases/download/39/zanime_39.apk";
                   var name = "test10MB$i";
                   var path = (await getApplicationDocumentsDirectory()).path;
-                  var task = await EasyDownloader.newTask(url, path, name, maxSplit: i, showNotification: true);
+                  var task = await EasyDownloader.newTask(url, path, name, maxSplit: 4, showNotification: true);
                   ids.add(task.downloadId);
-                  EasyDownloader.addTaskQueue(task.downloadId);
+                  //EasyDownloader.addTaskQueue(task.downloadId);
+                  var controller = EasyDownloader.getController(task.downloadId);
+                  if (controller != null){
+                    controller.start(monitor: DownloadMonitor(
+                      duration: const Duration(milliseconds: 100),
+                      blockMonitor: (blocks){
+                        //listen all blocks
+                      },
+                      onProgress: (downloaded, total, speed, status) {
+                        this.speed[task.downloadId] = speed;
+                        log("downloaded: $downloaded, total: $total, speed: $speed, status: $status");
+                        //listen progress
+                        //listen speed/second
+                        //listen status
+                        //listen status
+                      },
+                    ));
+                  }
+                  else{
+                    //no task found
+                  }
                   i++;
                   break;
                 }
@@ -83,7 +103,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       SizedBox(
                         height: 100,
-                        child: LinearProgressIndicator(value: task.downloaded / task.totalLength),
+                        child: Column(
+                          children: [
+                            Expanded(child: LinearProgressIndicator(value: task.downloaded / task.totalLength)),
+                            Text("${task.downloaded.toHumanReadableSize()} / ${task.totalLength.toHumanReadableSize()}  ${speed[task.downloadId]?.toHumanReadableSize()}/s"),
+                          ],
+                        ),
                       ),
                       FittedBox(
                         child: Row(

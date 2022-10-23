@@ -1,12 +1,9 @@
 // Created by linkkader on 11/10/2022
 
-import 'dart:developer';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 import '../easy_downloader.dart';
 import '../storage/easy_downloader.dart';
-import '../storage/status.dart';
 
 class EasyDownloadNotification {
 
