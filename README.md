@@ -9,7 +9,7 @@ Fast download manager allow download in multiple isolate, file is split to multi
 - [x] Support notification
 - [x] Support open file after download (only android and ios)
 
-https://user-images.githubusercontent.com/59131542/197367709-2530eed9-4823-4890-9f36-9d0f3bc1575c.mp4
+![easy_dowloader](https://user-images.githubusercontent.com/59131542/197368097-398313ef-1d2c-40bd-84c3-dfc846dedc01.gif)
 
 ## Getting started
 
