@@ -1,6 +1,6 @@
 
 Fast download manager allow download in multiple isolate, file is split to multiple segments and download each segment using different connections.
-![](.run/demo.mp4)
+
 ## Features
 
 - [x] Support resume, pause, download
@@ -8,6 +8,8 @@ Fast download manager allow download in multiple isolate, file is split to multi
 - [x] Download with multiple connections in multiple isolate with progress
 - [x] Support notification
 - [x] Support open file after download (only android and ios)
+
+https://user-images.githubusercontent.com/59131542/197367709-2530eed9-4823-4890-9f36-9d0f3bc1575c.mp4
 
 ## Getting started
 
@@ -84,4 +86,5 @@ else{
 ## Additional information
 
 -only tested on android
+
 -sometime your downloaded length will exceed the total length, it is not problem, this problem occurs if your file is small
