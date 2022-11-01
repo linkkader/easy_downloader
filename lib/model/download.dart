@@ -2,8 +2,8 @@
 
 part of '../easy_downloader.dart';
 
-class Download{
-
+class Download {
+  DownloadMonitorInside? monitor;
   final Map<String, String> headers;
   final String tempPath;
   final String filename;
@@ -32,15 +32,15 @@ class Download{
     required this.tempPath,
     required this.filename,
     required int downloadId,
-  }){
+  }) {
     _downloadId = downloadId;
   }
 
-  void setPart(PartFile part){
-    if (part.status != PartFileStatus.resumed){
+  void setPart(PartFile part) {
+    if (part.status != PartFileStatus.resumed) {
       assert(_parts[part.id] == null);
     }
-    if (status != DownloadStatus.downloading){
+    if (status != DownloadStatus.downloading) {
       part.isolate?.kill(priority: Isolate.immediate);
       return;
     }
@@ -48,46 +48,51 @@ class Download{
     update();
   }
 
-  void updatePartDownloaded(int id, int value){
+  void updatePartDownloaded(int id, int value) {
     assert(_parts[id] != null);
     _parts[id]!.updateDownloaded(value, fromMainThread: true);
     update();
   }
 
-  void updatePartEnd(int id, int value){
+  void setMonitor(DownloadMonitorInside monitor) {
+    this.monitor = monitor;
+  }
+
+  void updatePartEnd(int id, int value) {
     assert(_parts[id] != null);
     _parts[id]!.updateEnd(value, fromMainThread: true);
     update();
   }
 
-  void updatePartIsolate(int id, Isolate value){
+  void updatePartIsolate(int id, Isolate value) {
     assert(_parts[id] != null);
     _parts[id]!.updateIsolate(value, fromMainThread: true);
     update();
   }
 
-  void updatePartSendPort(int id, SendPort value){
+  void updatePartSendPort(int id, SendPort value) {
     assert(_parts[id] != null);
     _parts[id]!.updateSendPort(value, fromMainThread: true);
     update();
   }
 
   // never call in child isolate
-  void updateMainSendPort(SendPort sendPort){
+  void updateMainSendPort(SendPort sendPort) {
     sendPortMainThread = sendPort;
-    for(var part in _parts.values){
-       part.download = this;
+    for (var part in _parts.values) {
+      part.download = this;
     }
     update();
   }
 
-  void updatePartStatus(int id, PartFileStatus value){
+  void updatePartStatus(int id, PartFileStatus value) {
     assert(_parts[id] != null);
     _parts[id]!.updateStatus(value, fromMainThread: true);
     var ss = parts;
 
     //finish downloading
-    if (ss.isNotEmpty && ss.every((element) => element.status == PartFileStatus.completed)) {
+    if (ss.isNotEmpty &&
+        ss.every((element) => element.status == PartFileStatus.completed)) {
       updateStatus(DownloadStatus.appending);
       sendPortMainThread.send([SendPortStatus.append]);
     }
@@ -98,10 +103,11 @@ class Download{
   //need dispose
   void currentLength(SendPort sendPort) {
     currentLengthSendPorts.add(sendPort);
-    currentLengthTimer ??= Timer.periodic(const Duration(milliseconds: 50), (timer) {
+    currentLengthTimer ??=
+        Timer.periodic(const Duration(milliseconds: 50), (timer) {
       if (currentLengthSendPorts.isNotEmpty) {
         var sendPort = currentLengthSendPorts.removeAt(0);
-        var length =  _parts.length;
+        var length = _parts.length;
         var downloading = _parts.length;
         if (downloading >= maxSplit) {
           length = -1;
@@ -112,32 +118,37 @@ class Download{
         sendPort.send([SendPortStatus.currentLength, length]);
       }
     });
-   }
-
+  }
 
   List<PartFile> get parts => _parts.values.toList();
 
   void updateStatus(DownloadStatus status) {
     _status = status;
-    var controller = EasyDownloader.getController(_downloadId, ignoreNull: true);
+    var controller =
+        EasyDownloader.getController(_downloadId, ignoreNull: true);
     if (controller != null) {
       for (var element in controller._statusListeners) {
         element(status);
       }
+    }
+    if (status == DownloadStatus.completed ||
+        status == DownloadStatus.failed ||
+        status == DownloadStatus.paused) {
+      monitor?.dispose();
     }
     update();
   }
 
   DownloadStatus get status => _status;
 
-  void pause(){
-    for(var value in parts){
-      if (value.status == PartFileStatus.downloading){
+  void pause() {
+    for (var value in parts) {
+      if (value.status == PartFileStatus.downloading) {
         value.sendPort?.send([SendPortStatus.pausePart]);
       }
       updateStatus(DownloadStatus.paused);
     }
-    ()async{
+    () async {
       //need wait isolate kill and update status
       await Future.delayed(const Duration(milliseconds: 50));
       sendPortMainThread.send([SendPortStatus.stop]);
@@ -154,7 +165,7 @@ class Download{
 
   DownloadTask _toDownloadTask() {
     var downloaded = 0;
-    for(var part in parts){
+    for (var part in parts) {
       downloaded += part.downloaded;
     }
     var task = StorageManager.getTask(_downloadId);
@@ -180,9 +191,7 @@ class Download{
     assert(-1 != _downloadId);
     StorageManager().update(_downloadId, _toDownloadTask());
     var task = StorageManager.getTask(_downloadId);
-    if (task != null && task.showNotification == true) {
-      EasyDownloadNotification.showNotification(task);
-    }
+    if (task != null && task.showNotification == true) {}
   }
 
   int get downloadId => _downloadId;
@@ -193,26 +202,15 @@ class Download{
     updateStatus(DownloadStatus.completed);
   }
 
-  DownloadTask toTask(){
+  DownloadTask toTask() {
     var downloaded = 0;
     var parts = _parts.values.map((e) => e.toDownloadBlock()).toList();
-    for(var part in parts){
+    for (var part in parts) {
       downloaded += part.downloaded;
     }
     var task = EasyDownloader.getTask(_downloadId);
-    task ??= DownloadTask(
-        url,
-        downloadId,
-        totalLength,
-        path,
-        maxSplit,
-        status,
-        parts,
-        downloaded,
-        tempPath,
-        filename,
-        headers
-    );
+    task ??= DownloadTask(url, downloadId, totalLength, path, maxSplit, status,
+        parts, downloaded, tempPath, filename, headers);
     return task;
   }
 }

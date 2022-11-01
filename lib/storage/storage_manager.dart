@@ -7,7 +7,7 @@ import 'package:path_provider/path_provider.dart' as path;
 import 'block.dart';
 import 'easy_downloader.dart';
 
-class StorageManager{
+class StorageManager {
   static final StorageManager _instance = StorageManager._internal();
   StorageManager._internal();
   factory StorageManager() => _instance;

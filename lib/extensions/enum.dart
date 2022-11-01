@@ -3,7 +3,9 @@
 extension EnumExtension<T> on Enum {
   String get name => toString().split('.').last;
 
-  bool operator <= (Enum other) {
-    return (runtimeType.toString() == other.runtimeType.toString() && index == other.index);
+  ///check if two enum value are same
+  bool operator <=(Enum other) {
+    return (runtimeType.toString() == other.runtimeType.toString() &&
+        index == other.index);
   }
 }

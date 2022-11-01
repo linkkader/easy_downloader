@@ -39,7 +39,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   List<int> ids = [];
 
   double progress = 0.0;
@@ -55,18 +54,21 @@ class _MyHomePageState extends State<MyHomePage> {
             child: MaterialButton(
               onPressed: () async {
                 var i = 0;
-                while(i < 2){
-                  var url = "https://github.com/linkkader/zanime/releases/download/39/zanime_39.apk";
+                while (i < 2) {
+                  var url = "http://speedtest.ftp.otenet.gr/files/test10Mb.db";
                   var name = "test10MB$i";
                   var path = (await getApplicationDocumentsDirectory()).path;
-                  var task = await EasyDownloader.newTask(url, path, name, maxSplit: 4, showNotification: true);
+                  var task = await EasyDownloader.newTask(url, path, name,
+                      maxSplit: 4, showNotification: true);
                   ids.add(task.downloadId);
                   //EasyDownloader.addTaskQueue(task.downloadId);
-                  var controller = EasyDownloader.getController(task.downloadId);
-                  if (controller != null){
-                    controller.start(monitor: DownloadMonitor(
+                  var controller =
+                      EasyDownloader.getController(task.downloadId);
+                  if (controller != null) {
+                    controller.start(
+                        monitor: DownloadMonitor(
                       duration: const Duration(milliseconds: 100),
-                      blockMonitor: (blocks){
+                      blockMonitor: (blocks) {
                         //listen all blocks
                       },
                       onProgress: (downloaded, total, speed, status) {
@@ -78,25 +80,23 @@ class _MyHomePageState extends State<MyHomePage> {
                         //listen status
                       },
                     ));
-                  }
-                  else{
+                  } else {
                     //no task found
                   }
                   i++;
                   break;
                 }
-                setState(() {
-
-                });
-
+                setState(() {});
               },
               child: const Text('Download'),
             ),
           ),
-          Expanded(child: ListView.builder(
+          Expanded(
+              child: ListView.builder(
             itemCount: ids.length,
             itemBuilder: (context, index) {
-              return EasyDownloadTaskListenable(ids[index], (context, task, controller) {
+              return EasyDownloadTaskListenable(ids[index],
+                  (context, task, controller) {
                 return SizedBox(
                   height: 200,
                   child: Column(
@@ -105,59 +105,77 @@ class _MyHomePageState extends State<MyHomePage> {
                         height: 100,
                         child: Column(
                           children: [
-                            Expanded(child: LinearProgressIndicator(value: task.downloaded / task.totalLength)),
-                            Text("${task.downloaded.toHumanReadableSize()} / ${task.totalLength.toHumanReadableSize()}  ${speed[task.downloadId]?.toHumanReadableSize()}/s"),
+                            Expanded(
+                                child: LinearProgressIndicator(
+                                    value: task.downloaded / task.totalLength)),
+                            Text(
+                                "${task.downloaded.toHumanReadableSize()} / ${task.totalLength.toHumanReadableSize()}  ${speed[task.downloadId]?.toHumanReadableSize()}/s"),
                           ],
                         ),
                       ),
                       FittedBox(
-                        child: Row(
-                          children: [
-                            TextButton(onPressed: (){
-                              controller?.start();
-                              controller?.addStatusListener((p0) {
-                                log(p0.toString());
-                              });
-                            }, child: const Text("Start")),
-                            TextButton(onPressed: (){
-                              controller?.pause();
-                            }, child: const Text("Pause")),
-                            TextButton(onPressed: (){
-                              log(task.url);
-                              log(controller.toString());
-                              controller?.resume();
-                            }, child: const Text("Resume")),
-                            TextButton(onPressed: (){
-                              log(task.status.toString());
-                              log(task.isInQueue.toString());
-                              log(task.downloadId.toString());
-                              log("downloaded: ${task.downloaded.toHumanReadableSize()} total: ${task.totalLength.toHumanReadableSize()}");
-                              for (var element in task.blocks) {
-                                var file = File("${task.tempPath}/${element.id}");
-                                log("${element.id} ${element.status} ${element.downloaded.toHumanReadableSize()} ${file.lengthSync().toHumanReadableSize()}");
-                              }
-                            }, child: const Text("info")),
-                            TextButton(onPressed: () async{
-                              var file = File("${task.path}/${task.filename}");
-                              var checksum = sha1.convert(await file.readAsBytes());
-                              log(checksum.toString());
-                            }, child: const Text("Checksum")),
-                            TextButton(onPressed: () async{
-                              await EasyDownloader.delete(ids.removeAt(index), deleteFile: true);
-                              setState(() {});
-                            }, child: const Text("delete")),
-                            TextButton(onPressed: () async{
-                              EasyDownloader.openFile(task.downloadId);
-                              }, child: const Text("open")),
-                          ],
-                        )
-                      ),
+                          child: Row(
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                controller?.start();
+                                controller?.addStatusListener((p0) {
+                                  log(p0.toString());
+                                });
+                              },
+                              child: const Text("Start")),
+                          TextButton(
+                              onPressed: () {
+                                controller?.pause();
+                              },
+                              child: const Text("Pause")),
+                          TextButton(
+                              onPressed: () {
+                                log(task.url);
+                                log(controller.toString());
+                                controller?.resume();
+                              },
+                              child: const Text("Resume")),
+                          TextButton(
+                              onPressed: () {
+                                log(task.status.toString());
+                                log(task.isInQueue.toString());
+                                log(task.downloadId.toString());
+                                log("downloaded: ${task.downloaded.toHumanReadableSize()} total: ${task.totalLength.toHumanReadableSize()}");
+                                for (var element in task.blocks) {
+                                  var file =
+                                      File("${task.tempPath}/${element.id}");
+                                  log("${element.id} ${element.status} ${element.downloaded.toHumanReadableSize()} ${file.lengthSync().toHumanReadableSize()}");
+                                }
+                              },
+                              child: const Text("info")),
+                          TextButton(
+                              onPressed: () async {
+                                var file =
+                                    File("${task.path}/${task.filename}");
+                                var checksum =
+                                    sha1.convert(await file.readAsBytes());
+                                log(checksum.toString());
+                              },
+                              child: const Text("Checksum")),
+                          TextButton(
+                              onPressed: () async {
+                                await EasyDownloader.delete(ids.removeAt(index),
+                                    deleteFile: true);
+                                setState(() {});
+                              },
+                              child: const Text("delete")),
+                          TextButton(
+                              onPressed: () async {},
+                              child: const Text("open")),
+                        ],
+                      )),
                     ],
                   ),
                 );
               });
-            },)
-          )
+            },
+          ))
         ],
       ),
     );
@@ -170,5 +188,4 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     super.initState();
   }
-
 }

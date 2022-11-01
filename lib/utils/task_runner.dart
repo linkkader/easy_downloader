@@ -3,6 +3,7 @@
 
 part of '../easy_downloader.dart';
 
+///queue manager
 class TaskRunner {
   final Queue<DownloadTask> _input = Queue();
   late final int maxConcurrentTasks;
@@ -13,21 +14,23 @@ class TaskRunner {
   TaskRunner._internal();
   factory TaskRunner() => _instance;
 
+  ///init queue manager
   void init({int maxConcurrentTasks = 1, bool startQueue = true}) {
     assert(!_isInit, "TaskRunner already initialized");
     this.maxConcurrentTasks = maxConcurrentTasks;
     _isInit = true;
-    var tasks = StorageManager.tasks.where((element) => element.isInQueue == true);
+    var tasks =
+        StorageManager.tasks.where((element) => element.isInQueue == true);
     for (var element in tasks) {
-      if (startQueue == true){
+      if (startQueue == true) {
         add(element);
-      }else{
+      } else {
         _input.add(element);
       }
     }
   }
 
-
+  ///add task to queue
   void add(DownloadTask value) {
     assert(_isInit, "TaskRunner not initialized");
     for (var element in _input) {
@@ -39,6 +42,7 @@ class TaskRunner {
     _startExecution();
   }
 
+  ///add multiple tasks to queue
   void addAll(Iterable<DownloadTask> iterable) {
     assert(_isInit, "TaskRunner not initialized");
     for (var element in iterable) {
@@ -47,7 +51,8 @@ class TaskRunner {
   }
 
   Future<void> _startExecution() async {
-    log('start execution $runningTasks ${_input.length}', name: 'easy_downloader');
+    log('start execution $runningTasks ${_input.length}',
+        name: 'easy_downloader');
     if (runningTasks == maxConcurrentTasks || _input.isEmpty) {
       return;
     }
@@ -59,7 +64,7 @@ class TaskRunner {
       var task = _input.removeFirst();
       var controller = EasyDownloader.getController(task.downloadId);
       listener(DownloadStatus p0) {
-        switch(p0){
+        switch (p0) {
           case DownloadStatus.paused:
             completer.complete(false);
             break;
@@ -69,11 +74,12 @@ class TaskRunner {
           case DownloadStatus.failed:
             completer.complete(false);
             break;
-          default :
+          default:
             break;
         }
       }
-      if (controller == null){
+
+      if (controller == null) {
         runningTasks--;
         completer.complete(true);
         return;
@@ -83,7 +89,7 @@ class TaskRunner {
       controller.addStatusListener(listener);
       switch (task.status) {
         case DownloadStatus.queuing:
-         controller.start();
+          controller.start();
           break;
         case DownloadStatus.appending:
           break;
@@ -110,9 +116,9 @@ class TaskRunner {
     }
   }
 
+  ///remove task from queue
   void remove(int id) {
     assert(_isInit, "TaskRunner not initialized");
     _input.removeWhere((element) => element.downloadId == id);
   }
-
 }

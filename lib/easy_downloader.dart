@@ -9,17 +9,16 @@ import 'package:easy_downloader/storage/easy_downloader.dart';
 import 'package:easy_downloader/storage/storage_manager.dart';
 import 'package:easy_downloader/utils/download_isolate.dart';
 import 'package:easy_downloader/utils/isolate_listen.dart';
-import 'package:open_file/open_file.dart';
 import 'model/part_file.dart';
-import 'notifications/notification.dart';
+import 'monitor/monitor.dart';
 import 'storage/status.dart';
 import 'monitor/download_monitor.dart';
 import '../utils/append_file.dart';
 part 'utils/task_runner.dart';
 part 'model/download.dart';
 
+///controller for one task
 class DownloadController {
-
   final List<Function(DownloadStatus)> _statusListeners = [];
 
   Download? _download;
@@ -29,7 +28,7 @@ class DownloadController {
   final int id;
   DownloadController({required this.id, this.onStart});
 
-  void pause(){
+  void pause() {
     assert(_download != null);
     switch (_download!.status) {
       case DownloadStatus.completed:
@@ -44,17 +43,17 @@ class DownloadController {
       case DownloadStatus.queuing:
         log('in queuing', name: 'easy_downloader');
         return;
-      default : break;
-
+      default:
+        break;
     }
     _download!.pause();
     var task = _download!.toTask();
-    if (task.isInQueue){
+    if (task.isInQueue) {
       EasyDownloader.removeTaskQueue(task.downloadId);
     }
   }
 
-  void resume(){
+  void resume() {
     log('resume', name: 'easy_downloader');
     assert(_download != null && _download!.downloadId != -1);
     switch (_download!.status) {
@@ -70,28 +69,37 @@ class DownloadController {
       case DownloadStatus.queuing:
         log('in queuing', name: 'easy_downloader');
         return;
-      default :
+      default:
         break;
     }
     _receivePort?.close();
     _download!.updateStatus(DownloadStatus.downloading);
-    for(var value in _download!.parts){
-      if (value.mustRetry())value.updateStatus(PartFileStatus.resumed, fromMainThread: true);
+    for (var value in _download!.parts) {
+      if (value.mustRetry())
+        value.updateStatus(PartFileStatus.resumed, fromMainThread: true);
     }
     _receivePort = ReceivePort();
     _download!.updateMainSendPort(_receivePort!.sendPort);
     var task = _download!.toTask();
-    isolateListen(_receivePort!, task, _monitor, _download!, (p0) => _download = p0,);
-    for (var part in _download!.parts){
+    isolateListen(
+      _receivePort!,
+      task,
+      _monitor,
+      _download!,
+      (p0) => _download = p0,
+    );
+    for (var part in _download!.parts) {
       part.retry(task);
     }
-    if (task.isInQueue){
+    if (task.isInQueue) {
       EasyDownloader.addTaskQueue(task.downloadId);
     }
   }
 
-  void start({DownloadMonitor? monitor}){
-    if (_download == null || _download?.status == DownloadStatus.starting || _download?.status == DownloadStatus.queuing) {
+  void start({DownloadMonitor? monitor}) {
+    if (_download == null ||
+        _download?.status == DownloadStatus.starting ||
+        _download?.status == DownloadStatus.queuing) {
       var receivePort = downloadIsolate();
       var task = EasyDownloader.getTask(id);
       if (task == null) {
@@ -100,67 +108,68 @@ class DownloadController {
       }
       _download ??= task.toDownload(receivePort.sendPort);
       _updateMonitor(monitor);
-     _updateReceivePort(receivePort);
+      _updateReceivePort(receivePort);
       isolateListen(receivePort, task, monitor, _download!, (p0) {
         _download = p0;
         _updateDownload(_download!);
       });
-    }else{
+    } else {
       log('start already called ', name: 'easy_downloader');
     }
   }
 
-
   int get downloadId => id;
 
-
-  void _updateDownload(Download download){
+  void _updateDownload(Download download) {
     _download = download;
   }
 
-  void _updateMonitor(DownloadMonitor? monitor){
+  void _updateMonitor(DownloadMonitor? monitor) {
     _monitor = monitor;
   }
 
-  void _updateReceivePort(ReceivePort receivePort){
+  void _updateReceivePort(ReceivePort receivePort) {
     _receivePort = receivePort;
   }
 
-  void addStatusListener(Function(DownloadStatus) listener){
+  void addStatusListener(Function(DownloadStatus) listener) {
     _statusListeners.add(listener);
   }
 
-  void removeStatusListener(Function(DownloadStatus) listener){
+  void removeStatusListener(Function(DownloadStatus) listener) {
     _statusListeners.remove(listener);
   }
 }
 
 class EasyDownloader {
-
   static bool _init = false;
   static final Map<int, DownloadController> _controllers = {};
 
-  static Future<void> init({int maxConcurrentTasks = 4, bool startQueue = false}) async {
+  ///init easy downloader
+  static Future<void> init(
+      {int maxConcurrentTasks = 4, bool startQueue = false}) async {
     assert(!_init, 'init already called');
-    await EasyDownloadNotification.init();
     if (maxConcurrentTasks < 1) {
       maxConcurrentTasks = 1;
     }
     await StorageManager().init();
     _init = true;
-    TaskRunner().init(maxConcurrentTasks: maxConcurrentTasks,startQueue: startQueue);
+    TaskRunner()
+        .init(maxConcurrentTasks: maxConcurrentTasks, startQueue: startQueue);
   }
 
+  ///get all tasks
   static List<DownloadTask> get tasks => StorageManager.tasks;
 
+  ///get one controller for one task
   static DownloadController? getController(int id, {bool ignoreNull = false}) {
     assert(_init, 'init not called');
 
     var controller = _controllers[id];
-    if (controller == null){
-      if(ignoreNull) return null;
+    if (controller == null) {
+      if (ignoreNull) return null;
       var task = StorageManager.getTask(id);
-      if (task == null)return null;
+      if (task == null) return null;
       controller = DownloadController(id: id);
       var receivePort = ReceivePort();
       controller._updateReceivePort(receivePort);
@@ -170,15 +179,20 @@ class EasyDownloader {
     return controller;
   }
 
-
-  static Future<DownloadTask> newTask(String url, String path, String filename, {Map<String, String>? headers, int maxSplit = 8, bool showNotification = false}) async {
+  ///create a new download task
+  static Future<DownloadTask> newTask(String url, String path, String filename,
+      {Map<String, String>? headers,
+      int maxSplit = 8,
+      bool showNotification = false}) async {
     assert(_init, 'init not called');
     //delete old temp files
     var dir = Directory("$path/.easy_downloader$filename");
     if (dir.existsSync()) {
       dir.deleteSync(recursive: true);
     }
-    var downloadTask = DownloadTask(url, -1, -1, path, maxSplit, DownloadStatus.starting, [], 0, dir.path, filename, headers ?? {}, showNotification: true);
+    var downloadTask = DownloadTask(url, -1, -1, path, maxSplit,
+        DownloadStatus.starting, [], 0, dir.path, filename, headers ?? {},
+        showNotification: true);
     var id = await StorageManager.box.add(downloadTask);
     downloadTask = downloadTask.copyWith(downloadId: id);
     StorageManager.box.put(id, downloadTask);
@@ -186,15 +200,14 @@ class EasyDownloader {
     late DownloadController controller;
     controller = DownloadController(
       id: id,
-      onStart: (monitor) async {
-
-      },
+      onStart: (monitor) async {},
     );
     EasyDownloader._controllers[id] = controller;
     return task;
   }
 
-  static Future<void> delete(int id,{bool deleteFile = false}) async {
+  ///remove a task
+  static Future<void> delete(int id, {bool deleteFile = false}) async {
     assert(_init, 'init not called');
     var download = StorageManager.box.get(id);
     if (download != null) {
@@ -211,9 +224,11 @@ class EasyDownloader {
     }
   }
 
+  ///get a task, return null if not exist
   static DownloadTask? getTask(int id) => StorageManager.getTask(id);
 
-  static void addTaskQueue(int id){
+  ///add a task to queue
+  static void addTaskQueue(int id) {
     assert(_init, 'init not called');
     var task = StorageManager.getTask(id);
     if (task == null) return;
@@ -222,19 +237,9 @@ class EasyDownloader {
     TaskRunner().add(task);
   }
 
-  static void removeTaskQueue(int id){
+  ///remove a task from queue
+  static void removeTaskQueue(int id) {
     assert(_init, 'init not called');
     TaskRunner().remove(id);
-  }
-
-  static void openFile(int id) async {
-    var task = StorageManager.getTask(id);
-    if (task == null) return;
-    var path = "${task.path}/${task.filename}";
-    if (Platform.isAndroid || Platform.isIOS) {
-      await OpenFile.open(path);
-    }else{
-      log('openFile not supported on this platform', name: 'easy_downloader');
-    }
   }
 }

@@ -21,42 +21,51 @@ ReceivePort downloadIsolate() {
     message.send(receivePort.sendPort);
     late StreamSubscription subscription;
     subscription = receivePort.listen((message) {
-      if (message is Completer){
+      if (message is Completer) {
         completer.complete();
       }
       if (message is DownloadTask && downloadInfo == null) {
         downloadInfo ??= message;
-        client.getUrl(Uri.parse(downloadInfo!.url))
-            .then((value) {
-              downloadInfo!.headers.forEach((k, v) {
-                value.headers.add(k, v);
-              });
-              return value.close();
-            })
-            .then((value) async {
-              var download = Download(
-                url: downloadInfo!.url,
-                path: downloadInfo!.path,
-                totalLength: value.contentLength,
-                maxSplit: downloadInfo!.maxSplit,
-                sendPortMainThread: sendPort,
-                filename: downloadInfo!.filename,
-                headers: downloadInfo!.headers,
-                tempPath: downloadInfo!.tempPath,
-                downloadId: downloadInfo!.downloadId,
-              );
-              sendPort.send([SendPortStatus.setDownload, download, receivePort.sendPort, completer]);
-              await completer.future;
-              log("lest go", name: 'easy_downloader');
-              var partFile = PartFile(start: 0, end: download.totalLength, id: download.parts.length, download: download, isolate: Isolate.current);
-              savePart(value, partFile, download, downloadInfo!);
-              subscription.cancel();
+        client.getUrl(Uri.parse(downloadInfo!.url)).then((value) {
+          downloadInfo!.headers.forEach((k, v) {
+            value.headers.add(k, v);
+          });
+          return value.close();
+        }).then((value) async {
+          var download = Download(
+            url: downloadInfo!.url,
+            path: downloadInfo!.path,
+            totalLength: value.contentLength,
+            maxSplit: downloadInfo!.maxSplit,
+            sendPortMainThread: sendPort,
+            filename: downloadInfo!.filename,
+            headers: downloadInfo!.headers,
+            tempPath: downloadInfo!.tempPath,
+            downloadId: downloadInfo!.downloadId,
+          );
+          sendPort.send([
+            SendPortStatus.setDownload,
+            download,
+            receivePort.sendPort,
+            completer
+          ]);
+          await completer.future;
+          log("lest go", name: 'easy_downloader');
+          var partFile = PartFile(
+              start: 0,
+              end: download.totalLength,
+              id: download.parts.length,
+              download: download,
+              isolate: Isolate.current);
+          savePart(value, partFile, download, downloadInfo!);
+          subscription.cancel();
         });
         // subscription.cancel();
       }
     });
-  }, receivePort.sendPort).then((value) => {
-    receivePort.sendPort.send([SendPortStatus.childIsolate, value])
-  });
+  }, receivePort.sendPort)
+      .then((value) => {
+            receivePort.sendPort.send([SendPortStatus.childIsolate, value])
+          });
   return receivePort;
 }

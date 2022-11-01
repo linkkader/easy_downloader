@@ -8,9 +8,8 @@ import 'status.dart';
 
 part 'easy_downloader.g.dart';
 
-
 @HiveType(typeId: 101)
-class DownloadTask{
+class DownloadTask {
   @HiveField(0)
   final int downloadId;
   @HiveField(1)
@@ -39,38 +38,50 @@ class DownloadTask{
   final bool showNotification;
   const DownloadTask(
       this.url,
-      this.downloadId, this.totalLength,
-      this.path, this.maxSplit, this.status,
-      this.blocks, this.downloaded,
-      this.tempPath, this.filename, this.headers,
-      {this.isInQueue = false, this.showNotification = false});
+      this.downloadId,
+      this.totalLength,
+      this.path,
+      this.maxSplit,
+      this.status,
+      this.blocks,
+      this.downloaded,
+      this.tempPath,
+      this.filename,
+      this.headers,
+      {this.isInQueue = false,
+      this.showNotification = false});
 
-  DownloadTask copyWith({
-    String? url,
-    int? downloadId, int? totalLength, String? path,
-    int? maxSplit, DownloadStatus? status, List<DownloadBlock>? blocks, int? downloaded,
-    String? tempPath, String? filename, Map<String, String>? headers,
-    bool? isInQueue,
-    bool? showNotification
-  }){
+  DownloadTask copyWith(
+      {String? url,
+      int? downloadId,
+      int? totalLength,
+      String? path,
+      int? maxSplit,
+      DownloadStatus? status,
+      List<DownloadBlock>? blocks,
+      int? downloaded,
+      String? tempPath,
+      String? filename,
+      Map<String, String>? headers,
+      bool? isInQueue,
+      bool? showNotification}) {
     return DownloadTask(
-      url ?? this.url,
-      downloadId ?? this.downloadId,
-      totalLength ?? this.totalLength,
-      path ?? this.path,
-      maxSplit ?? this.maxSplit,
-      status ?? this.status,
-      blocks ?? this.blocks,
-      downloaded ?? this.downloaded,
-      tempPath ?? this.tempPath,
-      filename ?? this.filename,
-      headers ?? this.headers,
-      isInQueue: isInQueue ?? this.isInQueue,
-      showNotification: showNotification ?? this.showNotification
-    );
+        url ?? this.url,
+        downloadId ?? this.downloadId,
+        totalLength ?? this.totalLength,
+        path ?? this.path,
+        maxSplit ?? this.maxSplit,
+        status ?? this.status,
+        blocks ?? this.blocks,
+        downloaded ?? this.downloaded,
+        tempPath ?? this.tempPath,
+        filename ?? this.filename,
+        headers ?? this.headers,
+        isInQueue: isInQueue ?? this.isInQueue,
+        showNotification: showNotification ?? this.showNotification);
   }
-  
-  Download toDownload(SendPort sendPort){
+
+  Download toDownload(SendPort sendPort) {
     var download = Download(
       url: url,
       tempPath: tempPath,
@@ -83,10 +94,10 @@ class DownloadTask{
       downloadId: downloadId,
     );
     var status_ = status;
-    for (var block in blocks){
+    for (var block in blocks) {
       download.setPart(block.toPartFile(download));
     }
-    if (status_ == DownloadStatus.downloading){
+    if (status_ == DownloadStatus.downloading) {
       status_ = DownloadStatus.paused;
     }
     download.updateStatus(status_);
