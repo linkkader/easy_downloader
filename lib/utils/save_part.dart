@@ -31,8 +31,9 @@ Future<void> savePart(HttpClientResponse value, PartFile partFile,
         case SendPortStatus.pausePart:
           {
             await value.detachSocket();
-            if (partFile.status != PartFileStatus.completed)
+            if (partFile.status != PartFileStatus.completed) {
               partFile.updateStatus(PartFileStatus.paused);
+            }
             Isolate.current.kill(priority: Isolate.immediate);
           }
       }

@@ -75,8 +75,9 @@ class DownloadController {
     _receivePort?.close();
     _download!.updateStatus(DownloadStatus.downloading);
     for (var value in _download!.parts) {
-      if (value.mustRetry())
+      if (value.mustRetry()) {
         value.updateStatus(PartFileStatus.resumed, fromMainThread: true);
+      }
     }
     _receivePort = ReceivePort();
     _download!.updateMainSendPort(_receivePort!.sendPort);

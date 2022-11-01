@@ -3,7 +3,6 @@
 import 'dart:async';
 import 'dart:developer';
 import '../easy_downloader.dart';
-import '../storage/status.dart';
 import 'download_monitor.dart';
 
 /// [DownloadMonitorInside] is a class that monitors the download process

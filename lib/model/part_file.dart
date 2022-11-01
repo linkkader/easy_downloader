@@ -46,17 +46,19 @@ class PartFile {
       {fromMainThread = false, fromIsolate = false}) {
     assert(sendPort != null);
     this.isolate = isolate;
-    if (!fromMainThread)
+    if (!fromMainThread) {
       download.sendPortMainThread
           .send([SendPortStatus.updateIsolate, _id, isolate]);
+    }
   }
 
   void updateSendPort(SendPort sendPort,
       {fromMainThread = false, fromIsolate = false}) {
     this.sendPort = sendPort;
-    if (!fromMainThread)
+    if (!fromMainThread) {
       download.sendPortMainThread
           .send([SendPortStatus.updatePartSendPort, _id, sendPort]);
+    }
   }
 
   void updateEnd(int newEnd, {fromMainThread = false, fromIsolate = false}) {
@@ -74,16 +76,18 @@ class PartFile {
 
   void updateDownloaded(int value, {bool fromMainThread = false}) {
     _downloaded = value;
-    if (!fromMainThread)
+    if (!fromMainThread) {
       download.sendPortMainThread
           .send([SendPortStatus.updatePartDownloaded, _id, value]);
+    }
   }
 
   void updateStatus(PartFileStatus value, {bool fromMainThread = false}) {
     _status = value;
-    if (!fromMainThread)
+    if (!fromMainThread) {
       download.sendPortMainThread
           .send([SendPortStatus.updatePartStatus, _id, value]);
+    }
   }
 
   void updateId(int newId) => _id = newId;
