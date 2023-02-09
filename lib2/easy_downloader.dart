@@ -17,6 +17,131 @@ import '../utils/append_file.dart';
 part 'utils/task_runner.dart';
 part 'model/download.dart';
 
+///controller for one task
+class DownloadController {
+  final List<Function(DownloadStatus)> _statusListeners = [];
+
+  Download? _download;
+  DownloadMonitor? _monitor;
+  ReceivePort? _receivePort;
+  final Function(DownloadMonitor? monitor)? onStart;
+  final int id;
+  DownloadController({required this.id, this.onStart});
+
+  void pause() {
+    assert(_download != null);
+    switch (_download!.status) {
+      case DownloadStatus.completed:
+        log('already completed', name: 'easy_downloader');
+        return;
+      case DownloadStatus.paused:
+        log('already paused', name: 'easy_downloader');
+        return;
+      case DownloadStatus.appending:
+        log('in appending', name: 'easy_downloader');
+        return;
+      case DownloadStatus.queuing:
+        log('in queuing', name: 'easy_downloader');
+        return;
+      default:
+        break;
+    }
+    _download!.pause();
+    var task = _download!.toTask();
+    if (task.isInQueue) {
+      EasyDownloader.removeTaskQueue(task.downloadId);
+    }
+  }
+
+  void resume() {
+    log('resume', name: 'easy_downloader');
+    assert(_download != null && _download!.downloadId != -1);
+    switch (_download!.status) {
+      case DownloadStatus.downloading:
+        log('already downloading', name: 'easy_downloader');
+        return;
+      case DownloadStatus.completed:
+        log('already completed', name: 'easy_downloader');
+        return;
+      case DownloadStatus.appending:
+        log('in appending', name: 'easy_downloader');
+        return;
+      case DownloadStatus.queuing:
+        log('in queuing', name: 'easy_downloader');
+        return;
+      default:
+        break;
+    }
+    _receivePort?.close();
+    _download!.updateStatus(DownloadStatus.downloading);
+    for (var value in _download!.parts) {
+      if (value.mustRetry()) {
+        value.updateStatus(PartFileStatus.resumed, fromMainThread: true);
+      }
+    }
+    _receivePort = ReceivePort();
+    _download!.updateMainSendPort(_receivePort!.sendPort);
+    var task = _download!.toTask();
+    isolateListen(
+      _receivePort!,
+      task,
+      _monitor,
+      _download!,
+      (p0) => _download = p0,
+    );
+    for (var part in _download!.parts) {
+      part.retry(task);
+    }
+    if (task.isInQueue) {
+      EasyDownloader.addTaskQueue(task.downloadId);
+    }
+  }
+
+  void start({DownloadMonitor? monitor}) {
+    if (_download == null ||
+        _download?.status == DownloadStatus.starting ||
+        _download?.status == DownloadStatus.queuing) {
+      var receivePort = downloadIsolate();
+      var task = EasyDownloader.getTask(id);
+      if (task == null) {
+        log('task is null', name: 'easy_downloader');
+        return;
+      }
+      _download ??= task.toDownload(receivePort.sendPort);
+      _updateMonitor(monitor);
+      _updateReceivePort(receivePort);
+      isolateListen(receivePort, task, monitor, _download!, (p0) {
+        _download = p0;
+        _updateDownload(_download!);
+      });
+    } else {
+      log('start already called ', name: 'easy_downloader');
+    }
+  }
+
+  int get downloadId => id;
+
+  void _updateDownload(Download download) {
+    _download = download;
+  }
+
+  void _updateMonitor(DownloadMonitor? monitor) {
+    _monitor = monitor;
+  }
+
+  void _updateReceivePort(ReceivePort receivePort) {
+    _receivePort = receivePort;
+  }
+
+  void addStatusListener(Function(DownloadStatus) listener) {
+    _statusListeners.add(listener);
+  }
+
+  void removeStatusListener(Function(DownloadStatus) listener) {
+    _statusListeners.remove(listener);
+  }
+}
+
 class EasyDownloader {
   static bool _init = false;
   static final Map<int, DownloadController> _controllers = {};
