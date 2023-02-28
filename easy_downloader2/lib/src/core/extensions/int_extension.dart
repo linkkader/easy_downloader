@@ -4,13 +4,13 @@ extension IntExtension on int {
   ///convert bytes to human readable string
   String toHumanReadableSize() {
     if (this < 1024) {
-      return "$this B";
+      return '$this B';
     } else if (this < 1024 * 1024) {
-      return "${(this / 1024).toStringAsFixed(2)} KB";
+      return '${(this / 1024).toStringAsFixed(2)} KB';
     } else if (this < 1024 * 1024 * 1024) {
-      return "${(this / (1024 * 1024)).toStringAsFixed(2)} MB";
+      return '${(this / (1024 * 1024)).toStringAsFixed(2)} MB';
     } else {
-      return "${(this / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB";
+      return '${(this / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
     }
   }
 
@@ -20,8 +20,8 @@ extension IntExtension on int {
   }
 
   ///sleep delay in seconds
-  Future sleep() async {
-    await Future.delayed(Duration(seconds: this));
+  Future<dynamic> sleep() async {
+    await Future<dynamic>.delayed(Duration(seconds: this));
   }
 
   int megabytes() => this * 1024 * 1024;

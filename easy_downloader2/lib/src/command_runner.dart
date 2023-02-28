@@ -1,7 +1,14 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:cli_completion/cli_completion.dart';
+import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/src/commands/commands.dart';
+import 'package:easy_downloader/src/core/extensions/duration_ext.dart';
+import 'package:easy_downloader/src/core/extensions/string_ext.dart';
+import 'package:easy_downloader/src/data/locale_storage/storage_model/download_task.dart';
 import 'package:easy_downloader/src/version.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
@@ -32,12 +39,54 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
         abbr: 'v',
         negatable: false,
         help: 'Print the current version.',
+      )..addOption(
+        'name',
+        abbr: 'n',
+        valueHelp: 'file',
+        help: 'file output name',
+      )..addOption(
+        'dir',
+        abbr: 'd',
+        valueHelp: 'dir',
+        callback: (value) {
+          if (value != null){
+            final dir = Directory(value);
+            if (!dir.existsSync()) {
+              dir.createSync(recursive: true);
+            }
+          }
+        },
+        help: 'file output dir',
+      )..addOption(
+        'split',
+        abbr: 's',
+        valueHelp: '1',
+        callback: (value) {
+          if (value != null){
+            final split = int.tryParse(value);
+            if (split == null || split < 1) {
+              throw const FormatException('Invalid split');
+            }
+          }
+        },
+        help: 'max block split',
       )
       ..addFlag(
         'verbose',
         help: 'Noisy logging, including all shell commands executed.',
       );
-
+    // ..addOption(
+    //   'url',
+    //   abbr: 'u',
+    //   allowed: ['http', 'https'],
+    //   aliases: ['u'],
+    //   callback: (value) {
+    //     if (value?.isValidUrl() != true) {
+    //       throw const FormatException('Invalid url');
+    //     }
+    //   },
+    //   help: 'download url',
+    // );
     // Add sub commands
     addCommand(SampleCommand(logger: _logger));
     addCommand(UpdateCommand(logger: _logger, pubUpdater: _pubUpdater));
@@ -48,6 +97,7 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
 
   final Logger _logger;
   final PubUpdater _pubUpdater;
+
 
   @override
   Future<int> run(Iterable<String> args) async {
@@ -108,7 +158,72 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
 
     // Run the command or show version
     final int? exitCode;
-    if (topLevelResults['version'] == true) {
+    // _logger.info('easy_downloader version: ${topLevelResults['split']} ${topLevelResults.options}');
+    // exit(22);
+    if (topLevelResults.rest.isNotEmpty) {
+      if (topLevelResults.rest.length == 1
+          && topLevelResults.rest[0].isValidUrl()) {
+        final easyDownloader = await EasyDownloader().init();
+        final completer = Completer<int>();
+        final stopwatch = Stopwatch()..start();
+        DownloadTask? task;
+        DownloadTask? oldTask;
+        // _logger.info('%\ttotal\t\tReceived\t\tTime spent\r');
+        final timer = Timer.periodic(const Duration(seconds: 1), (_) {
+          if (task == null) {
+            return;
+          }
+          final speed = (task!.totalDownloaded
+              - (oldTask?.totalDownloaded ?? 0))
+              .toHumanReadableSize().replaceAll(' ', '');
+          final duration = Duration(
+            milliseconds: stopwatch.elapsedMilliseconds,
+          );
+          switch(task!.status){
+            case DownloadStatus.downloading:
+              stdout.write('33[2K\r');
+              //ignore: lines_longer_than_80_chars
+              stdout.write('${task!.totalDownloaded * 100~/task!.totalLength}%\t${task!.totalDownloaded.toHumanReadableSize().replaceAll(" ", "")}/${task!.totalLength.toHumanReadableSize().replaceAll(" ", "")}\t${duration.toHumanReadable()} \t$speed/s');
+              break;
+            case DownloadStatus.paused:
+              break;
+            case DownloadStatus.completed:
+              completer.complete(ExitCode.success.code);
+              _logger.info('\ncompleted output path: ${task!.outputFilePath}');
+              break;
+            case DownloadStatus.failed:
+              completer.complete(ExitCode.ioError.code);
+              _logger.err('failed');
+              break;
+            case DownloadStatus.appending:
+              break;
+            case DownloadStatus.queuing:
+              break;
+          }
+          oldTask = task;
+        },);
+        task = await easyDownloader.download(
+          url: topLevelResults.rest[0],
+          autoStart: false,
+          maxSplit: int.tryParse(topLevelResults['split'].toString(),),
+          fileName: topLevelResults['name']?.toString(),
+          path: topLevelResults['dir']?.toString(),
+          listener: (DownloadTask downloadTask) {
+            task = downloadTask;
+          },
+        );
+        final file = File(task!.outputFilePath);
+        if (file.existsSync()) {
+          file.deleteSync();
+        }
+        task!.start();
+        exitCode = await completer.future;
+      }
+      else{
+        exitCode = ExitCode.ioError.code;
+      }
+    }
+    else if (topLevelResults['version'] == true) {
       _logger.info(packageVersion);
       exitCode = ExitCode.success.code;
     } else {

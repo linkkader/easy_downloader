@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Tests in example_test.dart" type="DartTestRunConfigurationType" factoryName="Dart Test" nameIsGenerated="true">
-    <option name="filePath" value="$PROJECT_DIR$/example/test/example_test.dart" />
+    <option name="filePath" value="$PROJECT_DIR$/easy_downloader2/example/test/example_test.dart" />
     <method v="2" />
   </configuration>
 </component>

@@ -5,7 +5,7 @@ import 'package:logger/logger.dart';
 class Log {
 
   final log = Logger();
-  final _tag = "EasyDownloader";
+  final _tag = 'EasyDownloader';
   var _infoCount = 0;
 
   static final Log _instance = Log._internal();

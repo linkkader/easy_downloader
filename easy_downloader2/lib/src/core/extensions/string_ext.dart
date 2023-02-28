@@ -101,7 +101,7 @@ extension StringExtension on String {
 
   //substring after last
   String substringAfterLast(String str) {
-    if (isEmpty) return "";
+    if (isEmpty) return '';
     if (str.isEmpty) return this;
     if (contains(str)) {
       return substring(lastIndexOf(str) + str.length);
@@ -110,4 +110,13 @@ extension StringExtension on String {
     }
   }
 
+  //valid url
+  bool isValidUrl() {
+    try {
+      Uri.parse(this);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
