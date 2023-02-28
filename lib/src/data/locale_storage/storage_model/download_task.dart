@@ -1,6 +1,9 @@
 // Created by linkkader on 5/12/2022
 
 
+import 'dart:collection';
+import 'dart:convert';
+
 import 'package:easy_downloader/src/core/extensions/int_extension.dart';
 import 'package:easy_downloader/src/data/locale_storage/storage_model/status.dart';
 import 'package:isar/isar.dart';
@@ -10,6 +13,7 @@ part 'download_task.g.dart';
 class DownloadTask{
   const DownloadTask(
       {
+        required this.headers,
         required this.path,
         required this.fileName,
         required this.url,
@@ -19,7 +23,6 @@ class DownloadTask{
         this.status = DownloadStatus.queuing,
         this.blocks = const [],
         this.totalDownloaded = 0,
-        // this.headers = const IsarMapEntity(),
         this.showNotification = false,
       });
   final Id downloadId;
@@ -31,7 +34,7 @@ class DownloadTask{
   final DownloadStatus status;
   final List<DownloadBlock> blocks;
   final String fileName;
-  // final IsarMapEntity headers;
+  final IsarMapEntity headers;
   final String url;
   final bool showNotification;
 
@@ -51,7 +54,7 @@ class DownloadTask{
           status == other.status &&
           blocks == other.blocks &&
           fileName == other.fileName &&
-          // headers == other.headers &&
+          headers == other.headers &&
           url == other.url &&
           showNotification == other.showNotification;
   @override
@@ -64,16 +67,18 @@ class DownloadTask{
       status.hashCode ^
       blocks.hashCode ^
       fileName.hashCode ^
-      // headers.hashCode ^
+      headers.hashCode ^
       url.hashCode ^
       showNotification.hashCode;
   }
 
   @override
   String toString() {
-    blocks.sort((a, b) => a.start.compareTo(b.start));
+    if (blocks.isNotEmpty){
+      blocks.sort((a, b) => a.start.compareTo(b.start));
+    }
     //ignore: lines_longer_than_80_chars
-    return 'DownloadTask{downloadId: $downloadId, totalLength: ${totalLength.toHumanReadableSize()}, totalDownloaded: ${totalDownloaded.toHumanReadableSize()}, path: $path, maxSplit: $maxSplit, status: $status, blocks: $blocks, filename: $fileName, headers: , url: $url, showNotification: $showNotification}';
+    return 'DownloadTask{downloadId: $downloadId, totalLength: ${totalLength.toHumanReadableSize()}, totalDownloaded: ${totalDownloaded.toHumanReadableSize()}, path: $path, maxSplit: $maxSplit, status: $status, blocks: $blocks, filename: $fileName, headers: $headers, url: $url, showNotification: $showNotification}';
   }
 
   DownloadTask copyWith({
@@ -86,7 +91,7 @@ class DownloadTask{
     List<DownloadBlock>? blocks,
     String? fileName,
     String? tempPath,
-    // IsarMapEntity? headers,
+    IsarMapEntity? headers,
     String? url,
     bool? showNotification,
   }) {
@@ -99,7 +104,7 @@ class DownloadTask{
       status: status ?? this.status,
       blocks: blocks ?? this.blocks,
       fileName: fileName ?? this.fileName,
-      // headers: headers ?? this.headers,
+      headers: headers ?? this.headers,
       url: url ?? this.url,
       showNotification: showNotification ?? this.showNotification,
     );
@@ -172,6 +177,42 @@ enum SendPortStatus {
   continueTask,
   continueTaskSuccess,
 }
+
+
+@Embedded(inheritance: false)
+class IsarMapEntity with MapMixin<String, dynamic> {
+  @ignore
+  Map<String, dynamic> _map = {};
+
+  String get json => jsonEncode(_map);
+
+  set json(String value) => _map = jsonDecode(value);
+
+  @override
+  dynamic operator [](Object? key) => _map[key];
+
+  @override
+  void operator []=(String key, value) => _map[key] = value;
+
+  @override
+  void clear() => _map.clear();
+
+  @ignore
+  @override
+  Iterable<String> get keys => _map.keys;
+
+  @override
+  dynamic remove(Object? key) => _map.remove(key);
+
+  IsarMapEntity();
+
+  IsarMapEntity.fromJson(this._map);
+
+  Map<String, dynamic> toJson() => _map;
+}
+
+
+
 
 // @Embedded(inheritance: false)
 // class IsarMapEntity<K, V> with MapMixin<K, V> {

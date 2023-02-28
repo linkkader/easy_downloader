@@ -37,6 +37,7 @@ Future<void> main() async {
         path: "download",
         autoStart: false,
         maxSplit: 8,
+        headers: {"test" : "test"},
         // speedListener: (speed) {
         //   print("speed: ${speed.toHumanReadableSize()}}");
         // },

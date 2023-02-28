@@ -85,6 +85,7 @@ DateTimeIsar _dateTimeIsarDeserialize(
   final object = DateTimeIsar(
     reader.readString(offsets[0]),
     reader.readDateTime(offsets[1]),
+    id: id,
   );
   return object;
 }
@@ -725,6 +726,7 @@ IntIsar _intIsarDeserialize(
   final object = IntIsar(
     reader.readString(offsets[0]),
     reader.readLong(offsets[1]),
+    id: id,
   );
   return object;
 }
@@ -1353,6 +1355,7 @@ StringIsar _stringIsarDeserialize(
   final object = StringIsar(
     reader.readString(offsets[0]),
     reader.readString(offsets[1]),
+    id: id,
   );
   return object;
 }

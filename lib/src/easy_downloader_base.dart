@@ -1,6 +1,7 @@
 
 
 import 'dart:io';
+import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/src/core/extensions/string_ext.dart';
 import 'package:easy_downloader/src/data/locale_storage/locale_storage.dart';
 import 'package:easy_downloader/src/data/locale_storage/storage_model/download_task.dart';
@@ -16,6 +17,7 @@ class EasyDownloader {
   EasyDownloader._internal();
 
   bool _isInit = false;
+  Log _log = Log();
   static late LocaleStorage _localeStorage;
   static late DownloadManager _downloadManager;
   static EasyDownloader _instance = EasyDownloader._internal();
@@ -39,6 +41,7 @@ class EasyDownloader {
     int? maxSplit,
     DownloadTaskListener? listener,
     bool autoStart = true,
+    Map<String, String> headers = const {},
     // SpeedListener? speedListener,
   }) async {
     assert(_isInit, 'EasyDownloader not initialized');
@@ -49,9 +52,13 @@ class EasyDownloader {
       dir.createSync(recursive: true);
     }
     //ignore: lines_longer_than_80_chars
-    var task = DownloadTask(url: url, path: path, fileName: fileName, maxSplit: maxSplit ?? 8);
+    var task = DownloadTask(url: url, path: path, fileName: fileName, maxSplit: maxSplit ?? 8, headers: IsarMapEntity.fromJson(headers));
+    _log.d('EasyDownloader: download task: $task');
     final id = await _localeStorage.setDownloadTask(task);
     task = task.copyWith(downloadId: id);
+    task = await task.updateSync();
+    _log.d('EasyDownloader: download task: $task');
+
     assert(id != null, 'EasyDownloader: id must not be null');
     if (autoStart) {
       await _downloadManager.downloadTask(task);

@@ -57,7 +57,20 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
           }
         },
         help: 'file output dir',
-      )..addOption(
+      )..addMultiOption(
+        'header',
+        abbr: 'H',
+        valueHelp: 'key:value',
+        callback: (value) {
+          for (final header in value) {
+            if (!header.contains(':')) {
+              throw const FormatException('Invalid header');
+            }
+          }
+        },
+        help: 'http header',
+      )
+      ..addOption(
         'split',
         abbr: 's',
         valueHelp: '1',
@@ -168,8 +181,15 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
         final stopwatch = Stopwatch()..start();
         DownloadTask? task;
         DownloadTask? oldTask;
+        var headers = <String, String>{};
+        if (topLevelResults['header'] != null) {
+          for (final header in topLevelResults['header']) {
+            final split = header.split(':');
+            headers[split[0]] = split[1];
+          }
+        }
         // _logger.info('%\ttotal\t\tReceived\t\tTime spent\r');
-        final timer = Timer.periodic(const Duration(seconds: 1), (_) {
+        Timer.periodic(const Duration(seconds: 1), (_) {
           if (task == null) {
             return;
           }
@@ -208,6 +228,7 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
           maxSplit: int.tryParse(topLevelResults['split'].toString(),),
           fileName: topLevelResults['name']?.toString(),
           path: topLevelResults['dir']?.toString(),
+          headers: headers,
           listener: (DownloadTask downloadTask) {
             task = downloadTask;
           },
