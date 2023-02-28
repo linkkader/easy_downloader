@@ -17,11 +17,11 @@ class EasyDownloader {
   EasyDownloader._internal();
 
   bool _isInit = false;
-  Log _log = Log();
   static late LocaleStorage _localeStorage;
   static late DownloadManager _downloadManager;
   static EasyDownloader _instance = EasyDownloader._internal();
 
+  ///init EasyDownloader
   Future<EasyDownloader> init() async {
     assert(!_isInit, 'EasyDownloader already initialized');
     await Isar.initializeIsarCore(download: true);
@@ -35,6 +35,7 @@ class EasyDownloader {
     return this;
   }
 
+  ///download file
   Future<DownloadTask> download({
     required String url,
     String? path, String? fileName,
@@ -53,12 +54,8 @@ class EasyDownloader {
     }
     //ignore: lines_longer_than_80_chars
     var task = DownloadTask(url: url, path: path, fileName: fileName, maxSplit: maxSplit ?? 8, headers: IsarMapEntity.fromJson(headers));
-    _log.d('EasyDownloader: download task: $task');
     final id = await _localeStorage.setDownloadTask(task);
     task = task.copyWith(downloadId: id);
-    task = await task.updateSync();
-    _log.d('EasyDownloader: download task: $task');
-
     assert(id != null, 'EasyDownloader: id must not be null');
     if (autoStart) {
       await _downloadManager.downloadTask(task);
@@ -72,6 +69,7 @@ class EasyDownloader {
     return task;
   }
 
+  ///list all download tasks
   Future<List<DownloadTask>> allDownloadTasks() async {
     assert(_isInit, 'EasyDownloader not initialized');
     return _localeStorage.getDownloadTasks();

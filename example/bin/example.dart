@@ -4,6 +4,7 @@ import 'package:easy_downloader/easy_downloader.dart';
 
 //http://xcal1.vodafone.co.uk/
 void main() async {
+
   var file = File("test.mp4");
   if (file.existsSync()) {
     file.deleteSync();
@@ -24,9 +25,6 @@ void main() async {
     path: "download/download",
     // fileName: "zanime_41.ipa",
     maxSplit: 10,
-    // speedListener: (speed) {
-    //   print("speed: $speed");
-    // },
     listener: (task) async {
       switch (task.status) {
         case DownloadStatus.completed:

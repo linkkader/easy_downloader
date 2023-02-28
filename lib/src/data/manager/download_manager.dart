@@ -19,6 +19,7 @@ class DownloadManager{
   static late SendPort _sendPort;
   static final DownloadManager _instance = DownloadManager._internal();
 
+
   static DownloadManager init(SendPort sendPort) {
     assert(!_isInit, 'DownloadManager already initialized');
     _sendPort = sendPort;
@@ -27,26 +28,31 @@ class DownloadManager{
     return _instance;
   }
 
+  ///send download task to isolate
    Future<void> downloadTask(DownloadTask task) async {
     assert(_isInit, 'DownloadManager not initialized');
     _sendPort.send(Pair(SendPortStatus.download, task));
   }
 
+  ///send continue task to isolate
   Future<void> continueTask(DownloadTask task) async {
     assert(_isInit, 'DownloadManager not initialized');
     _sendPort.send(Pair(SendPortStatus.continueTask, task));
   }
 
+  ///send pause task to isolate
   Future<void> pauseTask(DownloadTask task) async {
     assert(_isInit, 'DownloadManager not initialized');
     _sendPort.send(Pair(SendPortStatus.pauseTask, task));
   }
 
+  ///update task status to complete
   Future<void> taskComplete(DownloadTask task) async {
     assert(_isInit, 'DownloadManager not initialized');
     final newTask = task.copyWith(status: DownloadStatus.completed);
     await _localeStorage.setDownloadTask(newTask);
   }
+
 
   Future<void> appendSuccess(DownloadTask task) async {
     assert(
@@ -56,16 +62,17 @@ class DownloadManager{
     log.info('DownloadManager: appendSuccess  $task');
   }
 
+  ///check if all block finished
   bool isAllBlockFinished(DownloadTask task) {
     return task.blocks.every(
           (element) => element.status == BlockStatus.finished,);
   }
 
-
   void completeUpdateTask(DownloadTask task, int completerHashcode){
     _sendPort.send(Pair(SendPortStatus.completeUpdateTask,
         Pair(completerHashcode, task),),);
   }
+
 
   void completeUpdateBlock(DownloadTask task,
       int completerHashcode, DownloadBlock? block,){
@@ -76,6 +83,7 @@ class DownloadManager{
     );
   }
 
+  ///send block length to isolate
   void blockLength(int completerHashcode, int length){
     _sendPort.send(
       Pair(

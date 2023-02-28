@@ -37,7 +37,6 @@ Future<void> main() async {
         path: "download",
         autoStart: false,
         maxSplit: 8,
-        headers: {"test" : "test"},
         // speedListener: (speed) {
         //   print("speed: ${speed.toHumanReadableSize()}}");
         // },
@@ -56,8 +55,8 @@ Future<void> main() async {
         },
       );
       task.start();
-      // await 10.sleep();
-      // task.pause();
+      await 10.sleep();
+      task.pause();
       expect(element.second, await completer.future);
     });
   }

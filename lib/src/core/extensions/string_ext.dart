@@ -6,6 +6,7 @@ import 'dart:ffi';
 extension StringExtension on String {
 
   ///generate by chatgpt
+  ///generate file name from url
   String fileNameFromUrl() {
     return _generateFileNameFromUrl(this);
   }
