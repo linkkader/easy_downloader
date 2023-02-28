@@ -5,23 +5,29 @@ homepage: https://github.com/linkkader/easy_downloader/blob/main/example/lib/mai
 repository: https://github.com/linkkader/easy_downloader
 
 environment:
-  sdk: '>=2.18.0 <3.0.0'
-  flutter: ">=1.17.0"
+  sdk: ">=2.19.0 <3.0.0"
 
 dependencies:
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
-  path_provider: ^2.0.11
-  flutter:
-    sdk: flutter
+  http: ^0.13.5
+  args: ^2.3.1
+  chunked_stream: ^1.4.1
+  cli_completion: ^0.2.0
+  #locale storage
+  isar: ^3.0.5
+  #logging
+  logger: any
+  mason_logger: ^0.2.4
+  pub_updater: ^0.2.4
 
 dev_dependencies:
-  hive_generator: ^1.1.3
   build_runner: ^2.1.8
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^2.0.0
+  build_verify: ^3.0.0
+  build_version: ^2.0.0
+  isar_generator: ^3.0.2
+  lints: ^2.0.0
+  mocktail: ^0.3.0
+  test: ^1.19.2
+  very_good_analysis: ^4.0.0
 
-
-flutter:
-  generate: true
+executables:
+  easy_downloader:

@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="cli" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
     <option name="arguments" value="https://github.com/linkkader/zanime/releases/download/41/zanime_41.ipa" />
-    <option name="filePath" value="$PROJECT_DIR$/easy_downloader2/bin/easy_downloader.dart" />
+    <option name="filePath" value="$PROJECT_DIR$/bin/easy_downloader.dart" />
     <method v="2" />
   </configuration>
 </component>
