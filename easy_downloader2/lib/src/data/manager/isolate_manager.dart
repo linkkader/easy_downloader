@@ -23,11 +23,14 @@ class IsolateManager{
   static bool _isInit = false;
   static final IsolateManager _instance = IsolateManager._internal();
 
-  static Future<IsolateManager> init({Future Function(SendPort sendPort)? onFinish} ) async {
+  static Future<IsolateManager> init(
+      {Future<dynamic> Function(SendPort sendPort)? onFinish,})
+  async {
     assert(!_isInit, 'IsolateManager already initialized');
     final receivePort = ReceivePort();
     _localeStorage = LocaleStorage();
     await Isolate.spawn(_isolateEntry, receivePort.sendPort);
+    receivePort.listen(_isolateListen);
     await onFinish?.call(await _sendPortCompleter.future);
     log.info('IsolateManager initialized success');
     _isInit = true;
