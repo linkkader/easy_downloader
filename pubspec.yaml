@@ -3,7 +3,6 @@ description: Easy Downloader is a simple and easy to use plugin to download file
 version: 0.0.14-dev
 homepage: https://github.com/linkkader/easy_downloader/blob/main/example/bin/example.dart
 repository: https://github.com/linkkader/easy_downloader
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
   sdk: ">=2.19.0 <3.0.0"
@@ -16,7 +15,7 @@ dependencies:
   #locale storage
   isar: ^3.0.5
   #logging
-  logger: any
+  logger: ^1.0.0
   mason_logger: ^0.2.4
   pub_updater: ^0.2.4
 
