@@ -87,7 +87,6 @@ class IsolateManager{
           break;
         default:
           throw Exception('IsolateManager: unknown SendPortStatus ${pair.first}');
-          break;
       }
     });
   }
@@ -158,7 +157,6 @@ class IsolateManager{
         break;
       default:
         throw Exception("IsolateManager: unknown SendPortStatus");
-        break;
     }
   }
 

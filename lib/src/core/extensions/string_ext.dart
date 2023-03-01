@@ -1,8 +1,5 @@
 // Created by linkkader on 9/9/2022
 
-import 'dart:ffi';
-
-
 extension StringExtension on String {
 
   ///generate by chatgpt
@@ -13,7 +10,6 @@ extension StringExtension on String {
 
   String _generateFileNameFromUrl(String url) {
     final uri = Uri.parse(url);
-    final pathSegments = uri.pathSegments;
     var fileName = uri.pathSegments.isNotEmpty ? uri.pathSegments.last : uri.path;
 
     // Remove any query string or fragment identifier from the file name

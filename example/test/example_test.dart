@@ -26,8 +26,6 @@ Future<void> main() async {
     Pair("https://github.com/linkkader/zanime/releases/download/41/zanime_41.ipa","b65ec3bc25351d34ef265d6c70399f320170407870645313726f17d8b99173c9")
   ];
 
-  var log = Log();
-
   for (var element in all) {
     test(element.first, () async {
       var completer = Completer();

@@ -255,6 +255,7 @@ class DownloadManagerIsolate{
         block, task,
         updateOldBlockEnd, randomAccessFile,
     );
+    // ignore: deprecated_member_use
     final chunkReader = ChunkedStreamIterator(response);
     while(true){
       var event = <int>[];
