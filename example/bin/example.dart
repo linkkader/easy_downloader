@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:crypto/crypto.dart';
 import 'package:easy_downloader/easy_downloader.dart';
 
 //http://xcal1.vodafone.co.uk/
@@ -25,17 +24,17 @@ void main() async {
     path: "download/download",
     // fileName: "zanime_41.ipa",
     maxSplit: 10,
-    listener: (task) async {
-      switch (task.status) {
-        case DownloadStatus.completed:
-          var file = File(task.outputFilePath);
-          var checksum = sha1.convert(await file.readAsBytes());
-          print("completed ${checksum.toString()}");
-          break;
-        default:
-          // TODO: Handle this case.
-          break;
-      }
-    },
+    // listener: (task) async {
+    //   switch (task.status) {
+    //     case DownloadStatus.completed:
+    //       var file = File(task.outputFilePath);
+    //       var checksum = sha1.convert(await file.readAsBytes());
+    //       print("completed ${checksum.toString()}");
+    //       break;
+    //     default:
+    //       // TODO: Handle this case.
+    //       break;
+    //   }
+    // },
   );
 }

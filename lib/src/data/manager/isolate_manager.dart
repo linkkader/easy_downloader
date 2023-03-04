@@ -8,6 +8,7 @@ import 'package:easy_downloader/src/core/utils/tupe.dart';
 import 'package:easy_downloader/src/data/locale_storage/locale_storage.dart';
 import 'package:easy_downloader/src/data/locale_storage/storage_model/download_task.dart';
 import 'package:easy_downloader/src/data/manager/download_manager.dart';
+import '../../core/enum/send_port_status.dart';
 import '../locale_storage/storage_model/status.dart';
 import 'download_manager_isolate.dart';
 
@@ -150,9 +151,9 @@ class IsolateManager{
         //ignore: lines_longer_than_80_chars
         assert(pair.second is DownloadTask, 'IsolateManager: pair.second is not DownloadTask');
         final task = pair.second as DownloadTask;
+        log.e(task);
         await _localeStorage.setDownloadTaskStatus(
-            task.downloadId
-            , DownloadStatus.downloading,
+          task.downloadId, DownloadStatus.downloading,
         );
         break;
       default:

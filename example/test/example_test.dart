@@ -38,20 +38,19 @@ Future<void> main() async {
         // speedListener: (speed) {
         //   print("speed: ${speed.toHumanReadableSize()}}");
         // },
-        listener: (task) {
-          // log.wtf(task);
-          print("status: ${task.status} ${task.totalDownloaded.toHumanReadableSize()} / ${task.totalLength.toHumanReadableSize()}");
-          switch (task.status){
-            case DownloadStatus.completed:
-              print("completed in ${Duration(milliseconds: stopwatch.elapsedMilliseconds).inSeconds} seconds");
-              var file = File(task.outputFilePath);
-              var checksum = sha256.convert(file.readAsBytesSync());
-              completer.complete(checksum.toString());
-              break;
-            default:
-          }
-        },
       );
+      task.addListener((task) {
+        print("status: ${task.status} ${task.totalDownloaded.toHumanReadableSize()} / ${task.totalLength.toHumanReadableSize()}");
+        switch (task.status){
+          case DownloadStatus.completed:
+            print("completed in ${Duration(milliseconds: stopwatch.elapsedMilliseconds).inSeconds} seconds");
+            var file = File(task.outputFilePath);
+            var checksum = sha256.convert(file.readAsBytesSync());
+            completer.complete(checksum.toString());
+            break;
+          default:
+        }
+      });
       task.start();
       await 10.sleep();
       task.pause();

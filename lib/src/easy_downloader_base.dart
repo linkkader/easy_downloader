@@ -4,11 +4,10 @@ import 'dart:io';
 import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/src/core/extensions/string_ext.dart';
 import 'package:easy_downloader/src/data/locale_storage/locale_storage.dart';
-import 'package:easy_downloader/src/data/locale_storage/storage_model/download_task.dart';
-import 'package:easy_downloader/src/data/locale_storage/storage_model/status.dart';
 import 'package:easy_downloader/src/data/manager/download_manager.dart';
 import 'package:easy_downloader/src/data/manager/isolate_manager.dart';
-import 'package:isar/isar.dart';
+import 'data/locale_storage/storage_model/isar_map_entity.dart';
+import 'data/manager/speed_manager.dart';
 
 part 'data/task_extension.dart';
 
@@ -16,23 +15,23 @@ class EasyDownloader {
   factory EasyDownloader() => _instance;
   EasyDownloader._internal();
 
-  bool _isInit = false;
+  static bool _isInit = false;
   static late LocaleStorage _localeStorage;
   static late DownloadManager _downloadManager;
-  static EasyDownloader _instance = EasyDownloader._internal();
+  static late SpeedManager _speedManager;
+  static final EasyDownloader _instance = EasyDownloader._internal();
 
   ///init EasyDownloader
-  Future<EasyDownloader> init() async {
+  Future<EasyDownloader> init({String? localeStoragePath, Isar? isar}) async {
     assert(!_isInit, 'EasyDownloader already initialized');
     await Isar.initializeIsarCore(download: true);
-    _localeStorage = await LocaleStorage.init();
-    // _speedManager = SpeedManager.init(_localeStorage);
-    _instance = EasyDownloader._internal();
+    _localeStorage = await LocaleStorage.init(isar: isar, localeStoragePath: localeStoragePath);
+    _speedManager = SpeedManager.init(_localeStorage);
     await IsolateManager.init(onFinish: (sendPort) async {
       _downloadManager = DownloadManager.init(sendPort);
     },);
     _isInit = true;
-    return this;
+    return _instance;
   }
 
   ///download file
@@ -40,10 +39,8 @@ class EasyDownloader {
     required String url,
     String? path, String? fileName,
     int? maxSplit,
-    DownloadTaskListener? listener,
     bool autoStart = true,
     Map<String, String> headers = const {},
-    // SpeedListener? speedListener,
   }) async {
     assert(_isInit, 'EasyDownloader not initialized');
     fileName ??= url.fileNameFromUrl();
@@ -60,12 +57,6 @@ class EasyDownloader {
     if (autoStart) {
       await _downloadManager.downloadTask(task);
     }
-    if (listener != null) {
-      _localeStorage.addListener(listener, id!);
-    }
-    // if (speedListener != null) {
-    //   _speedManager.addListener(speedListener, id!);
-    // }
     return task;
   }
 
@@ -76,7 +67,9 @@ class EasyDownloader {
   }
 
   static EasyDownloader get easyDownloader {
-    assert(_instance._isInit, 'EasyDownloader not initialized');
+    assert(_isInit, 'EasyDownloader not initialized');
     return _instance;
   }
+
+  static List<CollectionSchema<dynamic>> get schemas => LocaleStorage.schemas;
 }
