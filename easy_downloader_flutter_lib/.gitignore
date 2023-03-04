@@ -28,7 +28,3 @@ migrate_working_dir/
 .dart_tool/
 .packages
 build/
-*.lock
-*.isar
-example/easy_downloader_bench/
-easy_downloader_flutter_lib/
