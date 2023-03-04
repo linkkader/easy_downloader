@@ -1,13 +1,14 @@
 // Created by linkkader on 5/12/2022
 
-
-import 'dart:collection';
-import 'dart:convert';
-
 import 'package:easy_downloader/src/core/extensions/int_extension.dart';
 import 'package:easy_downloader/src/data/locale_storage/storage_model/status.dart';
 import 'package:isar/isar.dart';
+
+import 'isar_map_entity.dart';
 part 'download_task.g.dart';
+
+typedef DownloadTaskListener = void Function(DownloadTask task);
+
 
 @Collection()
 class DownloadTask{
@@ -23,7 +24,6 @@ class DownloadTask{
         this.status = DownloadStatus.queuing,
         this.blocks = const [],
         this.totalDownloaded = 0,
-        this.showNotification = false,
       });
   final Id downloadId;
   final int totalLength;
@@ -36,7 +36,6 @@ class DownloadTask{
   final String fileName;
   final IsarMapEntity headers;
   final String url;
-  final bool showNotification;
 
 
   String get outputFilePath => path.isEmpty ? fileName : '$path/$fileName';
@@ -55,8 +54,7 @@ class DownloadTask{
           blocks == other.blocks &&
           fileName == other.fileName &&
           headers == other.headers &&
-          url == other.url &&
-          showNotification == other.showNotification;
+          url == other.url;
   @override
   int get hashCode {
     return downloadId.hashCode ^
@@ -68,8 +66,7 @@ class DownloadTask{
       blocks.hashCode ^
       fileName.hashCode ^
       headers.hashCode ^
-      url.hashCode ^
-      showNotification.hashCode;
+      url.hashCode;
   }
 
   @override
@@ -78,7 +75,7 @@ class DownloadTask{
       blocks.sort((a, b) => a.start.compareTo(b.start));
     }
     //ignore: lines_longer_than_80_chars
-    return 'DownloadTask{downloadId: $downloadId, totalLength: ${totalLength.toHumanReadableSize()}, totalDownloaded: ${totalDownloaded.toHumanReadableSize()}, path: $path, maxSplit: $maxSplit, status: $status, blocks: $blocks, filename: $fileName, headers: $headers, url: $url, showNotification: $showNotification}';
+    return 'DownloadTask{downloadId: $downloadId, totalLength: ${totalLength.toHumanReadableSize()}, totalDownloaded: ${totalDownloaded.toHumanReadableSize()}, path: $path, maxSplit: $maxSplit, status: $status, blocks: $blocks, filename: $fileName, headers: $headers, url: $url}';
   }
 
   DownloadTask copyWith({
@@ -105,8 +102,7 @@ class DownloadTask{
       blocks: blocks ?? this.blocks,
       fileName: fileName ?? this.fileName,
       headers: headers ?? this.headers,
-      url: url ?? this.url,
-      showNotification: showNotification ?? this.showNotification,
+      url: url ?? this.url
     );
   }
 }
@@ -162,144 +158,3 @@ class DownloadBlock{
   int get hashCode => start.hashCode ^ end.hashCode ^ id.hashCode ^ downloaded.hashCode ^ status.hashCode ^ currentSplit.hashCode;
 
 }
-
-enum SendPortStatus {
-  updateMainIsolateSendPort,
-  updateTask,
-  completeUpdateTask,
-  updateBlock,
-  completeUpdateBlock,
-  download,
-  pauseTask,
-  pauseTaskSuccess,
-  blockLength,
-  blockFinished,
-  continueTask,
-  continueTaskSuccess,
-}
-
-
-@Embedded(inheritance: false)
-class IsarMapEntity with MapMixin<String, dynamic> {
-  @ignore
-  Map<String, dynamic> _map = {};
-
-  String get json => jsonEncode(_map);
-
-  set json(String value) => _map = jsonDecode(value);
-
-  @override
-  dynamic operator [](Object? key) => _map[key];
-
-  @override
-  void operator []=(String key, value) => _map[key] = value;
-
-  @override
-  void clear() => _map.clear();
-
-  @ignore
-  @override
-  Iterable<String> get keys => _map.keys;
-
-  @override
-  dynamic remove(Object? key) => _map.remove(key);
-
-  IsarMapEntity();
-
-  IsarMapEntity.fromJson(this._map);
-
-  Map<String, dynamic> toJson() => _map;
-}
-
-
-
-
-// @Embedded(inheritance: false)
-// class IsarMapEntity<K, V> with MapMixin<K, V> {
-//
-//   @ignore
-//   final Map<K, V> isarMap;
-//
-//   const IsarMapEntity({this.isarMap = const {}});
-//
-//   IsarMapEntity.empty() : isarMap = <K, V>{};
-//   IsarMapEntity.fromMap(this.isarMap);
-//
-//   @override
-//   V? operator [](Object? key) {
-//     return isarMap[key];
-//   }
-//
-//   @override
-//   void operator []=(K key, V value) {
-//     isarMap[key] = value;
-//   }
-//
-//   @override
-//   void clear() {
-//     isarMap.clear();
-//   }
-//
-//   @ignore
-//   @override
-//   Iterable<K> get keys => isarMap.keys;
-//
-//   @override
-//   V? remove(Object? key) {
-//     return isarMap.remove(key);
-//   }
-//
-//   IsarMapEntity.fromJson(this.isarMap);
-//   Map<K, V> toJson() => isarMap;
-//
-//   String get json => jsonEncode(map);
-//   // set json(String value) => _map = jsonDecode(value);
-//
-// }
-
-
-// @Embedded(inheritance: false)
-// class IsarMapEntity2<K, V> with MapMixin<K, V> {
-//   @ignore
-//   Map<K, V> _map = {};
-//
-//   String get json => jsonEncode(_map);
-//
-//   set json(String value) => _map = jsonDecode(value);
-//
-//   @override
-//   void operator []=(K key, value) => _map[key] = value;
-//
-//   @override
-//   void clear() => _map.clear();
-//
-//   @ignore
-//   @override
-//   Iterable<K> get keys => _map.keys;
-//
-//   IsarMapEntity();
-//
-//   IsarMapEntity.fromJson(this._map);
-//
-//   Map<K, V> toJson() => _map;
-//
-//   @override
-//   V? operator [](Object? key) {
-//     return _map[key];
-//   }
-//
-//   @override
-//   V? remove(Object? key) {
-//     return _map.remove(key);
-//   }
-//
-//   IsarMapEntity<K, V> copyWith({Map<K, V>? map}) {
-//     return IsarMapEntity<K, V>()
-//       .._map = map ?? this._map;
-//   }
-//
-//   static IsarMapEntity empty()  {
-//     return const IsarMapEntity();
-//   }
-//
-// }

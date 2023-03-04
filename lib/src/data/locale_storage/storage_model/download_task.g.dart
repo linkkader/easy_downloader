@@ -54,29 +54,24 @@ const DownloadTaskSchema = CollectionSchema(
       name: r'path',
       type: IsarType.string,
     ),
-    r'showNotification': PropertySchema(
-      id: 7,
-      name: r'showNotification',
-      type: IsarType.bool,
-    ),
     r'status': PropertySchema(
-      id: 8,
+      id: 7,
       name: r'status',
       type: IsarType.byte,
       enumMap: _DownloadTaskstatusEnumValueMap,
     ),
     r'totalDownloaded': PropertySchema(
-      id: 9,
+      id: 8,
       name: r'totalDownloaded',
       type: IsarType.long,
     ),
     r'totalLength': PropertySchema(
-      id: 10,
+      id: 9,
       name: r'totalLength',
       type: IsarType.long,
     ),
     r'url': PropertySchema(
-      id: 11,
+      id: 10,
       name: r'url',
       type: IsarType.string,
     )
@@ -146,11 +141,10 @@ void _downloadTaskSerialize(
   writer.writeLong(offsets[4], object.maxSplit);
   writer.writeString(offsets[5], object.outputFilePath);
   writer.writeString(offsets[6], object.path);
-  writer.writeBool(offsets[7], object.showNotification);
-  writer.writeByte(offsets[8], object.status.index);
-  writer.writeLong(offsets[9], object.totalDownloaded);
-  writer.writeLong(offsets[10], object.totalLength);
-  writer.writeString(offsets[11], object.url);
+  writer.writeByte(offsets[7], object.status.index);
+  writer.writeLong(offsets[8], object.totalDownloaded);
+  writer.writeLong(offsets[9], object.totalLength);
+  writer.writeString(offsets[10], object.url);
 }
 
 DownloadTask _downloadTaskDeserialize(
@@ -177,13 +171,12 @@ DownloadTask _downloadTaskDeserialize(
         IsarMapEntity(),
     maxSplit: reader.readLongOrNull(offsets[4]) ?? 0,
     path: reader.readString(offsets[6]),
-    showNotification: reader.readBoolOrNull(offsets[7]) ?? false,
     status:
-        _DownloadTaskstatusValueEnumMap[reader.readByteOrNull(offsets[8])] ??
+        _DownloadTaskstatusValueEnumMap[reader.readByteOrNull(offsets[7])] ??
             DownloadStatus.queuing,
-    totalDownloaded: reader.readLongOrNull(offsets[9]) ?? 0,
-    totalLength: reader.readLongOrNull(offsets[10]) ?? 0,
-    url: reader.readString(offsets[11]),
+    totalDownloaded: reader.readLongOrNull(offsets[8]) ?? 0,
+    totalLength: reader.readLongOrNull(offsets[9]) ?? 0,
+    url: reader.readString(offsets[10]),
   );
   return object;
 }
@@ -221,15 +214,13 @@ P _downloadTaskDeserializeProp<P>(
     case 6:
       return (reader.readString(offset)) as P;
     case 7:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 8:
       return (_DownloadTaskstatusValueEnumMap[reader.readByteOrNull(offset)] ??
           DownloadStatus.queuing) as P;
+    case 8:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 9:
       return (reader.readLongOrNull(offset) ?? 0) as P;
     case 10:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
-    case 11:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1008,16 +999,6 @@ extension DownloadTaskQueryFilter
     });
   }
 
-  QueryBuilder<DownloadTask, DownloadTask, QAfterFilterCondition>
-      showNotificationEqualTo(bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'showNotification',
-        value: value,
-      ));
-    });
-  }
-
   QueryBuilder<DownloadTask, DownloadTask, QAfterFilterCondition> statusEqualTo(
       DownloadStatus value) {
     return QueryBuilder.apply(this, (query) {
@@ -1402,20 +1383,6 @@ extension DownloadTaskQuerySortBy
     });
   }
 
-  QueryBuilder<DownloadTask, DownloadTask, QAfterSortBy>
-      sortByShowNotification() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'showNotification', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DownloadTask, DownloadTask, QAfterSortBy>
-      sortByShowNotificationDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'showNotification', Sort.desc);
-    });
-  }
-
   QueryBuilder<DownloadTask, DownloadTask, QAfterSortBy> sortByStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'status', Sort.asc);
@@ -1545,20 +1512,6 @@ extension DownloadTaskQuerySortThenBy
     });
   }
 
-  QueryBuilder<DownloadTask, DownloadTask, QAfterSortBy>
-      thenByShowNotification() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'showNotification', Sort.asc);
-    });
-  }
-
-  QueryBuilder<DownloadTask, DownloadTask, QAfterSortBy>
-      thenByShowNotificationDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'showNotification', Sort.desc);
-    });
-  }
-
   QueryBuilder<DownloadTask, DownloadTask, QAfterSortBy> thenByStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'status', Sort.asc);
@@ -1647,13 +1600,6 @@ extension DownloadTaskQueryWhereDistinct
     });
   }
 
-  QueryBuilder<DownloadTask, DownloadTask, QDistinct>
-      distinctByShowNotification() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'showNotification');
-    });
-  }
-
   QueryBuilder<DownloadTask, DownloadTask, QDistinct> distinctByStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'status');
@@ -1731,13 +1677,6 @@ extension DownloadTaskQueryProperty
   QueryBuilder<DownloadTask, String, QQueryOperations> pathProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'path');
-    });
-  }
-
-  QueryBuilder<DownloadTask, bool, QQueryOperations>
-      showNotificationProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'showNotification');
     });
   }
 
@@ -2295,207 +2234,3 @@ extension DownloadBlockQueryFilter
 
 extension DownloadBlockQueryObject
     on QueryBuilder<DownloadBlock, DownloadBlock, QFilterCondition> {}
-
-// coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
-
-const IsarMapEntitySchema = Schema(
-  name: r'IsarMapEntity',
-  id: 4188544182411953616,
-  properties: {
-    r'json': PropertySchema(
-      id: 0,
-      name: r'json',
-      type: IsarType.string,
-    )
-  },
-  estimateSize: _isarMapEntityEstimateSize,
-  serialize: _isarMapEntitySerialize,
-  deserialize: _isarMapEntityDeserialize,
-  deserializeProp: _isarMapEntityDeserializeProp,
-);
-
-int _isarMapEntityEstimateSize(
-  IsarMapEntity object,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  var bytesCount = offsets.last;
-  bytesCount += 3 + object.json.length * 3;
-  return bytesCount;
-}
-
-void _isarMapEntitySerialize(
-  IsarMapEntity object,
-  IsarWriter writer,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  writer.writeString(offsets[0], object.json);
-}
-
-IsarMapEntity _isarMapEntityDeserialize(
-  Id id,
-  IsarReader reader,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  final object = IsarMapEntity();
-  object.json = reader.readString(offsets[0]);
-  return object;
-}
-
-P _isarMapEntityDeserializeProp<P>(
-  IsarReader reader,
-  int propertyId,
-  int offset,
-  Map<Type, List<int>> allOffsets,
-) {
-  switch (propertyId) {
-    case 0:
-      return (reader.readString(offset)) as P;
-    default:
-      throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-extension IsarMapEntityQueryFilter
-    on QueryBuilder<IsarMapEntity, IsarMapEntity, QFilterCondition> {
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition> jsonEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'json',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'json',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'json',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition> jsonBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'json',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'json',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'json',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'json',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition> jsonMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'json',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'json',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'json',
-        value: '',
-      ));
-    });
-  }
-}
-
-extension IsarMapEntityQueryObject
-    on QueryBuilder<IsarMapEntity, IsarMapEntity, QFilterCondition> {}

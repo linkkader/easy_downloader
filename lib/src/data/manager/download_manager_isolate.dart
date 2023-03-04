@@ -13,6 +13,8 @@ import 'package:easy_downloader/src/core/utils/tupe.dart';
 import 'package:easy_downloader/src/data/locale_storage/storage_model/download_task.dart';
 import 'package:easy_downloader/src/data/locale_storage/storage_model/status.dart';
 
+import '../../core/enum/send_port_status.dart';
+
 //isolate
 class DownloadManagerIsolate{
   factory DownloadManagerIsolate() => _instance;
@@ -37,6 +39,8 @@ class DownloadManagerIsolate{
 
   Future<void> downloadTask(DownloadTask downloadTask) async {
     assert(_isInit, 'DownloadManager not initialized');
+    //ignore: lines_longer_than_80_chars
+    assert(_taskClientMap[downloadTask.downloadId] == null, 'DownloadManager: _taskClientMap must be null');
     final client = HttpClient();
     _taskClientMap[downloadTask.downloadId] = [];
     await client.getUrl(Uri.parse(downloadTask.url)).then((value) {
@@ -78,8 +82,6 @@ class DownloadManagerIsolate{
       )
   async {
     assert(_isInit, 'DownloadManager not initialized');
-    //ignore: lines_longer_than_80_chars
-    assert(_taskClientMap[task.downloadId] != null, 'DownloadManager: _downloadNextBlock failed _taskClientMap is null');
     final client = HttpClient();
     //ignore: lines_longer_than_80_chars
     final newStart = oldBlock.start + (oldBlock.end - oldBlock.start - oldBlock.downloaded) ~/ 2;
@@ -111,18 +113,17 @@ class DownloadManagerIsolate{
   }
 
 
-  Future<void> _continueBlock(
+  Future<Tuple<HttpClientResponse, HttpClient, DownloadBlock>?> _continueBlock(
       DownloadBlock downloadBlock,
       DownloadTask task,RandomAccessFile randomAccessFile,
       ) async{
+    log.w('_continueBlock');
     assert(_isInit, 'DownloadManager not initialized');
-    //ignore: lines_longer_than_80_chars
-    assert(_taskClientMap[task.downloadId] != null, 'DownloadManager: _downloadNextBlock failed _taskClientMap is null');
     final client = HttpClient();
     var block = downloadBlock.copyWith();
     final newStart = block.start + block.downloaded;
     final newEnd = block.end;
-    await client.getUrl(Uri.parse(task.url)).then((value) {
+    return client.getUrl(Uri.parse(task.url)).then((value) {
       task.headers.forEach((k, v) {
         value.headers.add(k, v);
       });
@@ -132,23 +133,47 @@ class DownloadManagerIsolate{
       block = block.copyWith(status: BlockStatus.downloading);
       final newBlock = await _updateTaskBlock(task, block);
       if (newBlock != null){
-        await _saveBlock(block, task, value, randomAccessFile, client);
+        return Tuple(value, client, newBlock);
       }
       else{
         client.close(force: true);
         Exception('DownloadManager: _continueBlock failed');
       }
+      return null;
     });
   }
 
   Future<void> continueTask(DownloadTask task) async {
+    log.w('continueTask');
     assert(_isInit, 'DownloadManager not initialized');
+    //ignore: lines_longer_than_80_chars
+    assert(_taskClientMap[task.downloadId] == null, 'DownloadManager: _taskClientMap must be null');
     _taskClientMap[task.downloadId] = [];
     final raf = await File(task.outputFilePath).open(mode: FileMode.append);
-    for(final block in task.blocks){
-      await _continueBlock(block, task, raf);
+    if (task.blocks.isEmpty){
+      await downloadTask(task);
     }
-
+    else{
+      List<Tuple<HttpClientResponse, HttpClient, DownloadBlock>?> tuples = [];
+      for(final block in task.blocks){
+        log.e('continueTask block start $block');
+        tuples.add(await _continueBlock(block, task, raf));
+        log.e('continueTask block end $block');
+      }
+      task = task.copyWith(status: DownloadStatus.downloading);
+      int i = 0;
+      for(final tuple in tuples){
+        if (tuple != null){
+          _saveBlock(tuple.third, task, tuple.first, raf, tuple.second);
+        }
+        else{
+          log.e('continueTask failed at block $i ${task.blocks[i]}');
+          // _sendPort.send(Pair(SendPortStatus.continueTaskFailed, task));
+          // return;
+        }
+      }
+    }
+    log.e('continueTask end');
     _sendPort.send(Pair(SendPortStatus.continueTaskSuccess, task));
   }
 
@@ -217,6 +242,7 @@ class DownloadManagerIsolate{
       HttpClientResponse response, RandomAccessFile randomAccessFile,
       HttpClient client,)
   async {
+    log.w('_saveBlock');
     var block = downloadBlock.copyWith();
     late TaskRunner<Tuple<List<int>, int, DownloadBlock>> runner;
     assert(_isInit, 'DownloadManager not initialized');
@@ -240,7 +266,6 @@ class DownloadManagerIsolate{
       await _updateTaskBlock(task, newBlock);
     }, maxConcurrentTasks: 10000,);
 
-    _taskClientMap[task.downloadId] ??= [];
     _taskClientMap[task.downloadId]!.add(Pair(client, runner));
 
     Future<void> updateOldBlockEnd(int end) async {
@@ -315,6 +340,7 @@ class DownloadManagerIsolate{
       }
     }
     _taskClientMap.remove(task.downloadId);
+    assert(_taskClientMap[task.downloadId] == null, 'DownloadManager: _taskClientMap must be null');
     task = task.copyWith(status: DownloadStatus.paused);
     _sendPort.send(Pair(SendPortStatus.pauseTaskSuccess, task));
   }

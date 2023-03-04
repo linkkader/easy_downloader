@@ -8,7 +8,6 @@ import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/src/commands/commands.dart';
 import 'package:easy_downloader/src/core/extensions/duration_ext.dart';
 import 'package:easy_downloader/src/core/extensions/string_ext.dart';
-import 'package:easy_downloader/src/data/locale_storage/storage_model/download_task.dart';
 import 'package:easy_downloader/src/version.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
@@ -188,6 +187,10 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
             headers[split[0]] = split[1];
           }
         }
+        var url = topLevelResults.rest[0];
+        if (url.isValidUrl() != true) {
+          throw const FormatException('Invalid url');
+        }
         // _logger.info('%\ttotal\t\tReceived\t\tTime spent\r');
         Timer.periodic(const Duration(seconds: 1), (_) {
           if (task == null) {
@@ -223,16 +226,16 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
           oldTask = task;
         },);
         task = await easyDownloader.download(
-          url: topLevelResults.rest[0],
+          url: url,
           autoStart: false,
           maxSplit: int.tryParse(topLevelResults['split'].toString(),),
           fileName: topLevelResults['name']?.toString(),
           path: topLevelResults['dir']?.toString(),
           headers: headers,
-          listener: (DownloadTask downloadTask) {
-            task = downloadTask;
-          },
         );
+        task.addListener((downloadTask) {
+          task = downloadTask;
+        });
         final file = File(task!.outputFilePath);
         if (file.existsSync()) {
           file.deleteSync();

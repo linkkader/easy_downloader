@@ -1,5 +1,7 @@
 // Created by linkkader on 9/9/2022
 
+import 'dart:developer';
+
 extension StringExtension on String {
 
   ///generate by chatgpt
@@ -113,6 +115,7 @@ extension StringExtension on String {
       Uri.parse(this);
       return true;
     } catch (e) {
+      log(e.toString());
       return false;
     }
   }

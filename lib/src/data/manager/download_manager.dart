@@ -9,6 +9,8 @@ import 'package:easy_downloader/src/data/locale_storage/locale_storage.dart';
 import 'package:easy_downloader/src/data/locale_storage/storage_model/download_task.dart';
 import 'package:easy_downloader/src/data/locale_storage/storage_model/status.dart';
 
+import '../../core/enum/send_port_status.dart';
+
 //main isolate
 class DownloadManager{
   factory DownloadManager() => _instance;

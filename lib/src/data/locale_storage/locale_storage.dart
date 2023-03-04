@@ -8,10 +8,6 @@ import 'package:easy_downloader/src/data/locale_storage/storage_model/download_t
 import 'package:easy_downloader/src/data/locale_storage/storage_model/status.dart';
 import 'package:isar/isar.dart';
 
-
-
-typedef DownloadTaskListener = void Function(DownloadTask task);
-
 class LocaleStorage extends SharedPrefsIsar {
   factory LocaleStorage() => _instance;
   LocaleStorage._internal() : super(_isar);
@@ -23,14 +19,21 @@ class LocaleStorage extends SharedPrefsIsar {
   static Isar? _isar;
   static final LocaleStorage _instance = LocaleStorage._internal();
 
-  static Future<LocaleStorage> init() async {
+  static List<CollectionSchema<dynamic>> schemas = [
+    ..._instance.defaultPrefsSchemas,
+    DownloadTaskSchema
+  ];
+
+  static Future<LocaleStorage> init({String? localeStoragePath, Isar? isar}) async {
     assert(!_isInit, 'LocaleStorage already initialized');
-    _isar = await Isar.open(
+    _isar = isar;
+    _isar ??= await Isar.open(
         [
           ..._instance.defaultPrefsSchemas,
           DownloadTaskSchema
         ],
-      directory: '.',);
+        directory: localeStoragePath
+    );
     _isInit = true;
     _instance._log.info('LocaleStorage initialized successfully');
     return _instance;
@@ -80,6 +83,9 @@ class LocaleStorage extends SharedPrefsIsar {
   Future<DownloadBlock?> updateBlock(int downloadId,
       DownloadBlock downloadBlock,) async{
     var block = downloadBlock;
+    block = block.copyWith(
+      downloaded: min(block.downloaded, block.end - block.start),
+    );
     return _isar?.writeTxn(() async {
       var task = await _isar?.downloadTasks.get(downloadId);
       assert(
@@ -90,6 +96,7 @@ class LocaleStorage extends SharedPrefsIsar {
       if (block.currentSplit > task!.maxSplit){
         throw Exception('Block split is greater than max split');
       }
+
       final index = task.blocks.indexWhere((element) => element.id == block.id);
       if (index == -1) {
         var id = 0;
