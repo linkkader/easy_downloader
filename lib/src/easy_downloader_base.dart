@@ -6,6 +6,7 @@ import 'package:easy_downloader/src/core/extensions/string_ext.dart';
 import 'package:easy_downloader/src/data/locale_storage/locale_storage.dart';
 import 'package:easy_downloader/src/data/manager/download_manager.dart';
 import 'package:easy_downloader/src/data/manager/isolate_manager.dart';
+import 'package:easy_downloader/src/data/manager/runner.dart';
 import 'data/locale_storage/storage_model/isar_map_entity.dart';
 import 'data/manager/speed_manager.dart';
 
@@ -18,6 +19,7 @@ class EasyDownloader {
   static bool _isInit = false;
   static late LocaleStorage _localeStorage;
   static late DownloadManager _downloadManager;
+  static late Runner _runner;
   static late SpeedManager _speedManager;
   static final EasyDownloader _instance = EasyDownloader._internal();
 
@@ -27,6 +29,33 @@ class EasyDownloader {
     await Isar.initializeIsarCore(download: true);
     _localeStorage = await LocaleStorage.init(isar: isar, localeStoragePath: localeStoragePath);
     _speedManager = SpeedManager.init(_localeStorage);
+    _runner = Runner.init();
+
+    //reset all tasks
+    var allTasks = _localeStorage.getDownloadTasks();
+    int i = 0;
+    for (var task in allTasks) {
+      switch (task.status) {
+        case DownloadStatus.downloading:
+          if (task.inQueue){
+            task = task.copyWith(status: DownloadStatus.paused);
+            _runner.addTask(task);
+            allTasks[i] = task;
+          }
+          else{
+            allTasks[allTasks.indexOf(task)] = task.copyWith(status: DownloadStatus.paused);
+          }
+          break;
+        case DownloadStatus.queuing:
+          _runner.addTask(task);
+          break;
+        default:
+          break;
+      }
+      i++;
+    }
+    await _localeStorage.setDownloadTasks(allTasks);
+
     await IsolateManager.init(onFinish: (sendPort) async {
       _downloadManager = DownloadManager.init(sendPort);
     },);

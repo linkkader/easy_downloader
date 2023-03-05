@@ -9,7 +9,6 @@ part 'download_task.g.dart';
 
 typedef DownloadTaskListener = void Function(DownloadTask task);
 
-
 @Collection()
 class DownloadTask{
   const DownloadTask(
@@ -21,11 +20,13 @@ class DownloadTask{
         this.downloadId = Isar.autoIncrement,
         this.totalLength = 0,
         this.maxSplit = 0,
-        this.status = DownloadStatus.queuing,
+        this.status = DownloadStatus.none,
         this.blocks = const [],
         this.totalDownloaded = 0,
+        this.inQueue = false,
       });
   final Id downloadId;
+  final bool inQueue;
   final int totalLength;
   final int totalDownloaded;
   final String path;
@@ -66,7 +67,8 @@ class DownloadTask{
       blocks.hashCode ^
       fileName.hashCode ^
       headers.hashCode ^
-      url.hashCode;
+      url.hashCode ^
+      inQueue.hashCode;
   }
 
   @override
@@ -75,7 +77,7 @@ class DownloadTask{
       blocks.sort((a, b) => a.start.compareTo(b.start));
     }
     //ignore: lines_longer_than_80_chars
-    return 'DownloadTask{downloadId: $downloadId, totalLength: ${totalLength.toHumanReadableSize()}, totalDownloaded: ${totalDownloaded.toHumanReadableSize()}, path: $path, maxSplit: $maxSplit, status: $status, blocks: $blocks, filename: $fileName, headers: $headers, url: $url}';
+    return 'DownloadTask{downloadId: $downloadId, totalLength: ${totalLength.toHumanReadableSize()}, totalDownloaded: ${totalDownloaded.toHumanReadableSize()}, path: $path, maxSplit: $maxSplit, status: $status, blocks: $blocks, filename: $fileName, headers: $headers, url: $url, inQueue: $inQueue}';
   }
 
   DownloadTask copyWith({
@@ -91,6 +93,7 @@ class DownloadTask{
     IsarMapEntity? headers,
     String? url,
     bool? showNotification,
+    bool? inQueue,
   }) {
     return DownloadTask(
       downloadId: downloadId ?? this.downloadId,
@@ -102,7 +105,8 @@ class DownloadTask{
       blocks: blocks ?? this.blocks,
       fileName: fileName ?? this.fileName,
       headers: headers ?? this.headers,
-      url: url ?? this.url
+      url: url ?? this.url,
+      inQueue: inQueue ?? this.inQueue,
     );
   }
 }

@@ -6,6 +6,7 @@ enum DownloadStatus {
   failed,
   appending,
   queuing,
+  none,
 }
 
 enum BlockStatus {

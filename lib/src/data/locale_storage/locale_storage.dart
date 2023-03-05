@@ -48,6 +48,11 @@ class LocaleStorage extends SharedPrefsIsar {
     });
   }
 
+  Future<List<int>?> setDownloadTasks(List<DownloadTask> tasks) async {
+    return _isar?.writeTxn(() async {
+      return _isar?.downloadTasks.putAll(tasks);
+    });
+  }
 
   Future<int?> setDownloadTaskStatus(int id, DownloadStatus status) async {
     return _isar?.writeTxn(() async {
