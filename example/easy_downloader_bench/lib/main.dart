@@ -15,7 +15,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyDownloader().initFlutter(
       allowNotification: true,
-      defaultIconAndroid: 'download'
+      defaultIconAndroid: 'download',
   );
   if (Platform.isAndroid || Platform.isIOS) {
     await FlutterDownloader.FlutterDownloader.initialize(
