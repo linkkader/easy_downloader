@@ -8,7 +8,6 @@ extension TaskExtension on DownloadTask {
     final task = EasyDownloader._localeStorage.getDownloadTaskSync(downloadId);
     assert(task != null, 'EasyDownloader: task must not be null');
     assert(task?.status != DownloadStatus.downloading && task?.blocks.isEmpty == true, "EasyDownloader: task is already downloading");
-    assert(task?.status != DownloadStatus.queuing, "EasyDownloader: task is already queuing");
     EasyDownloader._downloadManager.downloadTask(this);
   }
 

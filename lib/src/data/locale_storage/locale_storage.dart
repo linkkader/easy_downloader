@@ -28,11 +28,11 @@ class LocaleStorage extends SharedPrefsIsar {
     assert(!_isInit, 'LocaleStorage already initialized');
     _isar = isar;
     _isar ??= await Isar.open(
-        [
-          ..._instance.defaultPrefsSchemas,
-          DownloadTaskSchema
-        ],
-        directory: localeStoragePath
+      [
+        ..._instance.defaultPrefsSchemas,
+        DownloadTaskSchema
+      ],
+      directory: localeStoragePath,
     );
     _isInit = true;
     _instance._log.info('LocaleStorage initialized successfully');

@@ -1,0 +1,35 @@
+name: easy_downloader_bench
+description: A new Flutter project.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=2.19.2 <3.0.0'
+
+dependencies:
+  flutter_local_notifications: ^13.0.0
+  easy_downloader_flutter_lib:
+    path:  ../../easy_downloader_flutter_lib/
+  easy_downloader:
+    path: ../../
+  isar_flutter_libs: ^3.0.5
+  flutter_downloader: ^1.10.2
+
+  crypto: ^3.0.1
+  path_provider: ^2.0.11
+
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true

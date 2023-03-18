@@ -12,10 +12,12 @@ class Runner {
 
   static late TaskRunner<DownloadTask> _taskRunner;
   static bool _isInit = false;
+  static final Log log = Log();
 
   static Runner init(){
     assert(!_isInit, 'Runner already initialized');
-    _taskRunner = TaskRunner(maxConcurrentTasks: 1, (task, runner) async{
+    _taskRunner = TaskRunner(maxConcurrentTasks: 10, (task, runner) async{
+      log.wtf('start task $task');
       var completer = Completer();
       task.addListener((task) {
         if (task.status == DownloadStatus.completed || task.status == DownloadStatus.failed) {

@@ -29,6 +29,10 @@ class EasyDownloader {
     await Isar.initializeIsarCore(download: true);
     _localeStorage = await LocaleStorage.init(isar: isar, localeStoragePath: localeStoragePath);
     _speedManager = SpeedManager.init(_localeStorage);
+    await IsolateManager.init(onFinish: (sendPort) async {
+      _downloadManager = DownloadManager.init(sendPort);
+    },);
+
     _runner = Runner.init();
 
     //reset all tasks
@@ -55,10 +59,6 @@ class EasyDownloader {
       i++;
     }
     await _localeStorage.setDownloadTasks(allTasks);
-
-    await IsolateManager.init(onFinish: (sendPort) async {
-      _downloadManager = DownloadManager.init(sendPort);
-    },);
     _isInit = true;
     return _instance;
   }

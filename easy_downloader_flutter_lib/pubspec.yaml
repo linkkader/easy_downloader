@@ -9,7 +9,8 @@ environment:
 dependencies:
   isar_flutter_libs: ^3.0.5
   flutter_local_notifications: ^13.0.0
-  easy_downloader: 0.0.15-dev
+  easy_downloader:
+    path: ../
   flutter:
     sdk: flutter
 
