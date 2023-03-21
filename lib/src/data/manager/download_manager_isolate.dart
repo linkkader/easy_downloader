@@ -40,7 +40,7 @@ class DownloadManagerIsolate{
   Future<void> downloadTask(DownloadTask downloadTask) async {
     assert(_isInit, 'DownloadManager not initialized');
     //ignore: lines_longer_than_80_chars
-    assert(_taskClientMap[downloadTask.downloadId] == null, 'DownloadManager: _taskClientMap must be null');
+    assert(_taskClientMap[downloadTask.downloadId] == null, 'DownloadManager: task already running');
     final client = HttpClient();
     _taskClientMap[downloadTask.downloadId] = [];
     await client.getUrl(Uri.parse(downloadTask.url)).then((value) {
@@ -50,7 +50,7 @@ class DownloadManagerIsolate{
       return value.close();
     }).then((value) async {
       final block = DownloadBlock(
-        currentSplit: 1,
+        currentSplit: 2,
         end: value.contentLength,
       );
       //ignore: lines_longer_than_80_chars
@@ -65,7 +65,7 @@ class DownloadManagerIsolate{
   Future<void> _tryDownloadAnotherBlock(DownloadBlock block, DownloadTask task,
       void Function(int) updateOldBlockEnd, RandomAccessFile randomAccessFile,)
   async {
-    if (await _taskBlockLength(task) < task.maxSplit){
+    if (await _taskBlockLength(task) < task.maxSplit && block.end - (block.start + block.downloaded) > 1.megabytes()){
       await _downloadNextBlock(block, task,
         randomAccessFile,
         updateOldBlockEnd: updateOldBlockEnd,
@@ -282,10 +282,11 @@ class DownloadManagerIsolate{
     );
     // ignore: deprecated_member_use
     final chunkReader = ChunkedStreamIterator(response);
+    final bufferSize = 512.kilobytes();
     while(true){
       var event = <int>[];
       try{
-        event = await chunkReader.read(512.kilobytes());
+        event = await chunkReader.read(bufferSize);
       } catch(e){
         await finish(BlockStatus.failed);
         break;
@@ -293,7 +294,7 @@ class DownloadManagerIsolate{
       if (event.isNotEmpty){
         runner.add(Tuple(event, downloaded, block));
       }
-      if (event.length < 512.kilobytes()){
+      if (event.length < bufferSize){
         await finish(BlockStatus.finished);
         break;
       }

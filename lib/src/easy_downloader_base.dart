@@ -24,10 +24,10 @@ class EasyDownloader {
   static final EasyDownloader _instance = EasyDownloader._internal();
 
   ///init EasyDownloader
-  Future<EasyDownloader> init({String? localeStoragePath, Isar? isar}) async {
+  Future<EasyDownloader> init({String? localeStoragePath, Isar? isar, bool clearLocaleStorage = false}) async {
     assert(!_isInit, 'EasyDownloader already initialized');
     await Isar.initializeIsarCore(download: true);
-    _localeStorage = await LocaleStorage.init(isar: isar, localeStoragePath: localeStoragePath);
+    _localeStorage = await LocaleStorage.init(isar: isar, localeStoragePath: localeStoragePath, clearLocaleStorage: clearLocaleStorage);
     _speedManager = SpeedManager.init(_localeStorage);
     await IsolateManager.init(onFinish: (sendPort) async {
       _downloadManager = DownloadManager.init(sendPort);
@@ -68,7 +68,7 @@ class EasyDownloader {
     required String url,
     String? path, String? fileName,
     int? maxSplit,
-    bool autoStart = true,
+    bool autoStart = false,
     Map<String, String> headers = const {},
   }) async {
     assert(_isInit, 'EasyDownloader not initialized');

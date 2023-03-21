@@ -8,33 +8,22 @@ void main() async {
   if (file.existsSync()) {
     file.deleteSync();
   }
-  var easyDownloader = await EasyDownloader().init();
+  var easyDownloader = await EasyDownloader().init(clearLocaleStorage: true);
   var dir = Directory("download");
   if (dir.existsSync()){
     dir.deleteSync(recursive: true);
   }
   // print(await easyDownloader.allDownloadTasks());
   // return;
-  easyDownloader.download(
+  var task = await easyDownloader.download(
     url:
-    // "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",//bfe8feaec39f112dfcc53bbc98a1c17309e0f941
-    // "https://speed.hetzner.de/100MB.bin",//2c2ceccb5ec5574f791d45b63c940cff20550f9a
-    // "https://github.com/linkkader/zanime/releases/download/41/zanime_41.ipa",//93403755b94787dcfabc6cb24704fcfe7912a3cd
-    "http://212.183.159.230/10MB.zip",//f3b8eebe058415b752bec735652a30104fe666ba
-    path: "download/download",
-    // fileName: "zanime_41.ipa",
+    // "https://r4---sn-h5qzen76.gvt1.com/edgedl/android/studio/install/2022.1.1.20/android-studio-2022.1.1.20-mac_arm.dmg?mh=kN&pl=20&shardbypass=sd&redirect_counter=1&cm2rm=sn-hxqpuxa-jhoz7d&req_id=188f5c880b76f24a&cms_redirect=yes&ipbypass=yes&mip=197.230.240.146&mm=42&mn=sn-h5qzen76&ms=onc&mt=1676830367&mv=m&mvi=4&rmhost=r1---sn-h5qzen76.gvt1.com&smhost=r3---sn-h5qzen7s.gvt1.com",
+    "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4",//bfe8feaec39f112dfcc53bbc98a1c17309e0f941
     maxSplit: 10,
-    // listener: (task) async {
-    //   switch (task.status) {
-    //     case DownloadStatus.completed:
-    //       var file = File(task.outputFilePath);
-    //       var checksum = sha1.convert(await file.readAsBytes());
-    //       print("completed ${checksum.toString()}");
-    //       break;
-    //     default:
-    //       // TODO: Handle this case.
-    //       break;
-    //   }
-    // },
   );
+  task.addListener((task) {
+    print("status: ${task.status} ${task.totalDownloaded.toHumanReadableSize()} / ${task.totalLength.toHumanReadableSize()}");
+  });
+
+  task.start();
 }

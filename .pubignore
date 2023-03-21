@@ -32,3 +32,5 @@ build/
 *.isar
 example/easy_downloader_bench/
 easy_downloader_flutter_lib/
+example/
+bin/libisar*
