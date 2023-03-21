@@ -173,7 +173,7 @@ DownloadTask _downloadTaskDeserialize(
     path: reader.readString(offsets[6]),
     status:
         _DownloadTaskstatusValueEnumMap[reader.readByteOrNull(offsets[7])] ??
-            DownloadStatus.queuing,
+            DownloadStatus.none,
     totalDownloaded: reader.readLongOrNull(offsets[8]) ?? 0,
     totalLength: reader.readLongOrNull(offsets[9]) ?? 0,
     url: reader.readString(offsets[10]),
@@ -215,7 +215,7 @@ P _downloadTaskDeserializeProp<P>(
       return (reader.readString(offset)) as P;
     case 7:
       return (_DownloadTaskstatusValueEnumMap[reader.readByteOrNull(offset)] ??
-          DownloadStatus.queuing) as P;
+          DownloadStatus.none) as P;
     case 8:
       return (reader.readLongOrNull(offset) ?? 0) as P;
     case 9:
@@ -234,6 +234,7 @@ const _DownloadTaskstatusEnumValueMap = {
   'failed': 3,
   'appending': 4,
   'queuing': 5,
+  'none': 6,
 };
 const _DownloadTaskstatusValueEnumMap = {
   0: DownloadStatus.downloading,
@@ -242,6 +243,7 @@ const _DownloadTaskstatusValueEnumMap = {
   3: DownloadStatus.failed,
   4: DownloadStatus.appending,
   5: DownloadStatus.queuing,
+  6: DownloadStatus.none,
 };
 
 Id _downloadTaskGetId(DownloadTask object) {

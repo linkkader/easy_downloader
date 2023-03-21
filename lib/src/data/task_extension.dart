@@ -62,4 +62,14 @@ extension TaskExtension on DownloadTask {
     EasyDownloader._speedManager.removeListener(listener);
   }
 
+  Future addInQueue() async{
+    var task = await EasyDownloader._localeStorage.getDownloadTask(downloadId);
+    assert(task != null, 'EasyDownloader: task must not be null');
+    assert(task?.status == DownloadStatus.queuing || task?.status == DownloadStatus.none, "EasyDownloader: task is already queuing");
+    task = task!.copyWith(status: DownloadStatus.queuing, inQueue: true );
+    await EasyDownloader._localeStorage.setDownloadTask(task);
+    EasyDownloader._runner.addTask(task);
+
+  }
+
 }

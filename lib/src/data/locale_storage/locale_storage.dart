@@ -24,16 +24,21 @@ class LocaleStorage extends SharedPrefsIsar {
     DownloadTaskSchema
   ];
 
-  static Future<LocaleStorage> init({String? localeStoragePath, Isar? isar}) async {
+  static Future<LocaleStorage> init({String? localeStoragePath, Isar? isar, bool clearLocaleStorage = false}) async {
     assert(!_isInit, 'LocaleStorage already initialized');
     _isar = isar;
     _isar ??= await Isar.open(
-        [
-          ..._instance.defaultPrefsSchemas,
-          DownloadTaskSchema
-        ],
-        directory: localeStoragePath
+      [
+        ..._instance.defaultPrefsSchemas,
+        DownloadTaskSchema
+      ],
+      directory: localeStoragePath,
     );
+    if (clearLocaleStorage) {
+      await _isar?.writeTxn(() async {
+        await _isar?.clear();
+      });
+    }
     _isInit = true;
     _instance._log.info('LocaleStorage initialized successfully');
     return _instance;
@@ -48,6 +53,11 @@ class LocaleStorage extends SharedPrefsIsar {
     });
   }
 
+  Future<List<int>?> setDownloadTasks(List<DownloadTask> tasks) async {
+    return _isar?.writeTxn(() async {
+      return _isar?.downloadTasks.putAll(tasks);
+    });
+  }
 
   Future<int?> setDownloadTaskStatus(int id, DownloadStatus status) async {
     return _isar?.writeTxn(() async {
@@ -84,7 +94,7 @@ class LocaleStorage extends SharedPrefsIsar {
       DownloadBlock downloadBlock,) async{
     var block = downloadBlock;
     block = block.copyWith(
-      downloaded: min(block.downloaded, block.end - block.start),
+      downloaded: block.end > 0 ? min(block.downloaded, block.end - block.start) : block.downloaded,
     );
     return _isar?.writeTxn(() async {
       var task = await _isar?.downloadTasks.get(downloadId);

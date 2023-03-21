@@ -222,6 +222,8 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
               break;
             case DownloadStatus.queuing:
               break;
+            case DownloadStatus.none:
+              break;
           }
           oldTask = task;
         },);

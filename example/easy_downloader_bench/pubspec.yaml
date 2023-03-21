@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter_local_notifications: ^13.0.0
   easy_downloader_flutter_lib:
-    path: ../../../easy_downloader_flutter_lib/
+    path:  ../../easy_downloader_flutter_lib/
   easy_downloader:
     path: ../../
   isar_flutter_libs: ^3.0.5

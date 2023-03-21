@@ -29,11 +29,13 @@ class NotificationManager{
     var android = androidInitializationSettings ?? AndroidInitializationSettings(
       defaultIconAndroid ?? 'ic_launcher',
     );
-    var ios = darwinInitializationSettings ?? const DarwinInitializationSettings(
-
-    );
+    var ios = darwinInitializationSettings ?? const DarwinInitializationSettings();
     await _notificationPlugin.initialize(
-      InitializationSettings(android: android, iOS: ios),
+      InitializationSettings(
+          android: android,
+          iOS: ios,
+        macOS: ios
+      ),
       onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
       onDidReceiveBackgroundNotificationResponse: onDidReceiveBackgroundNotificationResponse,
     );

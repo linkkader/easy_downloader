@@ -4,6 +4,8 @@ import 'dart:ui';
 import 'package:crypto/crypto.dart';
 import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/easy_downloader.dart' as easy;
+import 'package:easy_downloader_bench/multi_task_download.dart';
+import 'package:easy_downloader_bench/multi_task_download_runner.dart';
 import 'package:easy_downloader_flutter_lib/easy_downloader_flutter_lib.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart' as FlutterDownloader;
@@ -13,12 +15,14 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyDownloader().initFlutter(
       allowNotification: true,
-      defaultIconAndroid: 'download'
+      defaultIconAndroid: 'download',
   );
-  await FlutterDownloader.FlutterDownloader.initialize(
-      debug: true, // optional: set to false to disable printing logs to console (default: true)
-      ignoreSsl: true // option: set to false to disable working with http links (default: false)
-  );
+  if (Platform.isAndroid || Platform.isIOS) {
+    await FlutterDownloader.FlutterDownloader.initialize(
+        debug: true, // optional: set to false to disable printing logs to console (default: true)
+        ignoreSsl: true // option: set to false to disable working with http links (default: false)
+    );
+  }
   runApp(const MyApp());
 }
 
@@ -142,6 +146,24 @@ class _MyHomePageState extends State<MyHomePage> {
               child: const Text('Download'),
             ),
           ),
+          SizedBox(
+            height: 100,
+            child: MaterialButton(
+              onPressed: () async {
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>  const MultiTasksDownload(),));
+              },
+              child: const Text('MultiTasksDownload'),
+            ),
+          ),
+          SizedBox(
+            height: 100,
+            child: MaterialButton(
+              onPressed: () async {
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>  const MultiTasksDownloadRunner(),));
+              },
+              child: const Text('MultiTasksDownloadRunner'),
+            ),
+          ),
           Expanded(
               child: ListView.builder(
                 itemCount: tasks.length,
@@ -157,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: Column(
                             children: [
                               Expanded(child: LinearProgressIndicator(value: task.totalDownloaded / (task.totalLength == 0 ? 1 : task.totalLength))),
-                              Text("${task.totalDownloaded.toHumanReadableSize()} / ${task.totalLength.toHumanReadableSize()} ${speedTask[task.downloadId]?.toHumanReadableSize().replaceAll(" ", "")}/s"),
+                              Text("${task.totalDownloaded.toHumanReadableSize()} / ${task.totalLength.toHumanReadableSize()} ${speedTask[task.downloadId]?.toHumanReadableSize().replaceAll(" ", "")}/s ${task.status.name}"),
                             ],
                           ),
                         ),
@@ -275,7 +297,9 @@ class _MyHomePageState extends State<MyHomePage> {
       setState((){ });
     });
 
-    FlutterDownloader.FlutterDownloader.registerCallback(downloadCallback);
+    if (Platform.isAndroid || Platform.isIOS) {
+      FlutterDownloader.FlutterDownloader.registerCallback(downloadCallback);
+    }
   }
 
 
