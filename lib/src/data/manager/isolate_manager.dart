@@ -24,6 +24,7 @@ class IsolateManager{
   static bool _isInit = false;
   static final IsolateManager _instance = IsolateManager._internal();
 
+  ///init IsolateManager
   static Future<IsolateManager> init(
       {Future<dynamic> Function(SendPort sendPort)? onFinish,})
   async {
@@ -38,7 +39,7 @@ class IsolateManager{
     return _instance;
   }
 
-  //in isolate
+  ///in isolate
   static dynamic _isolateEntry(SendPort sendPort) async {
     final receivePort = ReceivePort();
     final downloadManagerIsolate = DownloadManagerIsolate.init(sendPort);
@@ -92,7 +93,7 @@ class IsolateManager{
     });
   }
 
-  //in main isolate || outside isolate
+  ///in main isolate || outside isolate
   static dynamic _isolateListen(dynamic message) async {
     assert(message is Pair, 'IsolateManager: message is not Pair');
     final pair = message as Pair<SendPortStatus, dynamic>;

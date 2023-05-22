@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/src/core/utils/task_runner.dart';
 
+/// runner for download task
 class Runner {
   Runner._();
   static final Runner _instance = Runner._();
@@ -36,10 +37,12 @@ class Runner {
     return _instance;
   }
 
+  ///add task to runner
   void addTask(DownloadTask task){
     _taskRunner.add(task);
   }
 
+  ///add all task to runner
   void addAllTask(List<DownloadTask> tasks){
     _taskRunner.addAll(tasks);
   }

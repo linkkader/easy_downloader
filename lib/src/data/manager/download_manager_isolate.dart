@@ -30,6 +30,7 @@ class DownloadManagerIsolate{
   //ignore: lines_longer_than_80_chars
   static final DownloadManagerIsolate _instance = DownloadManagerIsolate._internal();
 
+  ///init isolate
   static DownloadManagerIsolate init(SendPort sendPort) {
     assert(!_isInit, 'DownloadManager already initialized');
     _sendPort = sendPort;
@@ -37,6 +38,7 @@ class DownloadManagerIsolate{
     return _instance;
   }
 
+  ///send download task to isolate
   Future<void> downloadTask(DownloadTask downloadTask) async {
     assert(_isInit, 'DownloadManager not initialized');
     //ignore: lines_longer_than_80_chars
@@ -62,6 +64,7 @@ class DownloadManagerIsolate{
     });
   }
 
+  ///save block to file
   Future<void> _tryDownloadAnotherBlock(DownloadBlock block, DownloadTask task,
       void Function(int) updateOldBlockEnd, RandomAccessFile randomAccessFile,)
   async {
@@ -74,6 +77,7 @@ class DownloadManagerIsolate{
     }
   }
 
+  ///save block to file
   Future<void> _downloadNextBlock(
       DownloadBlock oldBlock,
       DownloadTask task,
@@ -112,7 +116,7 @@ class DownloadManagerIsolate{
     });
   }
 
-
+  ///save block to file
   Future<Tuple<HttpClientResponse, HttpClient, DownloadBlock>?> _continueBlock(
       DownloadBlock downloadBlock,
       DownloadTask task,RandomAccessFile randomAccessFile,
@@ -143,6 +147,7 @@ class DownloadManagerIsolate{
     });
   }
 
+  ///save block to file
   Future<void> continueTask(DownloadTask task) async {
     log.w('continueTask');
     assert(_isInit, 'DownloadManager not initialized');
@@ -178,6 +183,7 @@ class DownloadManagerIsolate{
   }
 
 
+  ///save block to file
   Future<void> _generateFile(RandomAccessFile randomAccessFile, int length)
   async {
     final buffer = List.generate(1.megabytes(), (index) => 0);
@@ -191,13 +197,13 @@ class DownloadManagerIsolate{
     }
   }
 
-
+  ///save block to file
   void continueCompleter(int hashCode, dynamic task){
     assert(_isInit, 'DownloadManager not initialized');
     _mapCompleter[hashCode]?.complete(task);
   }
 
-
+  ///save block to file
   Future<DownloadTask> _updateTask(DownloadTask task) async {
     assert(_isInit, 'DownloadManager not initialized');
     final completer = Completer<DownloadTask>();
@@ -209,6 +215,7 @@ class DownloadManagerIsolate{
     return value;
   }
 
+  ///save block to file
   Future<int> _taskBlockLength(DownloadTask task) async {
     assert(_isInit, 'DownloadManager not initialized');
     final completer = Completer<int>();
@@ -220,12 +227,13 @@ class DownloadManagerIsolate{
     return value;
   }
 
+  ///save block to file
   void _finishBlock(DownloadBlock block, DownloadTask task) {
     assert(_isInit, 'DownloadManager not initialized');
     _sendPort.send(Pair(SendPortStatus.blockFinished, Pair(task, block)));
   }
 
-  //ignore: lines_longer_than_80_chars
+  ///save block to file
   Future<DownloadBlock?> _updateTaskBlock(DownloadTask task, DownloadBlock block) async {
     assert(_isInit, 'DownloadManager not initialized');
     final completer = Completer<DownloadBlock?>();
@@ -237,6 +245,7 @@ class DownloadManagerIsolate{
     return value;
   }
 
+  ///save block to file
   Future<void> _saveBlock(
       DownloadBlock downloadBlock, DownloadTask task,
       HttpClientResponse response, RandomAccessFile randomAccessFile,

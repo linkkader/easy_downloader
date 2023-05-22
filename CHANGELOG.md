@@ -1,4 +1,3 @@
-##  0.0.16 (2023.03.21)
+##  0.0.17 (2023.03.21)
 
-* Initial release
-* convert video to gif
+* fix pub analysis warnings

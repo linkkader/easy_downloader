@@ -24,6 +24,10 @@ class LocaleStorage extends SharedPrefsIsar {
     DownloadTaskSchema
   ];
 
+  ///init LocaleStorage
+  ///[localeStoragePath] path to locale storage
+  ///[isar] isar instance if you want to use your own isar instance be sure to add [DownloadTaskSchema] to your schemas
+  ///[clearLocaleStorage] clear locale storage
   static Future<LocaleStorage> init({String? localeStoragePath, Isar? isar, bool clearLocaleStorage = false}) async {
     assert(!_isInit, 'LocaleStorage already initialized');
     _isar = isar;
@@ -44,21 +48,29 @@ class LocaleStorage extends SharedPrefsIsar {
     return _instance;
   }
 
-  LocaleStorage get instance => _instance;
+  static LocaleStorage get instance => _instance;
 
-  //return download task by id
+  ///set download task
+  ///[task] download task
+  ///return id of download task
   Future<int?> setDownloadTask(DownloadTask task) async {
     return _isar?.writeTxn(() async {
       return _isar?.downloadTasks.put(task);
     });
   }
 
+  ///set download tasks
+  ///[tasks] download tasks
+  ///return ids of download tasks
   Future<List<int>?> setDownloadTasks(List<DownloadTask> tasks) async {
     return _isar?.writeTxn(() async {
       return _isar?.downloadTasks.putAll(tasks);
     });
   }
 
+  ///set download task status
+  ///[id] id of download task
+  ///[status] status of download task
   Future<int?> setDownloadTaskStatus(int id, DownloadStatus status) async {
     return _isar?.writeTxn(() async {
       var task = await _isar?.downloadTasks.get(id);
@@ -68,28 +80,31 @@ class LocaleStorage extends SharedPrefsIsar {
     });
   }
 
+  ///set download task status
   List<DownloadTask> getDownloadTasks() {
     return _isar?.downloadTasks.where().findAllSync() ?? [];
   }
 
+  ///get download task
+  ///[id] id of download task
   DownloadTask? getDownloadTaskSync(int id) {
     return _isar?.downloadTasks.getSync(id);
   }
 
-
+  ///get download task
   Future<DownloadTask?>? getDownloadTask(int id) {
     return _isar?.downloadTasks.get(id);
   }
 
 
-
+  ///delete download task
   Future<bool?> deleteDownloadTask(int id) async {
     return _isar?.writeTxn(() async {
       return _isar?.downloadTasks.delete(id);
     });
   }
 
-
+  ///update download task
   Future<DownloadBlock?> updateBlock(int downloadId,
       DownloadBlock downloadBlock,) async{
     var block = downloadBlock;
@@ -137,6 +152,7 @@ class LocaleStorage extends SharedPrefsIsar {
     });
   }
 
+  ///add listener
   void addListener(DownloadTaskListener listener, int id) {
     _listeners[listener] = _isar?.downloadTasks
         .watchObject(id, fireImmediately: true).listen((event) {
@@ -146,10 +162,21 @@ class LocaleStorage extends SharedPrefsIsar {
     );
   }
 
+  ///delete listener
   void removeListener(DownloadTaskListener listener) {
     _listeners[listener]?.cancel();
     _listeners.remove(listener);
   }
 
+  ///listen all download tasks
+  Stream<void>? watchDownloadTasks() {
+    return _isar?.downloadTasks.watchLazy();
+  }
+
+  Stream<DownloadTask?>? watchDownloadTask(int id) {
+    return _isar?.downloadTasks.watchObject(id);
+  }
+
+  ///[isar] isar instance
   static Isar? get isar => _isar;
 }

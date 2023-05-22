@@ -8,6 +8,7 @@ import 'package:easy_downloader/src/data/locale_storage/storage_model/download_t
 
 typedef SpeedListener = void Function(int length);
 
+/// speed manager
 class SpeedManager {
   factory SpeedManager() => _instance;
   SpeedManager._internal();
@@ -40,6 +41,7 @@ class SpeedManager {
     return _instance;
   }
 
+  ///add listener
   void addListener(SpeedListener speedListener, int id) {
     assert(_instance._isInit, 'SpeedManager not initialized');
     void listener(DownloadTask task) {
@@ -52,6 +54,7 @@ class SpeedManager {
     _listeners[speedListener] = Tuple(listener, 0, 0);
   }
 
+  ///remove listener
   void removeListener(SpeedListener speedListener) {
     assert(_instance._isInit, 'SpeedManager not initialized');
     final pair = _listeners[speedListener];

@@ -95,10 +95,17 @@ class EasyDownloader {
     return _localeStorage.getDownloadTasks();
   }
 
+  ///get download task by id
   static EasyDownloader get easyDownloader {
     assert(_isInit, 'EasyDownloader not initialized');
     return _instance;
   }
 
   static List<CollectionSchema<dynamic>> get schemas => LocaleStorage.schemas;
+
+  ///listen all download tasks
+  Stream<void>? get downloadTasksStream => _localeStorage.watchDownloadTasks();
+
+  ///listen download task by id
+  Stream<void>? downloadTaskStream(int id) => _localeStorage.watchDownloadTask(id);
 }
