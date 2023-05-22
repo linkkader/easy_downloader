@@ -11,7 +11,7 @@ import 'package:easy_downloader/src/data/locale_storage/storage_model/status.dar
 
 import '../../core/enum/send_port_status.dart';
 
-//main isolate
+/// main isolate
 class DownloadManager{
   factory DownloadManager() => _instance;
   DownloadManager._internal();
@@ -70,12 +70,13 @@ class DownloadManager{
           (element) => element.status == BlockStatus.finished,);
   }
 
+  ///update task status to failed
   void completeUpdateTask(DownloadTask task, int completerHashcode){
     _sendPort.send(Pair(SendPortStatus.completeUpdateTask,
         Pair(completerHashcode, task),),);
   }
 
-
+  ///update block status to failed
   void completeUpdateBlock(DownloadTask task,
       int completerHashcode, DownloadBlock? block,){
     _sendPort.send(

@@ -39,39 +39,44 @@ const DownloadTaskSchema = CollectionSchema(
       type: IsarType.object,
       target: r'IsarMapEntity',
     ),
-    r'maxSplit': PropertySchema(
+    r'inQueue': PropertySchema(
       id: 4,
+      name: r'inQueue',
+      type: IsarType.bool,
+    ),
+    r'maxSplit': PropertySchema(
+      id: 5,
       name: r'maxSplit',
       type: IsarType.long,
     ),
     r'outputFilePath': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'outputFilePath',
       type: IsarType.string,
     ),
     r'path': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'path',
       type: IsarType.string,
     ),
     r'status': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'status',
       type: IsarType.byte,
       enumMap: _DownloadTaskstatusEnumValueMap,
     ),
     r'totalDownloaded': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'totalDownloaded',
       type: IsarType.long,
     ),
     r'totalLength': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'totalLength',
       type: IsarType.long,
     ),
     r'url': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'url',
       type: IsarType.string,
     )
@@ -138,13 +143,14 @@ void _downloadTaskSerialize(
     IsarMapEntitySchema.serialize,
     object.headers,
   );
-  writer.writeLong(offsets[4], object.maxSplit);
-  writer.writeString(offsets[5], object.outputFilePath);
-  writer.writeString(offsets[6], object.path);
-  writer.writeByte(offsets[7], object.status.index);
-  writer.writeLong(offsets[8], object.totalDownloaded);
-  writer.writeLong(offsets[9], object.totalLength);
-  writer.writeString(offsets[10], object.url);
+  writer.writeBool(offsets[4], object.inQueue);
+  writer.writeLong(offsets[5], object.maxSplit);
+  writer.writeString(offsets[6], object.outputFilePath);
+  writer.writeString(offsets[7], object.path);
+  writer.writeByte(offsets[8], object.status.index);
+  writer.writeLong(offsets[9], object.totalDownloaded);
+  writer.writeLong(offsets[10], object.totalLength);
+  writer.writeString(offsets[11], object.url);
 }
 
 DownloadTask _downloadTaskDeserialize(
@@ -169,14 +175,15 @@ DownloadTask _downloadTaskDeserialize(
           allOffsets,
         ) ??
         IsarMapEntity(),
-    maxSplit: reader.readLongOrNull(offsets[4]) ?? 0,
-    path: reader.readString(offsets[6]),
+    inQueue: reader.readBoolOrNull(offsets[4]) ?? false,
+    maxSplit: reader.readLongOrNull(offsets[5]) ?? 0,
+    path: reader.readString(offsets[7]),
     status:
-        _DownloadTaskstatusValueEnumMap[reader.readByteOrNull(offsets[7])] ??
+        _DownloadTaskstatusValueEnumMap[reader.readByteOrNull(offsets[8])] ??
             DownloadStatus.none,
-    totalDownloaded: reader.readLongOrNull(offsets[8]) ?? 0,
-    totalLength: reader.readLongOrNull(offsets[9]) ?? 0,
-    url: reader.readString(offsets[10]),
+    totalDownloaded: reader.readLongOrNull(offsets[9]) ?? 0,
+    totalLength: reader.readLongOrNull(offsets[10]) ?? 0,
+    url: reader.readString(offsets[11]),
   );
   return object;
 }
@@ -208,19 +215,21 @@ P _downloadTaskDeserializeProp<P>(
           ) ??
           IsarMapEntity()) as P;
     case 4:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 5:
-      return (reader.readString(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 6:
       return (reader.readString(offset)) as P;
     case 7:
+      return (reader.readString(offset)) as P;
+    case 8:
       return (_DownloadTaskstatusValueEnumMap[reader.readByteOrNull(offset)] ??
           DownloadStatus.none) as P;
-    case 8:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 9:
       return (reader.readLongOrNull(offset) ?? 0) as P;
     case 10:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
+    case 11:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -671,6 +680,16 @@ extension DownloadTaskQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DownloadTask, DownloadTask, QAfterFilterCondition>
+      inQueueEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'inQueue',
+        value: value,
       ));
     });
   }
@@ -1347,6 +1366,18 @@ extension DownloadTaskQuerySortBy
     });
   }
 
+  QueryBuilder<DownloadTask, DownloadTask, QAfterSortBy> sortByInQueue() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'inQueue', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DownloadTask, DownloadTask, QAfterSortBy> sortByInQueueDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'inQueue', Sort.desc);
+    });
+  }
+
   QueryBuilder<DownloadTask, DownloadTask, QAfterSortBy> sortByMaxSplit() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'maxSplit', Sort.asc);
@@ -1476,6 +1507,18 @@ extension DownloadTaskQuerySortThenBy
     });
   }
 
+  QueryBuilder<DownloadTask, DownloadTask, QAfterSortBy> thenByInQueue() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'inQueue', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DownloadTask, DownloadTask, QAfterSortBy> thenByInQueueDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'inQueue', Sort.desc);
+    });
+  }
+
   QueryBuilder<DownloadTask, DownloadTask, QAfterSortBy> thenByMaxSplit() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'maxSplit', Sort.asc);
@@ -1581,6 +1624,12 @@ extension DownloadTaskQueryWhereDistinct
     });
   }
 
+  QueryBuilder<DownloadTask, DownloadTask, QDistinct> distinctByInQueue() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'inQueue');
+    });
+  }
+
   QueryBuilder<DownloadTask, DownloadTask, QDistinct> distinctByMaxSplit() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'maxSplit');
@@ -1660,6 +1709,12 @@ extension DownloadTaskQueryProperty
       headersProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'headers');
+    });
+  }
+
+  QueryBuilder<DownloadTask, bool, QQueryOperations> inQueueProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'inQueue');
     });
   }
 
