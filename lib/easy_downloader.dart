@@ -10,8 +10,5 @@
 library easy_downloader;
 
 export 'package:easy_downloader/src/core/extensions/int_extension.dart';
-export 'package:easy_downloader/src/core/log/logger.dart';
 export 'package:easy_downloader/src/data/locale_storage/storage_model/status.dart';
 export 'src/easy_downloader_base.dart';
-export 'src/data/locale_storage/storage_model/download_task.dart';
-export 'package:isar/isar.dart';

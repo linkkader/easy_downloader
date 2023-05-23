@@ -4,6 +4,8 @@ import 'dart:async';
 
 import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/src/core/utils/task_runner.dart';
+import 'package:easy_downloader/src/data/locale_storage/storage_model/download_task.dart';
+import 'package:easy_downloader/src/core/log/logger.dart';
 
 /// runner for download task
 /// [init] init runner
