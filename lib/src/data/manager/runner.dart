@@ -15,35 +15,39 @@ class Runner {
   static bool _isInit = false;
   static final Log log = Log();
 
-  static Runner init(){
+  ///init runner
+  static Runner init() {
     assert(!_isInit, 'Runner already initialized');
-    _taskRunner = TaskRunner(maxConcurrentTasks: 10, (task, runner) async{
-      log.wtf('start task $task');
-      var completer = Completer();
-      task.addListener((task) {
-        if (task.status == DownloadStatus.completed || task.status == DownloadStatus.failed) {
-          completer.complete();
+    _taskRunner = TaskRunner(
+      maxConcurrentTasks: 10,
+      (task, runner) async {
+        log.wtf('start task $task');
+        var completer = Completer();
+        task.addListener((task) {
+          if (task.status == DownloadStatus.completed ||
+              task.status == DownloadStatus.failed) {
+            completer.complete();
+          }
+        });
+        if (task.status == DownloadStatus.queuing) {
+          task.start();
+        } else {
+          await task.continueDownload();
         }
-      });
-      if (task.status == DownloadStatus.queuing){
-        task.start();
-      }
-      else{
-        await task.continueDownload();
-      }
-      await completer.future;
-    },);
+        await completer.future;
+      },
+    );
     _isInit = true;
     return _instance;
   }
 
   ///add task to runner
-  void addTask(DownloadTask task){
+  void addTask(DownloadTask task) {
     _taskRunner.add(task);
   }
 
   ///add all task to runner
-  void addAllTask(List<DownloadTask> tasks){
+  void addAllTask(List<DownloadTask> tasks) {
     _taskRunner.addAll(tasks);
   }
 }

@@ -10,21 +10,20 @@ part 'download_task.g.dart';
 typedef DownloadTaskListener = void Function(DownloadTask task);
 
 @Collection()
-class DownloadTask{
-  const DownloadTask(
-      {
-        required this.headers,
-        required this.path,
-        required this.fileName,
-        required this.url,
-        this.downloadId = Isar.autoIncrement,
-        this.totalLength = 0,
-        this.maxSplit = 0,
-        this.status = DownloadStatus.none,
-        this.blocks = const [],
-        this.totalDownloaded = 0,
-        this.inQueue = false,
-      });
+class DownloadTask {
+  const DownloadTask({
+    required this.headers,
+    required this.path,
+    required this.fileName,
+    required this.url,
+    this.downloadId = Isar.autoIncrement,
+    this.totalLength = 0,
+    this.maxSplit = 0,
+    this.status = DownloadStatus.none,
+    this.blocks = const [],
+    this.totalDownloaded = 0,
+    this.inQueue = false,
+  });
   final Id downloadId;
   final bool inQueue;
   final int totalLength;
@@ -37,7 +36,6 @@ class DownloadTask{
   final String fileName;
   final IsarMapEntity headers;
   final String url;
-
 
   String get outputFilePath => path.isEmpty ? fileName : '$path/$fileName';
 
@@ -59,21 +57,21 @@ class DownloadTask{
   @override
   int get hashCode {
     return downloadId.hashCode ^
-      totalLength.hashCode ^
-      totalDownloaded.hashCode ^
-      path.hashCode ^
-      maxSplit.hashCode ^
-      status.hashCode ^
-      blocks.hashCode ^
-      fileName.hashCode ^
-      headers.hashCode ^
-      url.hashCode ^
-      inQueue.hashCode;
+        totalLength.hashCode ^
+        totalDownloaded.hashCode ^
+        path.hashCode ^
+        maxSplit.hashCode ^
+        status.hashCode ^
+        blocks.hashCode ^
+        fileName.hashCode ^
+        headers.hashCode ^
+        url.hashCode ^
+        inQueue.hashCode;
   }
 
   @override
   String toString() {
-    if (blocks.isNotEmpty){
+    if (blocks.isNotEmpty) {
       blocks.sort((a, b) => a.start.compareTo(b.start));
     }
     //ignore: lines_longer_than_80_chars
@@ -112,16 +110,16 @@ class DownloadTask{
 }
 
 @Embedded()
-class DownloadBlock{
-  const DownloadBlock(
-      {
-        this.start = 0,
-        this.end = 0,
-        this.id = 0,
-        this.downloaded = 0,
-        this.status = BlockStatus.downloading,
-        this.currentSplit = 0,
-    });
+class DownloadBlock {
+  ///constructor
+  const DownloadBlock({
+    this.start = 0,
+    this.end = 0,
+    this.id = 0,
+    this.downloaded = 0,
+    this.status = BlockStatus.downloading,
+    this.currentSplit = 0,
+  });
   final int start;
   final int end;
   final int id;
@@ -130,8 +128,14 @@ class DownloadBlock{
   final int currentSplit;
   final int downloaded;
 
-  //ignore: lines_longer_than_80_chars
-  DownloadBlock copyWith({int? start, int? end, int? id, int? downloaded, BlockStatus? status, int? currentSplit}) {
+  ///copy with
+  DownloadBlock copyWith(
+      {int? start,
+      int? end,
+      int? id,
+      int? downloaded,
+      BlockStatus? status,
+      int? currentSplit}) {
     return DownloadBlock(
       currentSplit: currentSplit ?? this.currentSplit,
       start: start ?? this.start,
@@ -142,8 +146,9 @@ class DownloadBlock{
     );
   }
 
+  ///equals
   @override
-  bool operator ==(Object other){
+  bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is DownloadBlock &&
         start == other.start &&
@@ -155,10 +160,18 @@ class DownloadBlock{
         status == other.status;
   }
 
+  ///to string
   @override
-  String toString() => 'DownloadBlock(start: ${start.toHumanReadableSize()}, end: ${end.toHumanReadableSize()}, id: $id, downloaded: ${downloaded.toHumanReadableSize()}, status: $status, currentSplit: $currentSplit)';
+  String toString() =>
+      'DownloadBlock(start: ${start.toHumanReadableSize()}, end: ${end.toHumanReadableSize()}, id: $id, downloaded: ${downloaded.toHumanReadableSize()}, status: $status, currentSplit: $currentSplit)';
 
+  ///hashcode
   @override
-  int get hashCode => start.hashCode ^ end.hashCode ^ id.hashCode ^ downloaded.hashCode ^ status.hashCode ^ currentSplit.hashCode;
-
+  int get hashCode =>
+      start.hashCode ^
+      end.hashCode ^
+      id.hashCode ^
+      downloaded.hashCode ^
+      status.hashCode ^
+      currentSplit.hashCode;
 }

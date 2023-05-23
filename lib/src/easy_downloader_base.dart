@@ -1,5 +1,3 @@
-
-
 import 'dart:io';
 import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/src/core/extensions/string_ext.dart';
@@ -24,14 +22,23 @@ class EasyDownloader {
   static final EasyDownloader _instance = EasyDownloader._internal();
 
   ///init EasyDownloader
-  Future<EasyDownloader> init({String? localeStoragePath, Isar? isar, bool clearLocaleStorage = false}) async {
+  Future<EasyDownloader> init(
+      {String? localeStoragePath,
+      Isar? isar,
+      bool clearLocaleStorage = false}) async {
     assert(!_isInit, 'EasyDownloader already initialized');
     await Isar.initializeIsarCore(download: true);
-    _localeStorage = await LocaleStorage.init(isar: isar, localeStoragePath: localeStoragePath, clearLocaleStorage: clearLocaleStorage);
+    localeStoragePath ??= Directory.systemTemp.path;
+    _localeStorage = await LocaleStorage.init(
+        isar: isar,
+        localeStoragePath: localeStoragePath,
+        clearLocaleStorage: clearLocaleStorage);
     _speedManager = SpeedManager.init(_localeStorage);
-    await IsolateManager.init(onFinish: (sendPort) async {
-      _downloadManager = DownloadManager.init(sendPort);
-    },);
+    await IsolateManager.init(
+      onFinish: (sendPort) async {
+        _downloadManager = DownloadManager.init(sendPort);
+      },
+    );
 
     _runner = Runner.init();
 
@@ -41,13 +48,13 @@ class EasyDownloader {
     for (var task in allTasks) {
       switch (task.status) {
         case DownloadStatus.downloading:
-          if (task.inQueue){
+          if (task.inQueue) {
             task = task.copyWith(status: DownloadStatus.paused);
             _runner.addTask(task);
             allTasks[i] = task;
-          }
-          else{
-            allTasks[allTasks.indexOf(task)] = task.copyWith(status: DownloadStatus.paused);
+          } else {
+            allTasks[allTasks.indexOf(task)] =
+                task.copyWith(status: DownloadStatus.paused);
           }
           break;
         case DownloadStatus.queuing:
@@ -66,7 +73,8 @@ class EasyDownloader {
   ///download file
   Future<DownloadTask> download({
     required String url,
-    String? path, String? fileName,
+    String? path,
+    String? fileName,
     int? maxSplit,
     bool autoStart = false,
     Map<String, String> headers = const {},
@@ -79,7 +87,12 @@ class EasyDownloader {
       dir.createSync(recursive: true);
     }
     //ignore: lines_longer_than_80_chars
-    var task = DownloadTask(url: url, path: path, fileName: fileName, maxSplit: maxSplit ?? 8, headers: IsarMapEntity.fromJson(headers));
+    var task = DownloadTask(
+        url: url,
+        path: path,
+        fileName: fileName,
+        maxSplit: maxSplit ?? 8,
+        headers: IsarMapEntity.fromJson(headers));
     final id = await _localeStorage.setDownloadTask(task);
     task = task.copyWith(downloadId: id);
     assert(id != null, 'EasyDownloader: id must not be null');
@@ -107,5 +120,6 @@ class EasyDownloader {
   Stream<void>? get downloadTasksStream => _localeStorage.watchDownloadTasks();
 
   ///listen download task by id
-  Stream<void>? downloadTaskStream(int id) => _localeStorage.watchDownloadTask(id);
+  Stream<void>? downloadTaskStream(int id) =>
+      _localeStorage.watchDownloadTask(id);
 }

@@ -8,7 +8,9 @@ class Pair<T1, T2> {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is Pair<T1, T2> && other.first == first && other.second == second;
+    return other is Pair<T1, T2> &&
+        other.first == first &&
+        other.second == second;
   }
 
   @override
@@ -18,5 +20,4 @@ class Pair<T1, T2> {
   String toString() {
     return '($first, $second)';
   }
-
 }

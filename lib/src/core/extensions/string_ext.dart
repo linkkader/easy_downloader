@@ -3,16 +3,17 @@
 import 'dart:developer';
 
 extension StringExtension on String {
-
   ///generate by chatgpt
   ///generate file name from url
   String fileNameFromUrl() {
     return _generateFileNameFromUrl(this);
   }
 
+  ///generate by chatgpt
   String _generateFileNameFromUrl(String url) {
     final uri = Uri.parse(url);
-    var fileName = uri.pathSegments.isNotEmpty ? uri.pathSegments.last : uri.path;
+    var fileName =
+        uri.pathSegments.isNotEmpty ? uri.pathSegments.last : uri.path;
 
     // Remove any query string or fragment identifier from the file name
     final queryIndex = fileName.indexOf('?');
@@ -49,6 +50,8 @@ extension StringExtension on String {
     return fileName;
   }
 
+  ///generate by chatgpt
+  ///generate file extension from content type
   String _defaultExtensionForContentType(String contentType) {
     switch (contentType) {
       case 'image/jpeg':
@@ -64,7 +67,7 @@ extension StringExtension on String {
     }
   }
 
-
+  ///capitalize first letter
   String capitalize() {
     if (length > 1) {
       return '${this[0].toUpperCase()}${substring(1)}';
@@ -73,10 +76,10 @@ extension StringExtension on String {
     }
   }
 
+  ///try parse to int
   int toInt() => int.tryParse(this) ?? 0;
 
-
-  //substring before
+  ///substring before
   String substringBefore(String str) {
     if (isEmpty) return "";
     if (str.isEmpty) return this;
@@ -87,7 +90,7 @@ extension StringExtension on String {
     }
   }
 
-  //substring after
+  ///substring after
   String substringAfter(String str) {
     if (isEmpty) return "";
     if (str.isEmpty) return this;
@@ -98,7 +101,7 @@ extension StringExtension on String {
     }
   }
 
-  //substring after last
+  ///substring after last
   String substringAfterLast(String str) {
     if (isEmpty) return '';
     if (str.isEmpty) return this;
@@ -109,7 +112,7 @@ extension StringExtension on String {
     }
   }
 
-  //valid url
+  ///verify if string is a valid url
   bool isValidUrl() {
     try {
       Uri.parse(this);

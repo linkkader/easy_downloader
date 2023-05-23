@@ -12,7 +12,7 @@ import '../../core/enum/send_port_status.dart';
 import '../locale_storage/storage_model/status.dart';
 import 'download_manager_isolate.dart';
 
-class IsolateManager{
+class IsolateManager {
   factory IsolateManager() => _instance;
   IsolateManager._internal();
 
@@ -25,9 +25,9 @@ class IsolateManager{
   static final IsolateManager _instance = IsolateManager._internal();
 
   ///init IsolateManager
-  static Future<IsolateManager> init(
-      {Future<dynamic> Function(SendPort sendPort)? onFinish,})
-  async {
+  static Future<IsolateManager> init({
+    Future<dynamic> Function(SendPort sendPort)? onFinish,
+  }) async {
     assert(!_isInit, 'IsolateManager already initialized');
     final receivePort = ReceivePort();
     _localeStorage = LocaleStorage();
@@ -44,11 +44,11 @@ class IsolateManager{
     final receivePort = ReceivePort();
     final downloadManagerIsolate = DownloadManagerIsolate.init(sendPort);
     sendPort.send(
-        Pair(SendPortStatus.updateMainIsolateSendPort, receivePort.sendPort),
+      Pair(SendPortStatus.updateMainIsolateSendPort, receivePort.sendPort),
     );
     receivePort.listen((message) async {
       final pair = message as Pair<SendPortStatus, dynamic>;
-      switch(pair.first){
+      switch (pair.first) {
         case SendPortStatus.download:
           assert(
             pair.second is DownloadTask,
@@ -59,36 +59,43 @@ class IsolateManager{
           break;
         case SendPortStatus.completeUpdateTask:
           //ignore: lines_longer_than_80_chars
-          assert(pair.second is Pair, 'IsolateManager: pair.second is not Pair');
+          assert(
+              pair.second is Pair, 'IsolateManager: pair.second is not Pair');
+
           /// completer hashcode and download task from main isolate
           final data = pair.second as Pair<int, DownloadTask>;
           downloadManagerIsolate.continueCompleter(data.first, data.second);
           break;
         case SendPortStatus.completeUpdateBlock:
-          assert(pair.second is Pair, 'IsolateManager: pair.second is not Pair');
+          assert(
+              pair.second is Pair, 'IsolateManager: pair.second is not Pair');
           var data = pair.second as Pair<int, DownloadBlock?>;
           downloadManagerIsolate.continueCompleter(data.first, data.second);
           break;
         case SendPortStatus.blockLength:
           //ignore: lines_longer_than_80_chars
-          assert(pair.second is Pair<int, int>, 'IsolateManager: pair.second is not Pair<int, int>');
+          assert(pair.second is Pair<int, int>,
+              'IsolateManager: pair.second is not Pair<int, int>');
           final data = pair.second as Pair<int, int>;
           downloadManagerIsolate.continueCompleter(data.first, data.second);
           break;
         case SendPortStatus.pauseTask:
           //ignore: lines_longer_than_80_chars
-          assert(pair.second is DownloadTask, 'IsolateManager: pair.second is not DownloadTask');
+          assert(pair.second is DownloadTask,
+              'IsolateManager: pair.second is not DownloadTask');
           final task = pair.second as DownloadTask;
           await downloadManagerIsolate.pauseTask(task);
           break;
         case SendPortStatus.continueTask:
           //ignore: lines_longer_than_80_chars
-          assert(pair.second is DownloadTask, 'IsolateManager: pair.second is not DownloadTask');
+          assert(pair.second is DownloadTask,
+              'IsolateManager: pair.second is not DownloadTask');
           final task = pair.second as DownloadTask;
           await downloadManagerIsolate.continueTask(task);
           break;
         default:
-          throw Exception('IsolateManager: unknown SendPortStatus ${pair.first}');
+          throw Exception(
+              'IsolateManager: unknown SendPortStatus ${pair.first}');
       }
     });
   }
@@ -97,17 +104,19 @@ class IsolateManager{
   static dynamic _isolateListen(dynamic message) async {
     assert(message is Pair, 'IsolateManager: message is not Pair');
     final pair = message as Pair<SendPortStatus, dynamic>;
-    switch(pair.first){
+    switch (pair.first) {
       case SendPortStatus.updateMainIsolateSendPort:
         //ignore: lines_longer_than_80_chars
-        assert(pair.second is SendPort, 'IsolateManager: pair.second is not SendPort');
+        assert(pair.second is SendPort,
+            'IsolateManager: pair.second is not SendPort');
         _sendPortCompleter.complete(pair.second as SendPort);
         break;
 
-        ///task and and completer hascode from isolate
+      ///task and and completer hascode from isolate
       case SendPortStatus.updateTask:
         //ignore: lines_longer_than_80_chars
-        assert(pair.second is Pair<DownloadTask, int>, 'IsolateManager: pair.second is not Pair<DownloadTask, int>');
+        assert(pair.second is Pair<DownloadTask, int>,
+            'IsolateManager: pair.second is not Pair<DownloadTask, int>');
         final data = pair.second as Pair<DownloadTask, int>;
         final id = await _localeStorage.setDownloadTask(data.first);
         assert(id != null, 'IsolateManager: id is null');
@@ -117,25 +126,28 @@ class IsolateManager{
         break;
       case SendPortStatus.updateBlock:
         //ignore: lines_longer_than_80_chars
-        assert(pair.second is Tuple<DownloadTask, DownloadBlock, int>, 'IsolateManager: pair.second is not Tuple<DownloadTask, DownloadBlock, int>');
+        assert(pair.second is Tuple<DownloadTask, DownloadBlock, int>,
+            'IsolateManager: pair.second is not Tuple<DownloadTask, DownloadBlock, int>');
         final data = pair.second as Tuple<DownloadTask, DownloadBlock, int>;
         //ignore: lines_longer_than_80_chars
-        final block = await _localeStorage.updateBlock(data.first.downloadId, data.second);
+        final block = await _localeStorage.updateBlock(
+            data.first.downloadId, data.second);
         downloadManager.completeUpdateBlock(data.first, data.third, block);
         break;
       case SendPortStatus.blockFinished:
         assert(_isInit == true, 'IsolateManager: not initialized');
-        assert(pair.second is Pair<DownloadTask, DownloadBlock>, 'IsolateManager: pair.second is pair<DownloadTask, DownloadBlock>');
+        assert(pair.second is Pair<DownloadTask, DownloadBlock>,
+            'IsolateManager: pair.second is pair<DownloadTask, DownloadBlock>');
         final data = pair.second as Pair<DownloadTask, DownloadBlock>;
         final task = _localeStorage.getDownloadTaskSync(data.first.downloadId);
-        if (downloadManager.isAllBlockFinished(task!))
-        {
+        if (downloadManager.isAllBlockFinished(task!)) {
           await downloadManager.taskComplete(task);
         }
         break;
       case SendPortStatus.blockLength:
         //ignore: lines_longer_than_80_chars
-        assert(pair.second is Pair<DownloadTask, int>, 'IsolateManager: pair.second is not Pair<DownloadTask, int>');
+        assert(pair.second is Pair<DownloadTask, int>,
+            'IsolateManager: pair.second is not Pair<DownloadTask, int>');
         final data = pair.second as Pair<DownloadTask, int>;
         final task = _localeStorage.getDownloadTaskSync(data.first.downloadId);
         assert(task != null, 'IsolateManager: task is null');
@@ -143,24 +155,25 @@ class IsolateManager{
         break;
       case SendPortStatus.pauseTaskSuccess:
         //ignore: lines_longer_than_80_chars
-        assert(pair.second is DownloadTask, 'IsolateManager: pair.second is not DownloadTask');
+        assert(pair.second is DownloadTask,
+            'IsolateManager: pair.second is not DownloadTask');
         var task = pair.second as DownloadTask;
         task = task.copyWith(status: DownloadStatus.paused);
         await _localeStorage.setDownloadTask(task);
         break;
       case SendPortStatus.continueTaskSuccess:
         //ignore: lines_longer_than_80_chars
-        assert(pair.second is DownloadTask, 'IsolateManager: pair.second is not DownloadTask');
+        assert(pair.second is DownloadTask,
+            'IsolateManager: pair.second is not DownloadTask');
         final task = pair.second as DownloadTask;
         log.e(task);
         await _localeStorage.setDownloadTaskStatus(
-          task.downloadId, DownloadStatus.downloading,
+          task.downloadId,
+          DownloadStatus.downloading,
         );
         break;
       default:
         throw Exception("IsolateManager: unknown SendPortStatus");
     }
   }
-
-
 }

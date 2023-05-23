@@ -1,7 +1,6 @@
 // Created by linkkader on 21/10/2022
 //https://stackoverflow.com/a/62879750/12751927
 
-
 import 'dart:async';
 import 'dart:collection';
 
@@ -14,7 +13,8 @@ class TaskRunner<T> {
   Completer? _completer;
 
   ///init queue manager
-  TaskRunner (Future Function(T item, TaskRunner<T> runner) execution,{this.maxConcurrentTasks = 1, bool startQueue = true}) {
+  TaskRunner(Future Function(T item, TaskRunner<T> runner) execution,
+      {this.maxConcurrentTasks = 1, bool startQueue = true}) {
     _execution = execution;
     if (startQueue == true) {
       _startExecution();
@@ -45,9 +45,9 @@ class TaskRunner<T> {
     }
     if (_input.isNotEmpty && runningTasks < maxConcurrentTasks) {
       runningTasks++;
-      try{
+      try {
         await _execution(_input.removeFirst(), this);
-      }catch(_){
+      } catch (_) {
         // App.log.e('TaskRunner error : $_');
       }
       runningTasks--;

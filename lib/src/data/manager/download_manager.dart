@@ -12,7 +12,7 @@ import 'package:easy_downloader/src/data/locale_storage/storage_model/status.dar
 import '../../core/enum/send_port_status.dart';
 
 /// main isolate
-class DownloadManager{
+class DownloadManager {
   factory DownloadManager() => _instance;
   DownloadManager._internal();
   final log = Log();
@@ -21,7 +21,7 @@ class DownloadManager{
   static late SendPort _sendPort;
   static final DownloadManager _instance = DownloadManager._internal();
 
-
+  ///init DownloadManager
   static DownloadManager init(SendPort sendPort) {
     assert(!_isInit, 'DownloadManager already initialized');
     _sendPort = sendPort;
@@ -31,7 +31,7 @@ class DownloadManager{
   }
 
   ///send download task to isolate
-   Future<void> downloadTask(DownloadTask task) async {
+  Future<void> downloadTask(DownloadTask task) async {
     assert(_isInit, 'DownloadManager not initialized');
     _sendPort.send(Pair(SendPortStatus.download, task));
   }
@@ -55,7 +55,6 @@ class DownloadManager{
     await _localeStorage.setDownloadTask(newTask);
   }
 
-
   Future<void> appendSuccess(DownloadTask task) async {
     assert(
       task.status == DownloadStatus.completed,
@@ -67,30 +66,46 @@ class DownloadManager{
   ///check if all block finished
   bool isAllBlockFinished(DownloadTask task) {
     return task.blocks.every(
-          (element) => element.status == BlockStatus.finished,);
+      (element) => element.status == BlockStatus.finished,
+    );
   }
 
   ///update task status to failed
-  void completeUpdateTask(DownloadTask task, int completerHashcode){
-    _sendPort.send(Pair(SendPortStatus.completeUpdateTask,
-        Pair(completerHashcode, task),),);
+  void completeUpdateTask(DownloadTask task, int completerHashcode) {
+    _sendPort.send(
+      Pair(
+        SendPortStatus.completeUpdateTask,
+        Pair(completerHashcode, task),
+      ),
+    );
   }
 
   ///update block status to failed
-  void completeUpdateBlock(DownloadTask task,
-      int completerHashcode, DownloadBlock? block,){
+  void completeUpdateBlock(
+    DownloadTask task,
+    int completerHashcode,
+    DownloadBlock? block,
+  ) {
     _sendPort.send(
       Pair(
-        SendPortStatus.completeUpdateBlock, Pair(completerHashcode, block,),
+        SendPortStatus.completeUpdateBlock,
+        Pair(
+          completerHashcode,
+          block,
+        ),
       ),
     );
   }
 
   ///send block length to isolate
-  void blockLength(int completerHashcode, int length){
+  void blockLength(int completerHashcode, int length) {
     _sendPort.send(
       Pair(
-        SendPortStatus.blockLength, Pair(completerHashcode, length,),
+        SendPortStatus.blockLength,
+        Pair(
+          completerHashcode,
+          length,
+        ),
       ),
     );
   }

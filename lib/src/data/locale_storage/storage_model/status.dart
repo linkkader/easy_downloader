@@ -1,4 +1,4 @@
-
+/// The status of a download
 enum DownloadStatus {
   downloading,
   paused,
@@ -9,6 +9,7 @@ enum DownloadStatus {
   none,
 }
 
+/// The status of a block
 enum BlockStatus {
   downloading,
   finished,

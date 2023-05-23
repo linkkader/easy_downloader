@@ -20,14 +20,18 @@ class UpdateCommand extends Command<int> {
   final Logger _logger;
   final PubUpdater _pubUpdater;
 
+  /// The package name to update.
   @override
   String get description => 'Update the CLI.';
 
+  /// The package name to update.
   static const String commandName = 'update';
 
+  /// The package name to update.
   @override
   String get name => commandName;
 
+  /// The package name to update.
   @override
   Future<int> run() async {
     final updateCheckProgress = _logger.progress('Checking for updates');

@@ -1,7 +1,4 @@
-
-
 extension DurationExt on Duration {
-
   /// Convert [Duration] to human readable string
   String toHumanReadable() {
     final hours = inHours;

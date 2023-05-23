@@ -38,17 +38,19 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
         abbr: 'v',
         negatable: false,
         help: 'Print the current version.',
-      )..addOption(
+      )
+      ..addOption(
         'name',
         abbr: 'n',
         valueHelp: 'file',
         help: 'file output name',
-      )..addOption(
+      )
+      ..addOption(
         'dir',
         abbr: 'd',
         valueHelp: 'dir',
         callback: (value) {
-          if (value != null){
+          if (value != null) {
             final dir = Directory(value);
             if (!dir.existsSync()) {
               dir.createSync(recursive: true);
@@ -56,7 +58,8 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
           }
         },
         help: 'file output dir',
-      )..addMultiOption(
+      )
+      ..addMultiOption(
         'header',
         abbr: 'H',
         valueHelp: 'key:value',
@@ -74,7 +77,7 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
         abbr: 's',
         valueHelp: '1',
         callback: (value) {
-          if (value != null){
+          if (value != null) {
             final split = int.tryParse(value);
             if (split == null || split < 1) {
               throw const FormatException('Invalid split');
@@ -109,7 +112,6 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
 
   final Logger _logger;
   final PubUpdater _pubUpdater;
-
 
   @override
   Future<int> run(Iterable<String> args) async {
@@ -173,8 +175,8 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
     // _logger.info('easy_downloader version: ${topLevelResults['split']} ${topLevelResults.options}');
     // exit(22);
     if (topLevelResults.rest.isNotEmpty) {
-      if (topLevelResults.rest.length == 1
-          && topLevelResults.rest[0].isValidUrl()) {
+      if (topLevelResults.rest.length == 1 &&
+          topLevelResults.rest[0].isValidUrl()) {
         final easyDownloader = await EasyDownloader().init();
         final completer = Completer<int>();
         final stopwatch = Stopwatch()..start();
@@ -192,45 +194,53 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
           throw const FormatException('Invalid url');
         }
         // _logger.info('%\ttotal\t\tReceived\t\tTime spent\r');
-        Timer.periodic(const Duration(seconds: 1), (_) {
-          if (task == null) {
-            return;
-          }
-          final speed = (task!.totalDownloaded
-              - (oldTask?.totalDownloaded ?? 0))
-              .toHumanReadableSize().replaceAll(' ', '');
-          final duration = Duration(
-            milliseconds: stopwatch.elapsedMilliseconds,
-          );
-          switch(task!.status){
-            case DownloadStatus.downloading:
-              stdout.write('33[2K\r');
-              //ignore: lines_longer_than_80_chars
-              stdout.write('${task!.totalDownloaded * 100~/task!.totalLength}%\t${task!.totalDownloaded.toHumanReadableSize().replaceAll(" ", "")}/${task!.totalLength.toHumanReadableSize().replaceAll(" ", "")}\t${duration.toHumanReadable()} \t$speed/s');
-              break;
-            case DownloadStatus.paused:
-              break;
-            case DownloadStatus.completed:
-              completer.complete(ExitCode.success.code);
-              _logger.info('\ncompleted output path: ${task!.outputFilePath}');
-              break;
-            case DownloadStatus.failed:
-              completer.complete(ExitCode.ioError.code);
-              _logger.err('failed');
-              break;
-            case DownloadStatus.appending:
-              break;
-            case DownloadStatus.queuing:
-              break;
-            case DownloadStatus.none:
-              break;
-          }
-          oldTask = task;
-        },);
+        Timer.periodic(
+          const Duration(seconds: 1),
+          (_) {
+            if (task == null) {
+              return;
+            }
+            final speed =
+                (task!.totalDownloaded - (oldTask?.totalDownloaded ?? 0))
+                    .toHumanReadableSize()
+                    .replaceAll(' ', '');
+            final duration = Duration(
+              milliseconds: stopwatch.elapsedMilliseconds,
+            );
+            switch (task!.status) {
+              case DownloadStatus.downloading:
+                stdout.write('33[2K\r');
+                //ignore: lines_longer_than_80_chars
+                stdout.write(
+                    '${task!.totalDownloaded * 100 ~/ task!.totalLength}%\t${task!.totalDownloaded.toHumanReadableSize().replaceAll(" ", "")}/${task!.totalLength.toHumanReadableSize().replaceAll(" ", "")}\t${duration.toHumanReadable()} \t$speed/s');
+                break;
+              case DownloadStatus.paused:
+                break;
+              case DownloadStatus.completed:
+                completer.complete(ExitCode.success.code);
+                _logger
+                    .info('\ncompleted output path: ${task!.outputFilePath}');
+                break;
+              case DownloadStatus.failed:
+                completer.complete(ExitCode.ioError.code);
+                _logger.err('failed');
+                break;
+              case DownloadStatus.appending:
+                break;
+              case DownloadStatus.queuing:
+                break;
+              case DownloadStatus.none:
+                break;
+            }
+            oldTask = task;
+          },
+        );
         task = await easyDownloader.download(
           url: url,
           autoStart: false,
-          maxSplit: int.tryParse(topLevelResults['split'].toString(),),
+          maxSplit: int.tryParse(
+            topLevelResults['split'].toString(),
+          ),
           fileName: topLevelResults['name']?.toString(),
           path: topLevelResults['dir']?.toString(),
           headers: headers,
@@ -244,12 +254,10 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
         }
         task!.start();
         exitCode = await completer.future;
-      }
-      else{
+      } else {
         exitCode = ExitCode.ioError.code;
       }
-    }
-    else if (topLevelResults['version'] == true) {
+    } else if (topLevelResults['version'] == true) {
       _logger.info(packageVersion);
       exitCode = ExitCode.success.code;
     } else {
