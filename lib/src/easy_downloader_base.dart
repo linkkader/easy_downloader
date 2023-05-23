@@ -6,10 +6,8 @@ import 'package:easy_downloader/src/data/manager/download_manager.dart';
 import 'package:easy_downloader/src/data/manager/isolate_manager.dart';
 import 'package:easy_downloader/src/data/manager/runner.dart';
 import 'package:isar/isar.dart';
-import 'data/locale_storage/storage_model/download_task.dart';
 import 'data/locale_storage/storage_model/isar_map_entity.dart';
 import 'data/manager/speed_manager.dart';
-
 part 'data/task_extension.dart';
 
 ///EasyDownloader
