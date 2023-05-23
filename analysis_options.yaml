@@ -9,3 +9,4 @@ analyzer:
     - '**.g.dart'
     - '**.gr.dart'
     - '**/generated_plugin_registrant.dart'
+    - 'lib/src/data/locale_storage/shared_prefs_isar/pref_isar.g.dart'

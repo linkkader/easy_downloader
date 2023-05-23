@@ -41,7 +41,6 @@ class LocaleStorage extends SharedPrefsIsar {
     localeStoragePath ??= Directory.systemTemp.path;
     _isar ??= await Isar.open(
       [..._instance.defaultPrefsSchemas, DownloadTaskSchema],
-      directory: localeStoragePath,
     );
     if (clearLocaleStorage) {
       await _isar?.writeTxn(() async {
