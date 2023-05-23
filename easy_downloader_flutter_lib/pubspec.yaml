@@ -1,0 +1,19 @@
+name: easy_downloader_flutter_lib
+description: flutter libs for easy_downloader
+version: 0.0.24
+
+environment:
+  sdk: '>=2.19.2 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  isar_flutter_libs: ^3.1.0+1
+  flutter_local_notifications: ^14.1.0
+  easy_downloader: ^0.0.24
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0

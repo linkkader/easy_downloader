@@ -12,12 +12,6 @@ import 'package:easy_downloader/src/version.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 
-///[EasyDownloaderCommandRunner] is a command-line interface for the EasyDownloader.
-///It exposes commands for creating, updating, and publishing EasyDownloader packages.
-///It also provides tab completion for commands and flags.
-///[executableName] is the name of the executable.
-///[description] is the description of the executable.
-///[logger] is the logger used to log messages.
 const executableName = 'easy_downloader';
 const packageName = 'easy_downloader';
 const description = 'A Very Good Project created by Very Good CLI.';
@@ -114,26 +108,12 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
   }
 
   @override
-
-  ///[printUsage] is called when the command is not recognized.
-  ///It prints the usage information for the CLI.
-  ///It also prints the usage information for the command that was not recognized.
   void printUsage() => _logger.info(usage);
 
-  ///[runCommand] is called when the command is recognized.
-  ///It runs the command and returns the exit code.
-  ///It also prints the usage information for the command that was not recognized.
-  ///[_logger] is the logger used to log messages.
-  ///[_pubUpdater] is the pub updater used to update the package.
   final Logger _logger;
   final PubUpdater _pubUpdater;
 
   @override
-
-  ///[runCommand] is called when the command is recognized.
-  ///It runs the command and returns the exit code.
-  ///It also prints the usage information for the command that was not recognized.
-  ///[run] is called when the command is not recognized.
   Future<int> run(Iterable<String> args) async {
     try {
       final topLevelResults = parse(args);
@@ -162,10 +142,6 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
   }
 
   @override
-
-  ///[runCommand] is called when the command is recognized.
-  ///It runs the command and returns the exit code.
-  ///It also prints the usage information for the command that was not recognized.
   Future<int?> runCommand(ArgResults topLevelResults) async {
     // Fast track completion command
     if (topLevelResults.command?.name == 'completion') {
@@ -194,7 +170,7 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
       }
     }
 
-    /// Run the command or show version
+    // Run the command or show version
     final int? exitCode;
     // _logger.info('easy_downloader version: ${topLevelResults['split']} ${topLevelResults.options}');
     // exit(22);
@@ -299,7 +275,6 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
   /// Checks if the current version (set by the build runner on the
   /// version.dart file) is the most recent one. If not, show a prompt to the
   /// user.
-  /// [_checkForUpdates] is called after the command is run.
   Future<void> _checkForUpdates() async {
     try {
       final latestVersion = await _pubUpdater.getLatestVersion(packageName);

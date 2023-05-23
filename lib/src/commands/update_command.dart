@@ -17,28 +17,18 @@ class UpdateCommand extends Command<int> {
   })  : _logger = logger,
         _pubUpdater = pubUpdater ?? PubUpdater();
 
-  ///[Logger] instance to use for logging.
   final Logger _logger;
-
-  /// [PubUpdater] instance to use for updating.
   final PubUpdater _pubUpdater;
 
   @override
-
-  ///[description] of the command.
   String get description => 'Update the CLI.';
 
-  ///[commandName] of the command.
   static const String commandName = 'update';
 
   @override
-
-  ///[name] of the command.
   String get name => commandName;
 
   @override
-
-  ///[run] the command.
   Future<int> run() async {
     final updateCheckProgress = _logger.progress('Checking for updates');
     late final String latestVersion;
