@@ -10,6 +10,21 @@ part 'download_task.g.dart';
 typedef DownloadTaskListener = void Function(DownloadTask task);
 
 @Collection()
+
+///class to store download task
+///[downloadId] download id
+///[inQueue] in queue
+///[totalLength] total length
+///[totalDownloaded] total downloaded
+///[path] path
+///[maxSplit] max split
+///[status] status
+///[blocks] blocks
+///[fileName] file name
+///[headers] headers
+///[url] url
+///[outputFilePath] output file path
+///[hashCode] hash code
 class DownloadTask {
   const DownloadTask({
     required this.headers,

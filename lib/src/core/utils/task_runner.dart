@@ -4,7 +4,15 @@
 import 'dart:async';
 import 'dart:collection';
 
-///queue manager
+///task runner
+///[T] type of task
+///[maxConcurrentTasks] max concurrent tasks
+///[execution] execution function
+///[startQueue] start queue
+///[runningTasks] running tasks
+///[add] add task in queue
+///[addAll] add multiple tasks to queue
+///[startExecution] start queue
 class TaskRunner<T> {
   final Queue<T> _input = Queue();
   late final int maxConcurrentTasks;

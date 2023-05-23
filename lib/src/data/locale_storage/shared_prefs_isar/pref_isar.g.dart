@@ -7,7 +7,7 @@ part of 'pref_isar.dart';
 // **************************************************************************
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
 extension GetDateTimeIsarCollection on Isar {
   IsarCollection<DateTimeIsar> get dateTimeIsars => this.collection();
@@ -53,7 +53,7 @@ const DateTimeIsarSchema = CollectionSchema(
   getId: _dateTimeIsarGetId,
   getLinks: _dateTimeIsarGetLinks,
   attach: _dateTimeIsarAttach,
-  version: '3.0.5',
+  version: '3.1.0+1',
 );
 
 int _dateTimeIsarEstimateSize(
@@ -648,7 +648,7 @@ extension DateTimeIsarQueryProperty
 }
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
 extension GetIntIsarCollection on Isar {
   IsarCollection<IntIsar> get intIsars => this.collection();
@@ -694,7 +694,7 @@ const IntIsarSchema = CollectionSchema(
   getId: _intIsarGetId,
   getLinks: _intIsarGetLinks,
   attach: _intIsarAttach,
-  version: '3.0.5',
+  version: '3.1.0+1',
 );
 
 int _intIsarEstimateSize(
@@ -1276,7 +1276,7 @@ extension IntIsarQueryProperty
 }
 
 // coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
 extension GetStringIsarCollection on Isar {
   IsarCollection<StringIsar> get stringIsars => this.collection();
@@ -1322,7 +1322,7 @@ const StringIsarSchema = CollectionSchema(
   getId: _stringIsarGetId,
   getLinks: _stringIsarGetLinks,
   attach: _stringIsarAttach,
-  version: '3.0.5',
+  version: '3.1.0+1',
 );
 
 int _stringIsarEstimateSize(

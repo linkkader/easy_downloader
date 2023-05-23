@@ -1,5 +1,8 @@
 // Created by linkkader on 7/10/2022
 
+///convert bytes to human readable string
+///[bytes] bytes
+///return human readable string
 extension IntExtension on int {
   ///convert bytes to human readable string
   String toHumanReadableSize() {

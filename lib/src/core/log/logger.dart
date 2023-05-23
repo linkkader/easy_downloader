@@ -2,6 +2,10 @@
 
 import 'package:logger/logger.dart';
 
+
+///all logs will be filtered by this class
+///[shouldLog] return true if you want to print log
+///force all logs to be printed
 class Log {
   final log = Logger();
   final _tag = 'EasyDownloader';

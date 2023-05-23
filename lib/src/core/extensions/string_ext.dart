@@ -2,6 +2,11 @@
 
 import 'dart:developer';
 
+///generate by chatgpt
+///String extension
+///[fileNameFromUrl] generate file name from url
+///[capitalize] capitalize first letter
+///[toInt] try parse to int
 extension StringExtension on String {
   ///generate by chatgpt
   ///generate file name from url

@@ -1,5 +1,10 @@
 // Created by linkkader on 14/11/2022
 
+
+///Pair like python]
+///[first] first value
+///[second] second value
+///[Pair] pair
 class Pair<T1, T2> {
   final T1 first;
   final T2 second;

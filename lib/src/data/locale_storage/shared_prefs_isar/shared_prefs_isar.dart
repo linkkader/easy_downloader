@@ -3,6 +3,19 @@
 import 'package:easy_downloader/src/data/locale_storage/shared_prefs_isar/pref_isar.dart';
 import 'package:isar/isar.dart';
 
+///class to store key value pair for date time
+///[key] key
+///[value] value
+///[id] id
+///[DateTimeIsar] date time isar
+///[IntIsar] int isar
+///[StringIsar] string isar
+///[SharedPrefsIsar] shared prefs isar
+///[defaultPrefsSchemas] default prefs schemas
+///[dateTime] date time
+///[setDateTime] set date time
+///[getInt] get int
+///[setInt] set int
 abstract class SharedPrefsIsar {
   const SharedPrefsIsar(this._isar);
 
