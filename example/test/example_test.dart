@@ -7,7 +7,7 @@ import 'package:crypto/crypto.dart';
 import 'package:easy_downloader/easy_downloader.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
-import '../lib/pair.dart';
+import 'package:example/pair.dart';
 
 Future<void> main() async {
   List<Pair<String, String>> all = [

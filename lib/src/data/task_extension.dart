@@ -1,5 +1,6 @@
 part of '../easy_downloader_base.dart';
 
+///helper for [DownloadTask]
 extension TaskExtension on DownloadTask {
   ///start task
   void start() {

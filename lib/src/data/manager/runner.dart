@@ -6,6 +6,9 @@ import 'package:easy_downloader/easy_downloader.dart';
 import 'package:easy_downloader/src/core/utils/task_runner.dart';
 
 /// runner for download task
+/// [init] init runner
+/// [addTask] add task to runner
+/// [addAllTask] add all task to runner
 class Runner {
   Runner._();
   static final Runner _instance = Runner._();

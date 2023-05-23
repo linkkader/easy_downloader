@@ -24,9 +24,9 @@ extension IntExtension on int {
     await Future<dynamic>.delayed(Duration(seconds: this));
   }
 
-  ///[int] * 1024 * 1024 bytes
+  /// 1024 * 1024 bytes
   int megabytes() => this * 1024 * 1024;
 
-  ///[int] * 1024 bytes
+  ///1024 bytes
   int kilobytes() => this * 1024;
 }

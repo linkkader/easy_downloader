@@ -1,6 +1,6 @@
 // Created by linkkader on 3/3/2023
 
-///
+/// SendPortStatus
 enum SendPortStatus {
   updateMainIsolateSendPort,
   updateTask,

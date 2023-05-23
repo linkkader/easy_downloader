@@ -15,7 +15,12 @@ import 'package:easy_downloader/src/data/locale_storage/storage_model/status.dar
 
 import '../../core/enum/send_port_status.dart';
 
-//isolate
+///DownloadManagerIsolate
+///excuted in isolate
+///[init] init DownloadManagerIsolate
+///[downloadTask] download task
+///[continueTask] continue task
+///[pauseTask] pause task
 class DownloadManagerIsolate {
   factory DownloadManagerIsolate() => _instance;
   DownloadManagerIsolate._internal();

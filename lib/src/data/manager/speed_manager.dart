@@ -7,6 +7,8 @@ import 'package:easy_downloader/src/data/locale_storage/storage_model/download_t
 typedef SpeedListener = void Function(int length);
 
 /// speed manager
+/// this class is used to calculate the speed of the download
+/// sometimes the speed is not accurate
 class SpeedManager {
   factory SpeedManager() => _instance;
   SpeedManager._internal();

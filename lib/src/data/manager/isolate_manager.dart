@@ -12,6 +12,13 @@ import '../../core/enum/send_port_status.dart';
 import '../locale_storage/storage_model/status.dart';
 import 'download_manager_isolate.dart';
 
+///IsolateManager
+///executed in isolate
+///[init] init IsolateManager
+///[downloadTask] download task
+///[continueTask] continue task
+///[pauseTask] pause task
+///[taskComplete] update task status to complete
 class IsolateManager {
   factory IsolateManager() => _instance;
   IsolateManager._internal();

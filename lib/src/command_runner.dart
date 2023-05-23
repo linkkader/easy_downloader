@@ -108,11 +108,29 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
   }
 
   @override
+  /// [parse] parses the command line arguments [args].
   void printUsage() => _logger.info(usage);
 
   final Logger _logger;
   final PubUpdater _pubUpdater;
 
+
+
+  @override
+  /// [run] runs the command runner.
+  ///
+  /// It parses the command line arguments [args] and invokes the appropriate
+  /// command or prints the usage information.
+  ///
+  /// It returns a [Future<int>] that is completed with the appropriate exit code.
+  ///
+  /// If the command runner was constructed with [exitOnFailure] set to false,
+  /// then the [Future] will complete with [ExitCode.success.code] if the
+  /// command was successful, or [ExitCode.usage.code] if the arguments were
+  /// invalid (or help was printed). Otherwise, the [Future] will not complete
+  /// until the process exits.
+  ///
+  /// If [args] is not provided, it defaults to [ArgParser.parse].
   @override
   Future<int> run(Iterable<String> args) async {
     try {
@@ -141,6 +159,8 @@ class EasyDownloaderCommandRunner extends CompletionCommandRunner<int> {
     }
   }
 
+  ///runCommand [topLevelResults] is the top level [ArgResults] from [parse].
+  ///Returns an [ExitCode] or null if the command should not exit.
   @override
   Future<int?> runCommand(ArgResults topLevelResults) async {
     // Fast track completion command

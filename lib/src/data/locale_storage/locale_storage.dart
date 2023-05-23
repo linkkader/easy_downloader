@@ -1,6 +1,7 @@
 // Created by linkkader on 7/10/2022
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'package:easy_downloader/src/core/log/logger.dart';
 import 'package:easy_downloader/src/data/locale_storage/shared_prefs_isar/shared_prefs_isar.dart';
@@ -8,6 +9,10 @@ import 'package:easy_downloader/src/data/locale_storage/storage_model/download_t
 import 'package:easy_downloader/src/data/locale_storage/storage_model/status.dart';
 import 'package:isar/isar.dart';
 
+///LocaleStorage
+///[init] init LocaleStorage
+///[downloadTask] download task
+///[downloadTaskListener] download task listener
 class LocaleStorage extends SharedPrefsIsar {
   factory LocaleStorage() => _instance;
   LocaleStorage._internal() : super(_isar);
@@ -33,6 +38,7 @@ class LocaleStorage extends SharedPrefsIsar {
       bool clearLocaleStorage = false}) async {
     assert(!_isInit, 'LocaleStorage already initialized');
     _isar = isar;
+    localeStoragePath ??= Directory.systemTemp.path;
     _isar ??= await Isar.open(
       [..._instance.defaultPrefsSchemas, DownloadTaskSchema],
       directory: localeStoragePath,
@@ -79,7 +85,9 @@ class LocaleStorage extends SharedPrefsIsar {
     });
   }
 
-  ///set download task status
+  ///return all download tasks
+  ///return list of download tasks
+  ///return empty list if no download tasks found
   List<DownloadTask> getDownloadTasks() {
     return _isar?.downloadTasks.where().findAllSync() ?? [];
   }
@@ -91,6 +99,9 @@ class LocaleStorage extends SharedPrefsIsar {
   }
 
   ///get download task
+  ///[id] id of download task
+  ///return download task
+  ///return null if download task not found
   Future<DownloadTask?>? getDownloadTask(int id) {
     return _isar?.downloadTasks.get(id);
   }

@@ -10,6 +10,27 @@ import 'data/manager/speed_manager.dart';
 
 part 'data/task_extension.dart';
 
+///EasyDownloader
+///init EasyDownloader
+///example:
+///```dart
+///await EasyDownloader().init();
+///```
+///download file
+///example:
+///```dart
+///final task = await EasyDownloader().download(
+///    url: 'https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4',
+///    path: '/storage/emulated/0/Download',
+///    fileName: 'test.mp4',
+///    maxSplit: 4,
+///    autoStart: true,
+///    });
+///    task.listen((task) {
+///     print(task.status);
+///    });
+///    ```
+///    todo: make better documentation
 class EasyDownloader {
   factory EasyDownloader() => _instance;
   EasyDownloader._internal();
