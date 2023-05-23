@@ -1,6 +1,5 @@
 // Created by linkkader on 14/11/2022
 
-
 ///Pair like python]
 ///[first] first value
 ///[second] second value
@@ -10,8 +9,9 @@ class Pair<T1, T2> {
   final T2 second;
   const Pair(this.first, this.second);
 
-  ///equal
   @override
+
+  ///equal operator
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is Pair<T1, T2> &&
@@ -19,12 +19,14 @@ class Pair<T1, T2> {
         other.second == second;
   }
 
-  ///hash code
   @override
+
+  ///hash code
   int get hashCode => first.hashCode ^ second.hashCode;
 
-  ///convert to string
   @override
+
+  ///convert to string
   String toString() {
     return '($first, $second)';
   }

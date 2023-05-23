@@ -374,6 +374,9 @@ class DownloadManagerIsolate {
     // return;
   }
 
+  ///pause task
+  ///[downloadTask] task to pause
+  ///[deleteTask] delete task after pause
   Future<void> pauseTask(DownloadTask downloadTask) async {
     assert(_isInit, 'DownloadManager not initialized');
     //ignore: lines_longer_than_80_chars

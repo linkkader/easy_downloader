@@ -7,6 +7,7 @@ import 'package:isar/isar.dart';
 part 'isar_map_entity.g.dart';
 
 @Embedded(inheritance: false)
+
 ///class to store map
 ///[json] json
 ///[map] map

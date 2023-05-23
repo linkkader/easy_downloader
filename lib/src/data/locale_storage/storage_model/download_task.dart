@@ -125,6 +125,19 @@ class DownloadTask {
 }
 
 @Embedded()
+
+///class to store download block
+///[start] start
+///[end] end
+///[id] id
+///[downloaded] downloaded
+///[status] status
+///[currentSplit] current split
+///[hashCode] hash code
+///[copyWith] copy with
+///[toString] to string
+///[operator ==] operator ==
+///[runtimeType] runtime type
 class DownloadBlock {
   ///constructor
   const DownloadBlock({

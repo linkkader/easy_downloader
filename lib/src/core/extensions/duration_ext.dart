@@ -1,5 +1,3 @@
-
-
 /// Extension on [Duration] to convert it to human readable string
 /// example: 1:30:00
 /// 1 hour 30 minutes 0 seconds

@@ -24,12 +24,14 @@ class Tuple<T1, T2, T3> {
         other.third == third;
   }
 
-  ///hash code
   @override
+
+  ///hash code
   int get hashCode => first.hashCode ^ second.hashCode ^ third.hashCode;
 
-  ///convert to string
   @override
+
+  ///convert to string
   String toString() {
     return '($first, $second, $third)';
   }

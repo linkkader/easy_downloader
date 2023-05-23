@@ -7,6 +7,10 @@ part 'pref_isar.g.dart';
 @Collection()
 
 ///class to store key value pair for date time
+///[key] key
+///[value] value
+///[id] id
+///[DateTimeIsar] DateTimeIsar
 class DateTimeIsar {
   const DateTimeIsar(this.key, this.value, {this.id = Isar.autoIncrement});
   final Id id;
@@ -15,8 +19,13 @@ class DateTimeIsar {
   final String key;
 }
 
-///class to store key value pair for int
 @Collection()
+
+///class to store key value pair for int
+///[key] key
+///[value] value
+///[id] id
+///[IntIsar] int isar
 class IntIsar {
   const IntIsar(this.key, this.value, {this.id = Isar.autoIncrement});
   final Id id;
@@ -25,8 +34,14 @@ class IntIsar {
   final String key;
 }
 
-///class to store key value pair for string
 @Collection()
+
+///class to store key value pair for string
+///[key] key
+///[value] value
+///[id] id
+///[StringIsar] string isar
+///[StringIsar] string isar
 class StringIsar {
   const StringIsar(this.key, this.value, {this.id = Isar.autoIncrement});
   final Id id;

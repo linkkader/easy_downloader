@@ -1,6 +1,13 @@
 part of '../easy_downloader_base.dart';
 
 ///helper for [DownloadTask]
+///[start] start task
+///[pause] pause task
+/// [continueDownload] continue task
+/// [cancel] cancel task
+/// [delete] delete task
+/// [retry] retry task
+/// [updateBlock] update block
 extension TaskExtension on DownloadTask {
   ///start task
   void start() {
