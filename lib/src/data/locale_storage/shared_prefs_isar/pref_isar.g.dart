@@ -9,13 +9,14 @@ part of 'pref_isar.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetDateTimeIsarCollection on Isar {
-  IsarCollection<DateTimeIsar> get dateTimeIsars => this.collection();
+extension GetDateTimeIsarEasyDownloaderCollection on Isar {
+  IsarCollection<DateTimeIsarEasyDownloader> get dateTimeIsarEasyDownloaders =>
+      this.collection();
 }
 
-const DateTimeIsarSchema = CollectionSchema(
-  name: r'DateTimeIsar',
-  id: 2470120810581797934,
+const DateTimeIsarEasyDownloaderSchema = CollectionSchema(
+  name: r'DateTimeIsarEasyDownloader',
+  id: 4145061868552879397,
   properties: {
     r'key': PropertySchema(
       id: 0,
@@ -28,10 +29,10 @@ const DateTimeIsarSchema = CollectionSchema(
       type: IsarType.dateTime,
     )
   },
-  estimateSize: _dateTimeIsarEstimateSize,
-  serialize: _dateTimeIsarSerialize,
-  deserialize: _dateTimeIsarDeserialize,
-  deserializeProp: _dateTimeIsarDeserializeProp,
+  estimateSize: _dateTimeIsarEasyDownloaderEstimateSize,
+  serialize: _dateTimeIsarEasyDownloaderSerialize,
+  deserialize: _dateTimeIsarEasyDownloaderDeserialize,
+  deserializeProp: _dateTimeIsarEasyDownloaderDeserializeProp,
   idName: r'id',
   indexes: {
     r'key': IndexSchema(
@@ -50,14 +51,14 @@ const DateTimeIsarSchema = CollectionSchema(
   },
   links: {},
   embeddedSchemas: {},
-  getId: _dateTimeIsarGetId,
-  getLinks: _dateTimeIsarGetLinks,
-  attach: _dateTimeIsarAttach,
+  getId: _dateTimeIsarEasyDownloaderGetId,
+  getLinks: _dateTimeIsarEasyDownloaderGetLinks,
+  attach: _dateTimeIsarEasyDownloaderAttach,
   version: '3.1.0+1',
 );
 
-int _dateTimeIsarEstimateSize(
-  DateTimeIsar object,
+int _dateTimeIsarEasyDownloaderEstimateSize(
+  DateTimeIsarEasyDownloader object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -66,8 +67,8 @@ int _dateTimeIsarEstimateSize(
   return bytesCount;
 }
 
-void _dateTimeIsarSerialize(
-  DateTimeIsar object,
+void _dateTimeIsarEasyDownloaderSerialize(
+  DateTimeIsarEasyDownloader object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -76,13 +77,13 @@ void _dateTimeIsarSerialize(
   writer.writeDateTime(offsets[1], object.value);
 }
 
-DateTimeIsar _dateTimeIsarDeserialize(
+DateTimeIsarEasyDownloader _dateTimeIsarEasyDownloaderDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = DateTimeIsar(
+  final object = DateTimeIsarEasyDownloader(
     reader.readString(offsets[0]),
     reader.readDateTime(offsets[1]),
     id: id,
@@ -90,7 +91,7 @@ DateTimeIsar _dateTimeIsarDeserialize(
   return object;
 }
 
-P _dateTimeIsarDeserializeProp<P>(
+P _dateTimeIsarEasyDownloaderDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -106,23 +107,25 @@ P _dateTimeIsarDeserializeProp<P>(
   }
 }
 
-Id _dateTimeIsarGetId(DateTimeIsar object) {
+Id _dateTimeIsarEasyDownloaderGetId(DateTimeIsarEasyDownloader object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _dateTimeIsarGetLinks(DateTimeIsar object) {
+List<IsarLinkBase<dynamic>> _dateTimeIsarEasyDownloaderGetLinks(
+    DateTimeIsarEasyDownloader object) {
   return [];
 }
 
-void _dateTimeIsarAttach(
-    IsarCollection<dynamic> col, Id id, DateTimeIsar object) {}
+void _dateTimeIsarEasyDownloaderAttach(
+    IsarCollection<dynamic> col, Id id, DateTimeIsarEasyDownloader object) {}
 
-extension DateTimeIsarByIndex on IsarCollection<DateTimeIsar> {
-  Future<DateTimeIsar?> getByKey(String key) {
+extension DateTimeIsarEasyDownloaderByIndex
+    on IsarCollection<DateTimeIsarEasyDownloader> {
+  Future<DateTimeIsarEasyDownloader?> getByKey(String key) {
     return getByIndex(r'key', [key]);
   }
 
-  DateTimeIsar? getByKeySync(String key) {
+  DateTimeIsarEasyDownloader? getByKeySync(String key) {
     return getByIndexSync(r'key', [key]);
   }
 
@@ -134,12 +137,13 @@ extension DateTimeIsarByIndex on IsarCollection<DateTimeIsar> {
     return deleteByIndexSync(r'key', [key]);
   }
 
-  Future<List<DateTimeIsar?>> getAllByKey(List<String> keyValues) {
+  Future<List<DateTimeIsarEasyDownloader?>> getAllByKey(
+      List<String> keyValues) {
     final values = keyValues.map((e) => [e]).toList();
     return getAllByIndex(r'key', values);
   }
 
-  List<DateTimeIsar?> getAllByKeySync(List<String> keyValues) {
+  List<DateTimeIsarEasyDownloader?> getAllByKeySync(List<String> keyValues) {
     final values = keyValues.map((e) => [e]).toList();
     return getAllByIndexSync(r'key', values);
   }
@@ -154,36 +158,38 @@ extension DateTimeIsarByIndex on IsarCollection<DateTimeIsar> {
     return deleteAllByIndexSync(r'key', values);
   }
 
-  Future<Id> putByKey(DateTimeIsar object) {
+  Future<Id> putByKey(DateTimeIsarEasyDownloader object) {
     return putByIndex(r'key', object);
   }
 
-  Id putByKeySync(DateTimeIsar object, {bool saveLinks = true}) {
+  Id putByKeySync(DateTimeIsarEasyDownloader object, {bool saveLinks = true}) {
     return putByIndexSync(r'key', object, saveLinks: saveLinks);
   }
 
-  Future<List<Id>> putAllByKey(List<DateTimeIsar> objects) {
+  Future<List<Id>> putAllByKey(List<DateTimeIsarEasyDownloader> objects) {
     return putAllByIndex(r'key', objects);
   }
 
-  List<Id> putAllByKeySync(List<DateTimeIsar> objects,
+  List<Id> putAllByKeySync(List<DateTimeIsarEasyDownloader> objects,
       {bool saveLinks = true}) {
     return putAllByIndexSync(r'key', objects, saveLinks: saveLinks);
   }
 }
 
-extension DateTimeIsarQueryWhereSort
-    on QueryBuilder<DateTimeIsar, DateTimeIsar, QWhere> {
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterWhere> anyId() {
+extension DateTimeIsarEasyDownloaderQueryWhereSort on QueryBuilder<
+    DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader, QWhere> {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension DateTimeIsarQueryWhere
-    on QueryBuilder<DateTimeIsar, DateTimeIsar, QWhereClause> {
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterWhereClause> idEqualTo(Id id) {
+extension DateTimeIsarEasyDownloaderQueryWhere on QueryBuilder<
+    DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader, QWhereClause> {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -192,8 +198,8 @@ extension DateTimeIsarQueryWhere
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterWhereClause> idNotEqualTo(
-      Id id) {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -215,9 +221,8 @@ extension DateTimeIsarQueryWhere
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterWhereClause> idGreaterThan(
-      Id id,
-      {bool include = false}) {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterWhereClause> idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -225,8 +230,8 @@ extension DateTimeIsarQueryWhere
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterWhereClause> idLessThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterWhereClause> idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -234,7 +239,8 @@ extension DateTimeIsarQueryWhere
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterWhereClause> idBetween(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -250,8 +256,8 @@ extension DateTimeIsarQueryWhere
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterWhereClause> keyEqualTo(
-      String key) {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterWhereClause> keyEqualTo(String key) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'key',
@@ -260,8 +266,8 @@ extension DateTimeIsarQueryWhere
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterWhereClause> keyNotEqualTo(
-      String key) {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterWhereClause> keyNotEqualTo(String key) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -296,10 +302,10 @@ extension DateTimeIsarQueryWhere
   }
 }
 
-extension DateTimeIsarQueryFilter
-    on QueryBuilder<DateTimeIsar, DateTimeIsar, QFilterCondition> {
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> idEqualTo(
-      Id value) {
+extension DateTimeIsarEasyDownloaderQueryFilter on QueryBuilder<
+    DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader, QFilterCondition> {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -308,7 +314,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -321,7 +328,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> idLessThan(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -334,7 +342,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> idBetween(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -351,7 +360,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> keyEqualTo(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> keyEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -364,8 +374,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition>
-      keyGreaterThan(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> keyGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -380,7 +390,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> keyLessThan(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> keyLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -395,7 +406,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> keyBetween(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> keyBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -414,7 +426,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> keyStartsWith(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> keyStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -427,7 +440,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> keyEndsWith(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> keyEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -440,9 +454,9 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> keyContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+          QAfterFilterCondition>
+      keyContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'key',
@@ -452,9 +466,9 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> keyMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+          QAfterFilterCondition>
+      keyMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'key',
@@ -464,7 +478,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> keyIsEmpty() {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> keyIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'key',
@@ -473,8 +488,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition>
-      keyIsNotEmpty() {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> keyIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'key',
@@ -483,8 +498,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> valueEqualTo(
-      DateTime value) {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> valueEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'value',
@@ -493,8 +508,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition>
-      valueGreaterThan(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> valueGreaterThan(
     DateTime value, {
     bool include = false,
   }) {
@@ -507,7 +522,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> valueLessThan(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> valueLessThan(
     DateTime value, {
     bool include = false,
   }) {
@@ -520,7 +536,8 @@ extension DateTimeIsarQueryFilter
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterFilterCondition> valueBetween(
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterFilterCondition> valueBetween(
     DateTime lower,
     DateTime upper, {
     bool includeLower = true,
@@ -538,109 +555,122 @@ extension DateTimeIsarQueryFilter
   }
 }
 
-extension DateTimeIsarQueryObject
-    on QueryBuilder<DateTimeIsar, DateTimeIsar, QFilterCondition> {}
+extension DateTimeIsarEasyDownloaderQueryObject on QueryBuilder<
+    DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader, QFilterCondition> {}
 
-extension DateTimeIsarQueryLinks
-    on QueryBuilder<DateTimeIsar, DateTimeIsar, QFilterCondition> {}
+extension DateTimeIsarEasyDownloaderQueryLinks on QueryBuilder<
+    DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader, QFilterCondition> {}
 
-extension DateTimeIsarQuerySortBy
-    on QueryBuilder<DateTimeIsar, DateTimeIsar, QSortBy> {
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterSortBy> sortByKey() {
+extension DateTimeIsarEasyDownloaderQuerySortBy on QueryBuilder<
+    DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader, QSortBy> {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterSortBy> sortByKey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.asc);
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterSortBy> sortByKeyDesc() {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterSortBy> sortByKeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.desc);
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterSortBy> sortByValue() {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterSortBy> sortByValue() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'value', Sort.asc);
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterSortBy> sortByValueDesc() {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterSortBy> sortByValueDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'value', Sort.desc);
     });
   }
 }
 
-extension DateTimeIsarQuerySortThenBy
-    on QueryBuilder<DateTimeIsar, DateTimeIsar, QSortThenBy> {
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterSortBy> thenById() {
+extension DateTimeIsarEasyDownloaderQuerySortThenBy on QueryBuilder<
+    DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader, QSortThenBy> {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterSortBy> thenByKey() {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterSortBy> thenByKey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.asc);
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterSortBy> thenByKeyDesc() {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterSortBy> thenByKeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.desc);
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterSortBy> thenByValue() {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterSortBy> thenByValue() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'value', Sort.asc);
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QAfterSortBy> thenByValueDesc() {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QAfterSortBy> thenByValueDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'value', Sort.desc);
     });
   }
 }
 
-extension DateTimeIsarQueryWhereDistinct
-    on QueryBuilder<DateTimeIsar, DateTimeIsar, QDistinct> {
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QDistinct> distinctByKey(
-      {bool caseSensitive = true}) {
+extension DateTimeIsarEasyDownloaderQueryWhereDistinct on QueryBuilder<
+    DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader, QDistinct> {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QDistinct> distinctByKey({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'key', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTimeIsar, QDistinct> distinctByValue() {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader,
+      QDistinct> distinctByValue() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'value');
     });
   }
 }
 
-extension DateTimeIsarQueryProperty
-    on QueryBuilder<DateTimeIsar, DateTimeIsar, QQueryProperty> {
-  QueryBuilder<DateTimeIsar, int, QQueryOperations> idProperty() {
+extension DateTimeIsarEasyDownloaderQueryProperty on QueryBuilder<
+    DateTimeIsarEasyDownloader, DateTimeIsarEasyDownloader, QQueryProperty> {
+  QueryBuilder<DateTimeIsarEasyDownloader, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<DateTimeIsar, String, QQueryOperations> keyProperty() {
+  QueryBuilder<DateTimeIsarEasyDownloader, String, QQueryOperations>
+      keyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'key');
     });
   }
 
-  QueryBuilder<DateTimeIsar, DateTime, QQueryOperations> valueProperty() {
+  QueryBuilder<DateTimeIsarEasyDownloader, DateTime, QQueryOperations>
+      valueProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'value');
     });
@@ -650,13 +680,14 @@ extension DateTimeIsarQueryProperty
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetIntIsarCollection on Isar {
-  IsarCollection<IntIsar> get intIsars => this.collection();
+extension GetIntIsarEasyDownloaderCollection on Isar {
+  IsarCollection<IntIsarEasyDownloader> get intIsarEasyDownloaders =>
+      this.collection();
 }
 
-const IntIsarSchema = CollectionSchema(
-  name: r'IntIsar',
-  id: -303711082416064847,
+const IntIsarEasyDownloaderSchema = CollectionSchema(
+  name: r'IntIsarEasyDownloader',
+  id: 3712506264493791008,
   properties: {
     r'key': PropertySchema(
       id: 0,
@@ -669,10 +700,10 @@ const IntIsarSchema = CollectionSchema(
       type: IsarType.long,
     )
   },
-  estimateSize: _intIsarEstimateSize,
-  serialize: _intIsarSerialize,
-  deserialize: _intIsarDeserialize,
-  deserializeProp: _intIsarDeserializeProp,
+  estimateSize: _intIsarEasyDownloaderEstimateSize,
+  serialize: _intIsarEasyDownloaderSerialize,
+  deserialize: _intIsarEasyDownloaderDeserialize,
+  deserializeProp: _intIsarEasyDownloaderDeserializeProp,
   idName: r'id',
   indexes: {
     r'key': IndexSchema(
@@ -691,14 +722,14 @@ const IntIsarSchema = CollectionSchema(
   },
   links: {},
   embeddedSchemas: {},
-  getId: _intIsarGetId,
-  getLinks: _intIsarGetLinks,
-  attach: _intIsarAttach,
+  getId: _intIsarEasyDownloaderGetId,
+  getLinks: _intIsarEasyDownloaderGetLinks,
+  attach: _intIsarEasyDownloaderAttach,
   version: '3.1.0+1',
 );
 
-int _intIsarEstimateSize(
-  IntIsar object,
+int _intIsarEasyDownloaderEstimateSize(
+  IntIsarEasyDownloader object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -707,8 +738,8 @@ int _intIsarEstimateSize(
   return bytesCount;
 }
 
-void _intIsarSerialize(
-  IntIsar object,
+void _intIsarEasyDownloaderSerialize(
+  IntIsarEasyDownloader object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -717,13 +748,13 @@ void _intIsarSerialize(
   writer.writeLong(offsets[1], object.value);
 }
 
-IntIsar _intIsarDeserialize(
+IntIsarEasyDownloader _intIsarEasyDownloaderDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = IntIsar(
+  final object = IntIsarEasyDownloader(
     reader.readString(offsets[0]),
     reader.readLong(offsets[1]),
     id: id,
@@ -731,7 +762,7 @@ IntIsar _intIsarDeserialize(
   return object;
 }
 
-P _intIsarDeserializeProp<P>(
+P _intIsarEasyDownloaderDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -747,22 +778,25 @@ P _intIsarDeserializeProp<P>(
   }
 }
 
-Id _intIsarGetId(IntIsar object) {
+Id _intIsarEasyDownloaderGetId(IntIsarEasyDownloader object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _intIsarGetLinks(IntIsar object) {
+List<IsarLinkBase<dynamic>> _intIsarEasyDownloaderGetLinks(
+    IntIsarEasyDownloader object) {
   return [];
 }
 
-void _intIsarAttach(IsarCollection<dynamic> col, Id id, IntIsar object) {}
+void _intIsarEasyDownloaderAttach(
+    IsarCollection<dynamic> col, Id id, IntIsarEasyDownloader object) {}
 
-extension IntIsarByIndex on IsarCollection<IntIsar> {
-  Future<IntIsar?> getByKey(String key) {
+extension IntIsarEasyDownloaderByIndex
+    on IsarCollection<IntIsarEasyDownloader> {
+  Future<IntIsarEasyDownloader?> getByKey(String key) {
     return getByIndex(r'key', [key]);
   }
 
-  IntIsar? getByKeySync(String key) {
+  IntIsarEasyDownloader? getByKeySync(String key) {
     return getByIndexSync(r'key', [key]);
   }
 
@@ -774,12 +808,12 @@ extension IntIsarByIndex on IsarCollection<IntIsar> {
     return deleteByIndexSync(r'key', [key]);
   }
 
-  Future<List<IntIsar?>> getAllByKey(List<String> keyValues) {
+  Future<List<IntIsarEasyDownloader?>> getAllByKey(List<String> keyValues) {
     final values = keyValues.map((e) => [e]).toList();
     return getAllByIndex(r'key', values);
   }
 
-  List<IntIsar?> getAllByKeySync(List<String> keyValues) {
+  List<IntIsarEasyDownloader?> getAllByKeySync(List<String> keyValues) {
     final values = keyValues.map((e) => [e]).toList();
     return getAllByIndexSync(r'key', values);
   }
@@ -794,33 +828,38 @@ extension IntIsarByIndex on IsarCollection<IntIsar> {
     return deleteAllByIndexSync(r'key', values);
   }
 
-  Future<Id> putByKey(IntIsar object) {
+  Future<Id> putByKey(IntIsarEasyDownloader object) {
     return putByIndex(r'key', object);
   }
 
-  Id putByKeySync(IntIsar object, {bool saveLinks = true}) {
+  Id putByKeySync(IntIsarEasyDownloader object, {bool saveLinks = true}) {
     return putByIndexSync(r'key', object, saveLinks: saveLinks);
   }
 
-  Future<List<Id>> putAllByKey(List<IntIsar> objects) {
+  Future<List<Id>> putAllByKey(List<IntIsarEasyDownloader> objects) {
     return putAllByIndex(r'key', objects);
   }
 
-  List<Id> putAllByKeySync(List<IntIsar> objects, {bool saveLinks = true}) {
+  List<Id> putAllByKeySync(List<IntIsarEasyDownloader> objects,
+      {bool saveLinks = true}) {
     return putAllByIndexSync(r'key', objects, saveLinks: saveLinks);
   }
 }
 
-extension IntIsarQueryWhereSort on QueryBuilder<IntIsar, IntIsar, QWhere> {
-  QueryBuilder<IntIsar, IntIsar, QAfterWhere> anyId() {
+extension IntIsarEasyDownloaderQueryWhereSort
+    on QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QWhere> {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterWhere>
+      anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension IntIsarQueryWhere on QueryBuilder<IntIsar, IntIsar, QWhereClause> {
-  QueryBuilder<IntIsar, IntIsar, QAfterWhereClause> idEqualTo(Id id) {
+extension IntIsarEasyDownloaderQueryWhere on QueryBuilder<IntIsarEasyDownloader,
+    IntIsarEasyDownloader, QWhereClause> {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterWhereClause>
+      idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -829,7 +868,8 @@ extension IntIsarQueryWhere on QueryBuilder<IntIsar, IntIsar, QWhereClause> {
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterWhereClause> idNotEqualTo(Id id) {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterWhereClause>
+      idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -851,8 +891,8 @@ extension IntIsarQueryWhere on QueryBuilder<IntIsar, IntIsar, QWhereClause> {
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterWhereClause> idGreaterThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterWhereClause>
+      idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -860,8 +900,8 @@ extension IntIsarQueryWhere on QueryBuilder<IntIsar, IntIsar, QWhereClause> {
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterWhereClause> idLessThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterWhereClause>
+      idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -869,7 +909,8 @@ extension IntIsarQueryWhere on QueryBuilder<IntIsar, IntIsar, QWhereClause> {
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterWhereClause> idBetween(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterWhereClause>
+      idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -885,7 +926,8 @@ extension IntIsarQueryWhere on QueryBuilder<IntIsar, IntIsar, QWhereClause> {
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterWhereClause> keyEqualTo(String key) {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterWhereClause>
+      keyEqualTo(String key) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'key',
@@ -894,7 +936,8 @@ extension IntIsarQueryWhere on QueryBuilder<IntIsar, IntIsar, QWhereClause> {
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterWhereClause> keyNotEqualTo(String key) {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterWhereClause>
+      keyNotEqualTo(String key) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -929,9 +972,10 @@ extension IntIsarQueryWhere on QueryBuilder<IntIsar, IntIsar, QWhereClause> {
   }
 }
 
-extension IntIsarQueryFilter
-    on QueryBuilder<IntIsar, IntIsar, QFilterCondition> {
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> idEqualTo(Id value) {
+extension IntIsarEasyDownloaderQueryFilter on QueryBuilder<
+    IntIsarEasyDownloader, IntIsarEasyDownloader, QFilterCondition> {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -940,7 +984,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -953,7 +998,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> idLessThan(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -966,7 +1012,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> idBetween(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -983,7 +1030,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> keyEqualTo(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> keyEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -996,7 +1044,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> keyGreaterThan(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> keyGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1011,7 +1060,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> keyLessThan(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> keyLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1026,7 +1076,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> keyBetween(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> keyBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -1045,7 +1096,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> keyStartsWith(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> keyStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1058,7 +1110,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> keyEndsWith(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> keyEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1071,9 +1124,9 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> keyContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+          QAfterFilterCondition>
+      keyContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'key',
@@ -1083,9 +1136,9 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> keyMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+          QAfterFilterCondition>
+      keyMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'key',
@@ -1095,7 +1148,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> keyIsEmpty() {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> keyIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'key',
@@ -1104,7 +1158,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> keyIsNotEmpty() {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> keyIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'key',
@@ -1113,8 +1168,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> valueEqualTo(
-      int value) {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> valueEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'value',
@@ -1123,7 +1178,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> valueGreaterThan(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> valueGreaterThan(
     int value, {
     bool include = false,
   }) {
@@ -1136,7 +1192,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> valueLessThan(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> valueLessThan(
     int value, {
     bool include = false,
   }) {
@@ -1149,7 +1206,8 @@ extension IntIsarQueryFilter
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterFilterCondition> valueBetween(
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader,
+      QAfterFilterCondition> valueBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1167,108 +1225,120 @@ extension IntIsarQueryFilter
   }
 }
 
-extension IntIsarQueryObject
-    on QueryBuilder<IntIsar, IntIsar, QFilterCondition> {}
+extension IntIsarEasyDownloaderQueryObject on QueryBuilder<
+    IntIsarEasyDownloader, IntIsarEasyDownloader, QFilterCondition> {}
 
-extension IntIsarQueryLinks
-    on QueryBuilder<IntIsar, IntIsar, QFilterCondition> {}
+extension IntIsarEasyDownloaderQueryLinks on QueryBuilder<IntIsarEasyDownloader,
+    IntIsarEasyDownloader, QFilterCondition> {}
 
-extension IntIsarQuerySortBy on QueryBuilder<IntIsar, IntIsar, QSortBy> {
-  QueryBuilder<IntIsar, IntIsar, QAfterSortBy> sortByKey() {
+extension IntIsarEasyDownloaderQuerySortBy
+    on QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QSortBy> {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterSortBy>
+      sortByKey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.asc);
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterSortBy> sortByKeyDesc() {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterSortBy>
+      sortByKeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.desc);
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterSortBy> sortByValue() {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterSortBy>
+      sortByValue() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'value', Sort.asc);
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterSortBy> sortByValueDesc() {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterSortBy>
+      sortByValueDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'value', Sort.desc);
     });
   }
 }
 
-extension IntIsarQuerySortThenBy
-    on QueryBuilder<IntIsar, IntIsar, QSortThenBy> {
-  QueryBuilder<IntIsar, IntIsar, QAfterSortBy> thenById() {
+extension IntIsarEasyDownloaderQuerySortThenBy
+    on QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QSortThenBy> {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterSortBy>
+      thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterSortBy>
+      thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterSortBy> thenByKey() {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterSortBy>
+      thenByKey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.asc);
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterSortBy> thenByKeyDesc() {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterSortBy>
+      thenByKeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.desc);
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterSortBy> thenByValue() {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterSortBy>
+      thenByValue() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'value', Sort.asc);
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QAfterSortBy> thenByValueDesc() {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QAfterSortBy>
+      thenByValueDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'value', Sort.desc);
     });
   }
 }
 
-extension IntIsarQueryWhereDistinct
-    on QueryBuilder<IntIsar, IntIsar, QDistinct> {
-  QueryBuilder<IntIsar, IntIsar, QDistinct> distinctByKey(
-      {bool caseSensitive = true}) {
+extension IntIsarEasyDownloaderQueryWhereDistinct
+    on QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QDistinct> {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QDistinct>
+      distinctByKey({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'key', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<IntIsar, IntIsar, QDistinct> distinctByValue() {
+  QueryBuilder<IntIsarEasyDownloader, IntIsarEasyDownloader, QDistinct>
+      distinctByValue() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'value');
     });
   }
 }
 
-extension IntIsarQueryProperty
-    on QueryBuilder<IntIsar, IntIsar, QQueryProperty> {
-  QueryBuilder<IntIsar, int, QQueryOperations> idProperty() {
+extension IntIsarEasyDownloaderQueryProperty on QueryBuilder<
+    IntIsarEasyDownloader, IntIsarEasyDownloader, QQueryProperty> {
+  QueryBuilder<IntIsarEasyDownloader, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<IntIsar, String, QQueryOperations> keyProperty() {
+  QueryBuilder<IntIsarEasyDownloader, String, QQueryOperations> keyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'key');
     });
   }
 
-  QueryBuilder<IntIsar, int, QQueryOperations> valueProperty() {
+  QueryBuilder<IntIsarEasyDownloader, int, QQueryOperations> valueProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'value');
     });
@@ -1278,13 +1348,14 @@ extension IntIsarQueryProperty
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetStringIsarCollection on Isar {
-  IsarCollection<StringIsar> get stringIsars => this.collection();
+extension GetStringIsarEasyDownloaderCollection on Isar {
+  IsarCollection<StringIsarEasyDownloader> get stringIsarEasyDownloaders =>
+      this.collection();
 }
 
-const StringIsarSchema = CollectionSchema(
-  name: r'StringIsar',
-  id: -1810422750395120570,
+const StringIsarEasyDownloaderSchema = CollectionSchema(
+  name: r'StringIsarEasyDownloader',
+  id: 914538845454150995,
   properties: {
     r'key': PropertySchema(
       id: 0,
@@ -1297,10 +1368,10 @@ const StringIsarSchema = CollectionSchema(
       type: IsarType.string,
     )
   },
-  estimateSize: _stringIsarEstimateSize,
-  serialize: _stringIsarSerialize,
-  deserialize: _stringIsarDeserialize,
-  deserializeProp: _stringIsarDeserializeProp,
+  estimateSize: _stringIsarEasyDownloaderEstimateSize,
+  serialize: _stringIsarEasyDownloaderSerialize,
+  deserialize: _stringIsarEasyDownloaderDeserialize,
+  deserializeProp: _stringIsarEasyDownloaderDeserializeProp,
   idName: r'id',
   indexes: {
     r'key': IndexSchema(
@@ -1319,14 +1390,14 @@ const StringIsarSchema = CollectionSchema(
   },
   links: {},
   embeddedSchemas: {},
-  getId: _stringIsarGetId,
-  getLinks: _stringIsarGetLinks,
-  attach: _stringIsarAttach,
+  getId: _stringIsarEasyDownloaderGetId,
+  getLinks: _stringIsarEasyDownloaderGetLinks,
+  attach: _stringIsarEasyDownloaderAttach,
   version: '3.1.0+1',
 );
 
-int _stringIsarEstimateSize(
-  StringIsar object,
+int _stringIsarEasyDownloaderEstimateSize(
+  StringIsarEasyDownloader object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -1336,8 +1407,8 @@ int _stringIsarEstimateSize(
   return bytesCount;
 }
 
-void _stringIsarSerialize(
-  StringIsar object,
+void _stringIsarEasyDownloaderSerialize(
+  StringIsarEasyDownloader object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -1346,13 +1417,13 @@ void _stringIsarSerialize(
   writer.writeString(offsets[1], object.value);
 }
 
-StringIsar _stringIsarDeserialize(
+StringIsarEasyDownloader _stringIsarEasyDownloaderDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = StringIsar(
+  final object = StringIsarEasyDownloader(
     reader.readString(offsets[0]),
     reader.readString(offsets[1]),
     id: id,
@@ -1360,7 +1431,7 @@ StringIsar _stringIsarDeserialize(
   return object;
 }
 
-P _stringIsarDeserializeProp<P>(
+P _stringIsarEasyDownloaderDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -1376,22 +1447,25 @@ P _stringIsarDeserializeProp<P>(
   }
 }
 
-Id _stringIsarGetId(StringIsar object) {
+Id _stringIsarEasyDownloaderGetId(StringIsarEasyDownloader object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _stringIsarGetLinks(StringIsar object) {
+List<IsarLinkBase<dynamic>> _stringIsarEasyDownloaderGetLinks(
+    StringIsarEasyDownloader object) {
   return [];
 }
 
-void _stringIsarAttach(IsarCollection<dynamic> col, Id id, StringIsar object) {}
+void _stringIsarEasyDownloaderAttach(
+    IsarCollection<dynamic> col, Id id, StringIsarEasyDownloader object) {}
 
-extension StringIsarByIndex on IsarCollection<StringIsar> {
-  Future<StringIsar?> getByKey(String key) {
+extension StringIsarEasyDownloaderByIndex
+    on IsarCollection<StringIsarEasyDownloader> {
+  Future<StringIsarEasyDownloader?> getByKey(String key) {
     return getByIndex(r'key', [key]);
   }
 
-  StringIsar? getByKeySync(String key) {
+  StringIsarEasyDownloader? getByKeySync(String key) {
     return getByIndexSync(r'key', [key]);
   }
 
@@ -1403,12 +1477,12 @@ extension StringIsarByIndex on IsarCollection<StringIsar> {
     return deleteByIndexSync(r'key', [key]);
   }
 
-  Future<List<StringIsar?>> getAllByKey(List<String> keyValues) {
+  Future<List<StringIsarEasyDownloader?>> getAllByKey(List<String> keyValues) {
     final values = keyValues.map((e) => [e]).toList();
     return getAllByIndex(r'key', values);
   }
 
-  List<StringIsar?> getAllByKeySync(List<String> keyValues) {
+  List<StringIsarEasyDownloader?> getAllByKeySync(List<String> keyValues) {
     final values = keyValues.map((e) => [e]).toList();
     return getAllByIndexSync(r'key', values);
   }
@@ -1423,35 +1497,38 @@ extension StringIsarByIndex on IsarCollection<StringIsar> {
     return deleteAllByIndexSync(r'key', values);
   }
 
-  Future<Id> putByKey(StringIsar object) {
+  Future<Id> putByKey(StringIsarEasyDownloader object) {
     return putByIndex(r'key', object);
   }
 
-  Id putByKeySync(StringIsar object, {bool saveLinks = true}) {
+  Id putByKeySync(StringIsarEasyDownloader object, {bool saveLinks = true}) {
     return putByIndexSync(r'key', object, saveLinks: saveLinks);
   }
 
-  Future<List<Id>> putAllByKey(List<StringIsar> objects) {
+  Future<List<Id>> putAllByKey(List<StringIsarEasyDownloader> objects) {
     return putAllByIndex(r'key', objects);
   }
 
-  List<Id> putAllByKeySync(List<StringIsar> objects, {bool saveLinks = true}) {
+  List<Id> putAllByKeySync(List<StringIsarEasyDownloader> objects,
+      {bool saveLinks = true}) {
     return putAllByIndexSync(r'key', objects, saveLinks: saveLinks);
   }
 }
 
-extension StringIsarQueryWhereSort
-    on QueryBuilder<StringIsar, StringIsar, QWhere> {
-  QueryBuilder<StringIsar, StringIsar, QAfterWhere> anyId() {
+extension StringIsarEasyDownloaderQueryWhereSort on QueryBuilder<
+    StringIsarEasyDownloader, StringIsarEasyDownloader, QWhere> {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QAfterWhere>
+      anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension StringIsarQueryWhere
-    on QueryBuilder<StringIsar, StringIsar, QWhereClause> {
-  QueryBuilder<StringIsar, StringIsar, QAfterWhereClause> idEqualTo(Id id) {
+extension StringIsarEasyDownloaderQueryWhere on QueryBuilder<
+    StringIsarEasyDownloader, StringIsarEasyDownloader, QWhereClause> {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -1460,7 +1537,8 @@ extension StringIsarQueryWhere
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterWhereClause> idNotEqualTo(Id id) {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -1482,8 +1560,8 @@ extension StringIsarQueryWhere
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterWhereClause> idGreaterThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterWhereClause> idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -1491,8 +1569,8 @@ extension StringIsarQueryWhere
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterWhereClause> idLessThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterWhereClause> idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -1500,7 +1578,8 @@ extension StringIsarQueryWhere
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterWhereClause> idBetween(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -1516,8 +1595,8 @@ extension StringIsarQueryWhere
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterWhereClause> keyEqualTo(
-      String key) {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterWhereClause> keyEqualTo(String key) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'key',
@@ -1526,8 +1605,8 @@ extension StringIsarQueryWhere
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterWhereClause> keyNotEqualTo(
-      String key) {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterWhereClause> keyNotEqualTo(String key) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -1562,10 +1641,10 @@ extension StringIsarQueryWhere
   }
 }
 
-extension StringIsarQueryFilter
-    on QueryBuilder<StringIsar, StringIsar, QFilterCondition> {
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> idEqualTo(
-      Id value) {
+extension StringIsarEasyDownloaderQueryFilter on QueryBuilder<
+    StringIsarEasyDownloader, StringIsarEasyDownloader, QFilterCondition> {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -1574,7 +1653,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> idGreaterThan(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -1587,7 +1667,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> idLessThan(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -1600,7 +1681,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> idBetween(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -1617,7 +1699,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> keyEqualTo(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> keyEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1630,7 +1713,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> keyGreaterThan(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> keyGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1645,7 +1729,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> keyLessThan(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> keyLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1660,7 +1745,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> keyBetween(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> keyBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -1679,7 +1765,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> keyStartsWith(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> keyStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1692,7 +1779,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> keyEndsWith(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> keyEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1705,9 +1793,9 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> keyContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+          QAfterFilterCondition>
+      keyContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'key',
@@ -1717,9 +1805,9 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> keyMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+          QAfterFilterCondition>
+      keyMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'key',
@@ -1729,7 +1817,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> keyIsEmpty() {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> keyIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'key',
@@ -1738,7 +1827,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> keyIsNotEmpty() {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> keyIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'key',
@@ -1747,7 +1837,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> valueEqualTo(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> valueEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1760,7 +1851,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> valueGreaterThan(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> valueGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1775,7 +1867,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> valueLessThan(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> valueLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1790,7 +1883,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> valueBetween(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> valueBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -1809,7 +1903,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> valueStartsWith(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> valueStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1822,7 +1917,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> valueEndsWith(
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> valueEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -1835,9 +1931,9 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> valueContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+          QAfterFilterCondition>
+      valueContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
         property: r'value',
@@ -1847,9 +1943,9 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> valueMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+          QAfterFilterCondition>
+      valueMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'value',
@@ -1859,7 +1955,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition> valueIsEmpty() {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> valueIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'value',
@@ -1868,8 +1965,8 @@ extension StringIsarQueryFilter
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterFilterCondition>
-      valueIsNotEmpty() {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader,
+      QAfterFilterCondition> valueIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'value',
@@ -1879,110 +1976,122 @@ extension StringIsarQueryFilter
   }
 }
 
-extension StringIsarQueryObject
-    on QueryBuilder<StringIsar, StringIsar, QFilterCondition> {}
+extension StringIsarEasyDownloaderQueryObject on QueryBuilder<
+    StringIsarEasyDownloader, StringIsarEasyDownloader, QFilterCondition> {}
 
-extension StringIsarQueryLinks
-    on QueryBuilder<StringIsar, StringIsar, QFilterCondition> {}
+extension StringIsarEasyDownloaderQueryLinks on QueryBuilder<
+    StringIsarEasyDownloader, StringIsarEasyDownloader, QFilterCondition> {}
 
-extension StringIsarQuerySortBy
-    on QueryBuilder<StringIsar, StringIsar, QSortBy> {
-  QueryBuilder<StringIsar, StringIsar, QAfterSortBy> sortByKey() {
+extension StringIsarEasyDownloaderQuerySortBy on QueryBuilder<
+    StringIsarEasyDownloader, StringIsarEasyDownloader, QSortBy> {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QAfterSortBy>
+      sortByKey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.asc);
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterSortBy> sortByKeyDesc() {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QAfterSortBy>
+      sortByKeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.desc);
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterSortBy> sortByValue() {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QAfterSortBy>
+      sortByValue() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'value', Sort.asc);
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterSortBy> sortByValueDesc() {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QAfterSortBy>
+      sortByValueDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'value', Sort.desc);
     });
   }
 }
 
-extension StringIsarQuerySortThenBy
-    on QueryBuilder<StringIsar, StringIsar, QSortThenBy> {
-  QueryBuilder<StringIsar, StringIsar, QAfterSortBy> thenById() {
+extension StringIsarEasyDownloaderQuerySortThenBy on QueryBuilder<
+    StringIsarEasyDownloader, StringIsarEasyDownloader, QSortThenBy> {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QAfterSortBy>
+      thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QAfterSortBy>
+      thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterSortBy> thenByKey() {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QAfterSortBy>
+      thenByKey() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.asc);
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterSortBy> thenByKeyDesc() {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QAfterSortBy>
+      thenByKeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'key', Sort.desc);
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterSortBy> thenByValue() {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QAfterSortBy>
+      thenByValue() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'value', Sort.asc);
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QAfterSortBy> thenByValueDesc() {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QAfterSortBy>
+      thenByValueDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'value', Sort.desc);
     });
   }
 }
 
-extension StringIsarQueryWhereDistinct
-    on QueryBuilder<StringIsar, StringIsar, QDistinct> {
-  QueryBuilder<StringIsar, StringIsar, QDistinct> distinctByKey(
-      {bool caseSensitive = true}) {
+extension StringIsarEasyDownloaderQueryWhereDistinct on QueryBuilder<
+    StringIsarEasyDownloader, StringIsarEasyDownloader, QDistinct> {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QDistinct>
+      distinctByKey({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'key', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<StringIsar, StringIsar, QDistinct> distinctByValue(
-      {bool caseSensitive = true}) {
+  QueryBuilder<StringIsarEasyDownloader, StringIsarEasyDownloader, QDistinct>
+      distinctByValue({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'value', caseSensitive: caseSensitive);
     });
   }
 }
 
-extension StringIsarQueryProperty
-    on QueryBuilder<StringIsar, StringIsar, QQueryProperty> {
-  QueryBuilder<StringIsar, int, QQueryOperations> idProperty() {
+extension StringIsarEasyDownloaderQueryProperty on QueryBuilder<
+    StringIsarEasyDownloader, StringIsarEasyDownloader, QQueryProperty> {
+  QueryBuilder<StringIsarEasyDownloader, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<StringIsar, String, QQueryOperations> keyProperty() {
+  QueryBuilder<StringIsarEasyDownloader, String, QQueryOperations>
+      keyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'key');
     });
   }
 
-  QueryBuilder<StringIsar, String, QQueryOperations> valueProperty() {
+  QueryBuilder<StringIsarEasyDownloader, String, QQueryOperations>
+      valueProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'value');
     });

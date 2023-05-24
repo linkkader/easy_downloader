@@ -1,6 +1,6 @@
 name: easy_downloader_flutter_lib
 description: flutter libs for easy_downloader
-version: 0.0.24
+version: 0.0.25
 
 environment:
   sdk: '>=2.19.2 <4.0.0'

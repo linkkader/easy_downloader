@@ -113,7 +113,7 @@ class EasyDownloader {
         path: path,
         fileName: fileName,
         maxSplit: maxSplit ?? 8,
-        headers: IsarMapEntity.fromJson(headers));
+        headers: IsarMapEntityEasyDownloader.fromJson(headers));
     final id = await _localeStorage.setDownloadTask(task);
     task = task.copyWith(downloadId: id);
     assert(id != null, 'EasyDownloader: id must not be null');
@@ -127,6 +127,11 @@ class EasyDownloader {
   Future<List<DownloadTask>> allDownloadTasks() async {
     assert(_isInit, 'EasyDownloader not initialized');
     return _localeStorage.getDownloadTasks();
+  }
+
+  Future<DownloadTask?>? downloadTaskById(int id) {
+    assert(_isInit, 'EasyDownloader not initialized');
+    return _localeStorage.getDownloadTask(id);
   }
 
   ///get download task by id

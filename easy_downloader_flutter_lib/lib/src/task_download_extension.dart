@@ -1,4 +1,3 @@
-
 import 'package:easy_downloader/easy_downloader.dart';
 import '../data/manager/notification_manager.dart';
 

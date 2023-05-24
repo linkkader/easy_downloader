@@ -37,7 +37,7 @@ const DownloadTaskSchema = CollectionSchema(
       id: 3,
       name: r'headers',
       type: IsarType.object,
-      target: r'IsarMapEntity',
+      target: r'IsarMapEntityEasyDownloader',
     ),
     r'inQueue': PropertySchema(
       id: 4,
@@ -90,7 +90,7 @@ const DownloadTaskSchema = CollectionSchema(
   links: {},
   embeddedSchemas: {
     r'DownloadBlock': DownloadBlockSchema,
-    r'IsarMapEntity': IsarMapEntitySchema
+    r'IsarMapEntityEasyDownloader': IsarMapEntityEasyDownloaderSchema
   },
   getId: _downloadTaskGetId,
   getLinks: _downloadTaskGetLinks,
@@ -115,8 +115,8 @@ int _downloadTaskEstimateSize(
   }
   bytesCount += 3 + object.fileName.length * 3;
   bytesCount += 3 +
-      IsarMapEntitySchema.estimateSize(
-          object.headers, allOffsets[IsarMapEntity]!, allOffsets);
+      IsarMapEntityEasyDownloaderSchema.estimateSize(
+          object.headers, allOffsets[IsarMapEntityEasyDownloader]!, allOffsets);
   bytesCount += 3 + object.outputFilePath.length * 3;
   bytesCount += 3 + object.path.length * 3;
   bytesCount += 3 + object.url.length * 3;
@@ -137,10 +137,10 @@ void _downloadTaskSerialize(
   );
   writer.writeString(offsets[1], object.fileName);
   writer.writeLong(offsets[2], object.hashCode);
-  writer.writeObject<IsarMapEntity>(
+  writer.writeObject<IsarMapEntityEasyDownloader>(
     offsets[3],
     allOffsets,
-    IsarMapEntitySchema.serialize,
+    IsarMapEntityEasyDownloaderSchema.serialize,
     object.headers,
   );
   writer.writeBool(offsets[4], object.inQueue);
@@ -169,12 +169,12 @@ DownloadTask _downloadTaskDeserialize(
         const [],
     downloadId: id,
     fileName: reader.readString(offsets[1]),
-    headers: reader.readObjectOrNull<IsarMapEntity>(
+    headers: reader.readObjectOrNull<IsarMapEntityEasyDownloader>(
           offsets[3],
-          IsarMapEntitySchema.deserialize,
+          IsarMapEntityEasyDownloaderSchema.deserialize,
           allOffsets,
         ) ??
-        IsarMapEntity(),
+        IsarMapEntityEasyDownloader(),
     inQueue: reader.readBoolOrNull(offsets[4]) ?? false,
     maxSplit: reader.readLongOrNull(offsets[5]) ?? 0,
     path: reader.readString(offsets[7]),
@@ -208,12 +208,12 @@ P _downloadTaskDeserializeProp<P>(
     case 2:
       return (reader.readLong(offset)) as P;
     case 3:
-      return (reader.readObjectOrNull<IsarMapEntity>(
+      return (reader.readObjectOrNull<IsarMapEntityEasyDownloader>(
             offset,
-            IsarMapEntitySchema.deserialize,
+            IsarMapEntityEasyDownloaderSchema.deserialize,
             allOffsets,
           ) ??
-          IsarMapEntity()) as P;
+          IsarMapEntityEasyDownloader()) as P;
     case 4:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 5:
@@ -1330,7 +1330,7 @@ extension DownloadTaskQueryObject
   }
 
   QueryBuilder<DownloadTask, DownloadTask, QAfterFilterCondition> headers(
-      FilterQuery<IsarMapEntity> q) {
+      FilterQuery<IsarMapEntityEasyDownloader> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'headers');
     });
@@ -1705,7 +1705,7 @@ extension DownloadTaskQueryProperty
     });
   }
 
-  QueryBuilder<DownloadTask, IsarMapEntity, QQueryOperations>
+  QueryBuilder<DownloadTask, IsarMapEntityEasyDownloader, QQueryOperations>
       headersProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'headers');

@@ -1,6 +1,6 @@
 name: easy_downloader
 description: Easy Downloader is a simpled easy to use plugin to download files from the internet.
-version: 0.0.24
+version: 0.0.29
 homepage: https://github.com/linkkader/easy_downloader/blob/main/example/main.dart
 repository: https://github.com/linkkader/easy_downloader
 

@@ -14,7 +14,7 @@ part 'isar_map_entity.g.dart';
 ///[keys] keys
 ///[remove] remove
 ///[clear] clear
-class IsarMapEntity with MapMixin<String, dynamic> {
+class IsarMapEntityEasyDownloader with MapMixin<String, dynamic> {
   @ignore
   Map<String, dynamic> _map = {};
 
@@ -46,10 +46,10 @@ class IsarMapEntity with MapMixin<String, dynamic> {
   dynamic remove(Object? key) => _map.remove(key);
 
   ///get values
-  IsarMapEntity();
+  IsarMapEntityEasyDownloader();
 
   ///from json
-  IsarMapEntity.fromJson(this._map);
+  IsarMapEntityEasyDownloader.fromJson(this._map);
 
   ///to json
   Map<String, dynamic> toJson() => _map;

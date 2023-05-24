@@ -3,47 +3,39 @@
 import 'package:easy_downloader/easy_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-class NotificationManager{
-
-  static final Map<int , DownloadTaskListener> _notificationMap = {};
+class NotificationManager {
+  static final Map<int, DownloadTaskListener> _notificationMap = {};
 
   static _internal() => NotificationManager();
   static final NotificationManager _instance = NotificationManager._internal();
   factory NotificationManager() => _instance;
 
-
   static bool _isInit = false;
 
   static final _notificationPlugin = FlutterLocalNotificationsPlugin();
 
-
-  static Future<void> init(
-  {
+  static Future<void> init({
     AndroidInitializationSettings? androidInitializationSettings,
     DarwinInitializationSettings? darwinInitializationSettings,
     String? defaultIconAndroid,
-  })
-  async {
+  }) async {
     assert(!_isInit, 'NotificationManager already initialized');
 
-    var android = androidInitializationSettings ?? AndroidInitializationSettings(
-      defaultIconAndroid ?? 'ic_launcher',
-    );
-    var ios = darwinInitializationSettings ?? const DarwinInitializationSettings();
+    var android = androidInitializationSettings ??
+        AndroidInitializationSettings(
+          defaultIconAndroid ?? 'ic_launcher',
+        );
+    var ios =
+        darwinInitializationSettings ?? const DarwinInitializationSettings();
     await _notificationPlugin.initialize(
-      InitializationSettings(
-          android: android,
-          iOS: ios,
-        macOS: ios
-      ),
+      InitializationSettings(android: android, iOS: ios, macOS: ios),
       onDidReceiveNotificationResponse: _onDidReceiveNotificationResponse,
-      onDidReceiveBackgroundNotificationResponse: onDidReceiveBackgroundNotificationResponse,
+      onDidReceiveBackgroundNotificationResponse:
+          onDidReceiveBackgroundNotificationResponse,
     );
-
 
     _isInit = true;
   }
-
 
   static NotificationDetails _notificationDetail(DownloadTask task) {
     assert(_isInit, 'NotificationManager not initialized');
@@ -62,9 +54,7 @@ class NotificationManager{
         playSound: false,
         subText: task.fileName,
       ),
-      iOS: const DarwinNotificationDetails(
-
-      ),
+      iOS: const DarwinNotificationDetails(),
     );
   }
 
@@ -80,10 +70,12 @@ class NotificationManager{
 
   static void addNotification(DownloadTask task) {
     assert(_isInit, 'NotificationManager not initialized');
-    assert(_notificationMap[task.downloadId] == null, 'Notification already added');
+    assert(_notificationMap[task.downloadId] == null,
+        'Notification already added');
     listener(DownloadTask task) {
       _updateNotification(task);
     }
+
     _notificationMap[task.downloadId] = listener;
     task.addListener(listener);
   }
@@ -96,10 +88,7 @@ class NotificationManager{
   }
 }
 
-_onDidReceiveNotificationResponse(NotificationResponse payload){
+_onDidReceiveNotificationResponse(NotificationResponse payload) {}
 
-}
-
-onDidReceiveBackgroundNotificationResponse(NotificationResponse payload ) async{
-
-}
+onDidReceiveBackgroundNotificationResponse(
+    NotificationResponse payload) async {}

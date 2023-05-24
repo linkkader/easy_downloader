@@ -9,9 +9,9 @@ part of 'isar_map_entity.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-const IsarMapEntitySchema = Schema(
-  name: r'IsarMapEntity',
-  id: 4188544182411953616,
+const IsarMapEntityEasyDownloaderSchema = Schema(
+  name: r'IsarMapEntityEasyDownloader',
+  id: 767895122018648828,
   properties: {
     r'json': PropertySchema(
       id: 0,
@@ -19,14 +19,14 @@ const IsarMapEntitySchema = Schema(
       type: IsarType.string,
     )
   },
-  estimateSize: _isarMapEntityEstimateSize,
-  serialize: _isarMapEntitySerialize,
-  deserialize: _isarMapEntityDeserialize,
-  deserializeProp: _isarMapEntityDeserializeProp,
+  estimateSize: _isarMapEntityEasyDownloaderEstimateSize,
+  serialize: _isarMapEntityEasyDownloaderSerialize,
+  deserialize: _isarMapEntityEasyDownloaderDeserialize,
+  deserializeProp: _isarMapEntityEasyDownloaderDeserializeProp,
 );
 
-int _isarMapEntityEstimateSize(
-  IsarMapEntity object,
+int _isarMapEntityEasyDownloaderEstimateSize(
+  IsarMapEntityEasyDownloader object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -35,8 +35,8 @@ int _isarMapEntityEstimateSize(
   return bytesCount;
 }
 
-void _isarMapEntitySerialize(
-  IsarMapEntity object,
+void _isarMapEntityEasyDownloaderSerialize(
+  IsarMapEntityEasyDownloader object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -44,18 +44,18 @@ void _isarMapEntitySerialize(
   writer.writeString(offsets[0], object.json);
 }
 
-IsarMapEntity _isarMapEntityDeserialize(
+IsarMapEntityEasyDownloader _isarMapEntityEasyDownloaderDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = IsarMapEntity();
+  final object = IsarMapEntityEasyDownloader();
   object.json = reader.readString(offsets[0]);
   return object;
 }
 
-P _isarMapEntityDeserializeProp<P>(
+P _isarMapEntityEasyDownloaderDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -69,9 +69,12 @@ P _isarMapEntityDeserializeProp<P>(
   }
 }
 
-extension IsarMapEntityQueryFilter
-    on QueryBuilder<IsarMapEntity, IsarMapEntity, QFilterCondition> {
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition> jsonEqualTo(
+extension IsarMapEntityEasyDownloaderQueryFilter on QueryBuilder<
+    IsarMapEntityEasyDownloader,
+    IsarMapEntityEasyDownloader,
+    QFilterCondition> {
+  QueryBuilder<IsarMapEntityEasyDownloader, IsarMapEntityEasyDownloader,
+      QAfterFilterCondition> jsonEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -84,8 +87,8 @@ extension IsarMapEntityQueryFilter
     });
   }
 
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonGreaterThan(
+  QueryBuilder<IsarMapEntityEasyDownloader, IsarMapEntityEasyDownloader,
+      QAfterFilterCondition> jsonGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -100,8 +103,8 @@ extension IsarMapEntityQueryFilter
     });
   }
 
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonLessThan(
+  QueryBuilder<IsarMapEntityEasyDownloader, IsarMapEntityEasyDownloader,
+      QAfterFilterCondition> jsonLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -116,7 +119,8 @@ extension IsarMapEntityQueryFilter
     });
   }
 
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition> jsonBetween(
+  QueryBuilder<IsarMapEntityEasyDownloader, IsarMapEntityEasyDownloader,
+      QAfterFilterCondition> jsonBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -135,8 +139,8 @@ extension IsarMapEntityQueryFilter
     });
   }
 
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonStartsWith(
+  QueryBuilder<IsarMapEntityEasyDownloader, IsarMapEntityEasyDownloader,
+      QAfterFilterCondition> jsonStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -149,8 +153,8 @@ extension IsarMapEntityQueryFilter
     });
   }
 
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonEndsWith(
+  QueryBuilder<IsarMapEntityEasyDownloader, IsarMapEntityEasyDownloader,
+      QAfterFilterCondition> jsonEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
@@ -163,7 +167,8 @@ extension IsarMapEntityQueryFilter
     });
   }
 
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
+  QueryBuilder<IsarMapEntityEasyDownloader, IsarMapEntityEasyDownloader,
+          QAfterFilterCondition>
       jsonContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -174,9 +179,9 @@ extension IsarMapEntityQueryFilter
     });
   }
 
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition> jsonMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<IsarMapEntityEasyDownloader, IsarMapEntityEasyDownloader,
+          QAfterFilterCondition>
+      jsonMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
         property: r'json',
@@ -186,8 +191,8 @@ extension IsarMapEntityQueryFilter
     });
   }
 
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonIsEmpty() {
+  QueryBuilder<IsarMapEntityEasyDownloader, IsarMapEntityEasyDownloader,
+      QAfterFilterCondition> jsonIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'json',
@@ -196,8 +201,8 @@ extension IsarMapEntityQueryFilter
     });
   }
 
-  QueryBuilder<IsarMapEntity, IsarMapEntity, QAfterFilterCondition>
-      jsonIsNotEmpty() {
+  QueryBuilder<IsarMapEntityEasyDownloader, IsarMapEntityEasyDownloader,
+      QAfterFilterCondition> jsonIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'json',
@@ -207,5 +212,7 @@ extension IsarMapEntityQueryFilter
   }
 }
 
-extension IsarMapEntityQueryObject
-    on QueryBuilder<IsarMapEntity, IsarMapEntity, QFilterCondition> {}
+extension IsarMapEntityEasyDownloaderQueryObject on QueryBuilder<
+    IsarMapEntityEasyDownloader,
+    IsarMapEntityEasyDownloader,
+    QFilterCondition> {}

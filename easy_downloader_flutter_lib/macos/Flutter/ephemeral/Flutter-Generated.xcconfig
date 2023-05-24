@@ -1,10 +1,10 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=/Users/linkkader/Downloads/flutter
-FLUTTER_APPLICATION_PATH=/Users/linkkader/Documents/easy_downloader1/easy_downloader/easy_downloader_flutter_lib
+FLUTTER_ROOT=/goinfre/acouliba/flutter/flutter
+FLUTTER_APPLICATION_PATH=/goinfre/acouliba/.zz/easy_downloader/easy_downloader_flutter_lib
 COCOAPODS_PARALLEL_CODE_SIGN=true
 FLUTTER_BUILD_DIR=build
-FLUTTER_BUILD_NAME=0.0.1
-FLUTTER_BUILD_NUMBER=0.0.1
+FLUTTER_BUILD_NAME=0.0.24
+FLUTTER_BUILD_NUMBER=0.0.24
 DART_OBFUSCATION=false
 TRACK_WIDGET_CREATION=true
 TREE_SHAKE_ICONS=false

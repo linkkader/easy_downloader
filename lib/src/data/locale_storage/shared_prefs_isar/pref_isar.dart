@@ -11,8 +11,9 @@ part 'pref_isar.g.dart';
 ///[value] value
 ///[id] id
 ///[DateTimeIsar] DateTimeIsar
-class DateTimeIsar {
-  const DateTimeIsar(this.key, this.value, {this.id = Isar.autoIncrement});
+class DateTimeIsarEasyDownloader {
+  const DateTimeIsarEasyDownloader(this.key, this.value,
+      {this.id = Isar.autoIncrement});
   final Id id;
   final DateTime value;
   @Index(unique: true, replace: true)
@@ -26,8 +27,9 @@ class DateTimeIsar {
 ///[value] value
 ///[id] id
 ///[IntIsar] int isar
-class IntIsar {
-  const IntIsar(this.key, this.value, {this.id = Isar.autoIncrement});
+class IntIsarEasyDownloader {
+  const IntIsarEasyDownloader(this.key, this.value,
+      {this.id = Isar.autoIncrement});
   final Id id;
   final int value;
   @Index(unique: true, replace: true)
@@ -42,8 +44,9 @@ class IntIsar {
 ///[id] id
 ///[StringIsar] string isar
 ///[StringIsar] string isar
-class StringIsar {
-  const StringIsar(this.key, this.value, {this.id = Isar.autoIncrement});
+class StringIsarEasyDownloader {
+  const StringIsarEasyDownloader(this.key, this.value,
+      {this.id = Isar.autoIncrement});
   final Id id;
   final String value;
   @Index(unique: true, replace: true)

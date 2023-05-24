@@ -7,7 +7,9 @@ void main() async {
   if (file.existsSync()) {
     file.deleteSync();
   }
-  var easyDownloader = await EasyDownloader().init(clearLocaleStorage: true);
+  await Isar.initializeIsarCore(download: true);
+  var isar = await Isar.open(EasyDownloader.schemas, directory: ".");
+  var easyDownloader = await EasyDownloader().init(isar: isar);
   var dir = Directory("download");
   if (dir.existsSync()) {
     dir.deleteSync(recursive: true);

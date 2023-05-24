@@ -21,49 +21,70 @@ abstract class SharedPrefsIsar {
 
   final Isar? _isar;
 
-  List<CollectionSchema<dynamic>> get defaultPrefsSchemas =>
-      [DateTimeIsarSchema, IntIsarSchema, StringIsarSchema];
+  List<CollectionSchema<dynamic>> get defaultPrefsSchemas => [
+        DateTimeIsarEasyDownloaderSchema,
+        IntIsarEasyDownloaderSchema,
+        StringIsarEasyDownloaderSchema
+      ];
 
   ///return date time value for given key
   DateTime? dateTime(String key) {
-    return _isar?.dateTimeIsars.where().keyEqualTo(key).findFirstSync()?.value;
+    return _isar?.dateTimeIsarEasyDownloaders
+        .where()
+        .keyEqualTo(key)
+        .findFirstSync()
+        ?.value;
   }
 
   ///set date time value for given key
   Future<void> setDateTime(String key, DateTime value) async {
     await _isar?.writeTxn(() async {
-      await _isar?.dateTimeIsars.put(DateTimeIsar(key, value));
+      await _isar?.dateTimeIsarEasyDownloaders
+          .put(DateTimeIsarEasyDownloader(key, value));
     });
   }
 
   ///return int value for given key
   int? getInt(String key) {
-    return _isar?.intIsars.where().keyEqualTo(key).findFirstSync()?.value;
+    return _isar?.intIsarEasyDownloaders
+        .where()
+        .keyEqualTo(key)
+        .findFirstSync()
+        ?.value;
   }
 
   ///set int value for given key
   Future<void> setInt(String key, int value) async {
     await _isar?.writeTxn(() async {
-      await _isar?.intIsars.put(IntIsar(key, value));
+      await _isar?.intIsarEasyDownloaders
+          .put(IntIsarEasyDownloader(key, value));
     });
   }
 
   ///return string value for given key
   Future<void> setString(String key, String value) async {
     await _isar?.writeTxn(() async {
-      await _isar?.stringIsars.put(StringIsar(key, value));
+      await _isar?.stringIsarEasyDownloaders
+          .put(StringIsarEasyDownloader(key, value));
     });
   }
 
   ///set string value for given key
   String? getString(String s) {
-    return _isar?.stringIsars.where().keyEqualTo(s).findFirstSync()?.value;
+    return _isar?.stringIsarEasyDownloaders
+        .where()
+        .keyEqualTo(s)
+        .findFirstSync()
+        ?.value;
   }
 
   ///delete date time value for given key
   Future<bool> deleteString(String s) async {
     await _isar?.writeTxn(() async {
-      await _isar?.stringIsars.where().keyEqualTo(s).deleteFirst();
+      await _isar?.stringIsarEasyDownloaders
+          .where()
+          .keyEqualTo(s)
+          .deleteFirst();
     });
     return true;
   }
@@ -71,15 +92,19 @@ abstract class SharedPrefsIsar {
   ///delete int value for given key
   Future<int?>? setDuration(String key, Duration duration) {
     return _isar?.writeTxn(() async {
-      return _isar?.intIsars.put(IntIsar(key, duration.inMicroseconds));
+      return _isar?.intIsarEasyDownloaders
+          .put(IntIsarEasyDownloader(key, duration.inMicroseconds));
     });
   }
 
   ///delete date time value for given key
   Duration? getDuration(String key) {
     //ignore: lines_longer_than_80_chars
-    final value =
-        _isar?.intIsars.where().keyEqualTo(key).findFirstSync()?.value;
+    final value = _isar?.intIsarEasyDownloaders
+        .where()
+        .keyEqualTo(key)
+        .findFirstSync()
+        ?.value;
     if (value == null) return null;
     return Duration(microseconds: value);
   }

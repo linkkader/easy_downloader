@@ -49,7 +49,7 @@ class DownloadTask {
   final DownloadStatus status;
   final List<DownloadBlock> blocks;
   final String fileName;
-  final IsarMapEntity headers;
+  final IsarMapEntityEasyDownloader headers;
   final String url;
 
   String get outputFilePath => path.isEmpty ? fileName : '$path/$fileName';
@@ -103,7 +103,7 @@ class DownloadTask {
     List<DownloadBlock>? blocks,
     String? fileName,
     String? tempPath,
-    IsarMapEntity? headers,
+    IsarMapEntityEasyDownloader? headers,
     String? url,
     bool? showNotification,
     bool? inQueue,
